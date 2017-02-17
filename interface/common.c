@@ -31,11 +31,9 @@
 #include "version.h"
 #include "vidext.h"
 
-/* Version number for UI-Console config section parameters */
-#define CONFIG_PARAM_VERSION     1.00
-
 /** global variables **/
 int    g_Verbose = 0;
+const char* qt_CoreDirPath = NULL;
 
 cothread_t main_thread = NULL;
 cothread_t game_thread = NULL;
@@ -52,7 +50,7 @@ void DebugMessage(int level, const char *message, ...)
   va_start(args, message);
   vsnprintf(msgbuf, 1024, message, args);
 
-  DebugCallback("UI-Console", level, msgbuf);
+  DebugCallback("GUI", level, msgbuf);
 
   va_end(args);
 }
@@ -94,79 +92,6 @@ void DebugCallback(void *Context, int level, const char *message)
 #endif
 }
 
-static m64p_handle l_ConfigCore = NULL;
-static m64p_handle l_ConfigVideo = NULL;
-static m64p_handle l_ConfigUI = NULL;
-
-/*********************************************************************************************************
- *  Configuration handling
- */
-
-static m64p_error OpenConfigurationHandles(void)
-{
-    float fConfigParamsVersion;
-    int bSaveConfig = 0;
-    m64p_error rval;
-
-    /* Open Configuration sections for core library and console User Interface */
-    rval = (*ConfigOpenSection)("Core", &l_ConfigCore);
-    if (rval != M64ERR_SUCCESS)
-    {
-        DebugMessage(M64MSG_ERROR, "failed to open 'Core' configuration section");
-        return rval;
-    }
-
-    rval = (*ConfigOpenSection)("Video-General", &l_ConfigVideo);
-    if (rval != M64ERR_SUCCESS)
-    {
-        DebugMessage(M64MSG_ERROR, "failed to open 'Video-General' configuration section");
-        return rval;
-    }
-
-    rval = (*ConfigOpenSection)("UI-Console", &l_ConfigUI);
-    if (rval != M64ERR_SUCCESS)
-    {
-        DebugMessage(M64MSG_ERROR, "failed to open 'UI-Console' configuration section");
-        return rval;
-    }
-
-    if ((*ConfigGetParameter)(l_ConfigUI, "Version", M64TYPE_FLOAT, &fConfigParamsVersion, sizeof(float)) != M64ERR_SUCCESS)
-    {
-        DebugMessage(M64MSG_WARNING, "No version number in 'UI-Console' config section. Setting defaults.");
-        (*ConfigDeleteSection)("UI-Console");
-        (*ConfigOpenSection)("UI-Console", &l_ConfigUI);
-        bSaveConfig = 1;
-    }
-    else if (((int) fConfigParamsVersion) != ((int) CONFIG_PARAM_VERSION))
-    {
-        DebugMessage(M64MSG_WARNING, "Incompatible version %.2f in 'UI-Console' config section: current is %.2f. Setting defaults.", fConfigParamsVersion, (float) CONFIG_PARAM_VERSION);
-        (*ConfigDeleteSection)("UI-Console");
-        (*ConfigOpenSection)("UI-Console", &l_ConfigUI);
-        bSaveConfig = 1;
-    }
-    else if ((CONFIG_PARAM_VERSION - fConfigParamsVersion) >= 0.0001f)
-    {
-        /* handle upgrades */
-        float fVersion = CONFIG_PARAM_VERSION;
-        ConfigSetParameter(l_ConfigUI, "Version", M64TYPE_FLOAT, &fVersion);
-        DebugMessage(M64MSG_INFO, "Updating parameter set version in 'UI-Console' config section to %.2f", fVersion);
-        bSaveConfig = 1;
-    }
-
-    /* Set default values for my Config parameters */
-    (*ConfigSetDefaultFloat)(l_ConfigUI, "Version", CONFIG_PARAM_VERSION,  "Mupen64Plus UI-Console config parameter set version number.  Please don't change this version number.");
-    (*ConfigSetDefaultString)(l_ConfigUI, "PluginDir", OSAL_CURRENT_DIR, "Directory in which to search for plugins");
-    (*ConfigSetDefaultString)(l_ConfigUI, "VideoPlugin", "mupen64plus-video-rice" OSAL_DLL_EXTENSION, "Filename of video plugin");
-    (*ConfigSetDefaultString)(l_ConfigUI, "AudioPlugin", "mupen64plus-audio-sdl" OSAL_DLL_EXTENSION, "Filename of audio plugin");
-    (*ConfigSetDefaultString)(l_ConfigUI, "InputPlugin", "mupen64plus-input-sdl" OSAL_DLL_EXTENSION, "Filename of input plugin");
-    (*ConfigSetDefaultString)(l_ConfigUI, "RspPlugin", "mupen64plus-rsp-hle" OSAL_DLL_EXTENSION, "Filename of RSP plugin");
-
-    if (bSaveConfig && ConfigSaveSection != NULL) /* ConfigSaveSection was added in Config API v2.1.0 */
-        (*ConfigSaveSection)("UI-Console");
-
-    return M64ERR_SUCCESS;
-}
-
 m64p_video_extension_functions vidExtFunctions = {11,
                                                  qtVidExtFuncInit,
                                                  qtVidExtFuncQuit,
@@ -183,7 +108,7 @@ m64p_video_extension_functions vidExtFunctions = {11,
 void openROM()
 {
     /* load the Mupen64Plus core library */
-    if (AttachCoreLib("/home/loganmc10/mupen64plus-GLideN64/mupen64plus/libmupen64plus.so.2") != M64ERR_SUCCESS)
+    if (AttachCoreLib(qt_CoreDirPath) != M64ERR_SUCCESS)
         return;
 
     /* start the Mupen64Plus core library, load the configuration file */
@@ -199,15 +124,6 @@ void openROM()
     if (rval != M64ERR_SUCCESS)
     {
         DebugMessage(M64MSG_ERROR, "couldn't start VidExt library.");
-        DetachCoreLib();
-        return;
-    }
-
-    /* Open configuration sections */
-    rval = OpenConfigurationHandles();
-    if (rval != M64ERR_SUCCESS)
-    {
-        (*CoreShutdown)();
         DetachCoreLib();
         return;
     }
@@ -259,7 +175,7 @@ void openROM()
     free(ROM_buffer); /* the core copies the ROM image, so we can release this buffer immediately */
 
     /* search for and load plugins */
-    rval = PluginSearchLoad(l_ConfigUI);
+    rval = PluginSearchLoad();
     if (rval != M64ERR_SUCCESS)
     {
         (*CoreDoCommand)(M64CMD_ROM_CLOSE, 0, NULL);

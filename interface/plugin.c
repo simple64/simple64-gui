@@ -34,11 +34,11 @@
 #include "version.h"
 
 /* global variables */
-const char *g_PluginDir = NULL;
-const char *g_GfxPlugin = NULL;        // pointer to graphics plugin specified at commandline (if any)
-const char *g_AudioPlugin = NULL;      // pointer to audio plugin specified at commandline (if any)
-const char *g_InputPlugin = NULL;      // pointer to input plugin specified at commandline (if any)
-const char *g_RspPlugin = NULL;        // pointer to rsp plugin specified at commandline (if any)
+const char *qt_PluginDir = NULL;
+const char *qt_GfxPlugin = NULL;
+const char *qt_AudioPlugin = NULL;
+const char *qt_InputPlugin = NULL;
+const char *qt_RspPlugin = NULL;
 
 plugin_map_node g_PluginMap[] = {{M64PLUGIN_GFX,   "Video", NULL, "", NULL, 0 },
                                  {M64PLUGIN_AUDIO, "Audio", NULL, "", NULL, 0 },
@@ -101,27 +101,20 @@ static m64p_error PluginLoadTry(const char *filepath, int MapIndex)
 }
 
 /* global functions */
-m64p_error PluginSearchLoad(m64p_handle ConfigUI)
+m64p_error PluginSearchLoad()
 {
     osal_lib_search *lib_filelist = NULL;
     int i;
 
     /* start by checking the directory given on the command line */
-    if (g_PluginDir != NULL)
+    if (qt_PluginDir != NULL)
     {
-        lib_filelist = osal_library_search(g_PluginDir);
+        lib_filelist = osal_library_search(qt_PluginDir);
         if (lib_filelist == NULL)
         {
-            DebugMessage(M64MSG_ERROR, "No plugins found in --plugindir path: %s", g_PluginDir);
+            DebugMessage(M64MSG_ERROR, "No plugins found in plugindir path: %s", qt_PluginDir);
             return M64ERR_INPUT_NOT_FOUND;
         }
-    }
-
-    /* if no plugins found, search the PluginDir in the UI-console section of the config file */
-    if (lib_filelist == NULL)
-    {
-        const char *plugindir = (*ConfigGetParamString)(ConfigUI, "PluginDir");
-        lib_filelist = osal_library_search(plugindir);
     }
 
     /* if still no plugins found, search some common system folders */
@@ -140,15 +133,14 @@ m64p_error PluginSearchLoad(m64p_handle ConfigUI)
     {
         m64p_plugin_type type = g_PluginMap[i].type;
         const char      *cmdline_path = NULL;
-        const char      *config_var = NULL;
         int              use_dummy = 0;
         switch (type)
         {
-            case M64PLUGIN_RSP:    cmdline_path = g_RspPlugin;    config_var = "RspPlugin";   break;
-            case M64PLUGIN_GFX:    cmdline_path = g_GfxPlugin;    config_var = "VideoPlugin"; break;
-            case M64PLUGIN_AUDIO:  cmdline_path = g_AudioPlugin;  config_var = "AudioPlugin"; break;
-            case M64PLUGIN_INPUT:  cmdline_path = g_InputPlugin;  config_var = "InputPlugin"; break;
-            default:               cmdline_path = NULL;           config_var = "";
+            case M64PLUGIN_RSP:    cmdline_path = qt_RspPlugin;   break;
+            case M64PLUGIN_GFX:    cmdline_path = qt_GfxPlugin;   break;
+            case M64PLUGIN_AUDIO:  cmdline_path = qt_AudioPlugin; break;
+            case M64PLUGIN_INPUT:  cmdline_path = qt_InputPlugin; break;
+            default:               cmdline_path = NULL;
         }
         /* first search for a plugin matching what was given on the command line */
         if (cmdline_path != NULL)
@@ -172,40 +164,8 @@ m64p_error PluginSearchLoad(m64p_handle ConfigUI)
                     curr = curr->next;
                 }
             }
-            /* exit with error if we couldn't find the specified plugin */
-            if (!use_dummy && g_PluginMap[i].handle == NULL)
-            {
-                DebugMessage(M64MSG_ERROR, "Specified %s plugin not found: %s", g_PluginMap[i].name, cmdline_path);
-                osal_free_lib_list(lib_filelist);
-                return M64ERR_INPUT_NOT_FOUND;
-            }
         }
-        else /* otherwise search for a plugin specified in the config file */
-        {
-            const char *config_path = (*ConfigGetParamString)(ConfigUI, config_var);
-            if (config_path != NULL && strlen(config_path) > 0)
-            {
-                /* if full path was given, try loading exactly this file */
-                if (strchr(config_path, OSAL_DIR_SEPARATOR) != NULL)
-                {
-                    PluginLoadTry(config_path, i);
-                }
-                else if (strcmp(config_path, "dummy") == 0)
-                {
-                    use_dummy = 1;
-                }
-                else /* otherwise search through the plugin directory to find a match with this name */
-                {
-                    osal_lib_search *curr = lib_filelist;
-                    while (curr != NULL && g_PluginMap[i].handle == NULL)
-                    {
-                        if (strncmp(curr->filename, config_path, strlen(config_path)) == 0)
-                            PluginLoadTry(curr->filepath, i);
-                        curr = curr->next;
-                    }
-                }
-            }
-        }
+
         /* As a last resort, search for any appropriate plugin in search directory */
         if (!use_dummy && g_PluginMap[i].handle == NULL)
         {

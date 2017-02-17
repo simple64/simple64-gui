@@ -18,6 +18,8 @@ public:
 private slots:
     void on_actionOpen_ROM_triggered();
 
+    void on_actionPlugin_Paths_triggered();
+
 private:
     Ui::MainWindow *ui;
 };

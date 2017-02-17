@@ -19,6 +19,7 @@ m64p_error qtVidExtFuncListModes(m64p_2d_size *SizeArray, int *NumSize)
 
 m64p_error qtVidExtFuncSetMode(int Width, int Height, int BitsPerPixel, int ScreenMode, int Flags)
 {
+    container->setFixedSize(Width, Height);
     return M64ERR_SUCCESS;
 }
 

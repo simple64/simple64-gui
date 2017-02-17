@@ -27,14 +27,14 @@
 #include "m64p_types.h"
 #include "osal_preproc.h"
 
-extern m64p_error PluginSearchLoad(m64p_handle ConfigUI);
+extern m64p_error PluginSearchLoad(void);
 extern m64p_error PluginUnload(void);
 
-extern const char *g_PluginDir;        // directory to search for plugins
-extern const char *g_GfxPlugin;        // graphics plugin specified at commandline (if any)
-extern const char *g_AudioPlugin;      // audio plugin specified at commandline (if any)
-extern const char *g_InputPlugin;      // input plugin specified at commandline (if any)
-extern const char *g_RspPlugin;        // rsp plugin specified at commandline (if any)
+extern const char *qt_PluginDir;
+extern const char *qt_GfxPlugin;
+extern const char *qt_AudioPlugin;
+extern const char *qt_InputPlugin;
+extern const char *qt_RspPlugin;
 
 typedef struct {
   m64p_plugin_type    type;

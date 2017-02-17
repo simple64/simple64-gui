@@ -6,7 +6,9 @@
 #ifdef __cplusplus
 
 #include <QOpenGLContext>
+#include <QWidget>
 extern QOpenGLContext *my_context;
+extern QWidget *container;
 
 extern "C" {
 #endif

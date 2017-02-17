@@ -1,6 +1,7 @@
 #include <QString>
 #include <QFileDialog>
 #include "oglwindow.h"
+#include "settingsdialog.h"
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -8,6 +9,7 @@
 
 char* filename;
 QOpenGLContext *my_context;
+QWidget *container;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -30,12 +32,20 @@ void MainWindow::on_actionOpen_ROM_triggered()
     game_thread = co_create(65536 * sizeof(void*) * 16, openROM);
 
     OGLWindow *my_window = new OGLWindow();
+    container = QWidget::createWindowContainer(my_window);
+
     QSurfaceFormat format;
     format.setDepthBufferSize(24);
     format.setVersion(3, 3);
     format.setProfile(QSurfaceFormat::CoreProfile);
     my_window->setFormat(format);
-    QWidget *container = QWidget::createWindowContainer(my_window);
+
     setCentralWidget(container);
     my_context = my_window->context();
+}
+
+void MainWindow::on_actionPlugin_Paths_triggered()
+{
+    SettingsDialog *settings = new SettingsDialog();
+    settings->show();
 }

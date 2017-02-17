@@ -29,6 +29,7 @@ extern void DebugCallback(void *Context, int level, const char *message);
 
 extern int  g_Verbose;
 extern char* filename;
+extern const char* qt_CoreDirPath;
 extern cothread_t game_thread;
 extern cothread_t main_thread;
 
