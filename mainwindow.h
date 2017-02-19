@@ -15,6 +15,8 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+protected:
+    void closeEvent(QCloseEvent *event);
 
 private slots:
     void on_actionOpen_ROM_triggered();
@@ -22,6 +24,8 @@ private slots:
     void on_actionPlugin_Paths_triggered();
 
     void on_actionStop_Game_triggered();
+
+    void on_actionExit_triggered();
 
 private:
     Ui::MainWindow *ui;

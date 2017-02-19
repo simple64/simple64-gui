@@ -4,6 +4,7 @@
 #include <QSettings>
 #include <QLibrary>
 #include <QOpenGLWindow>
+#include <QCloseEvent>
 #include "settingsdialog.h"
 
 #include "mainwindow.h"
@@ -50,13 +51,19 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    if (emuRunning) {
-        (*CoreDoCommand)(M64CMD_STOP, 0, NULL);
-    }
     if (coreStarted)
         (*CoreShutdown)();
     DetachCoreLib();
     delete ui;
+}
+
+
+void MainWindow::closeEvent (QCloseEvent *event)
+{
+    if (emuRunning) {
+        (*CoreDoCommand)(M64CMD_STOP, 0, NULL);
+    }
+    event->accept();
 }
 
 void MainWindow::on_actionOpen_ROM_triggered()
@@ -80,4 +87,9 @@ void MainWindow::on_actionStop_Game_triggered()
 {
     if (QtAttachCoreLib())
         (*CoreDoCommand)(M64CMD_STOP, 0, NULL);
+}
+
+void MainWindow::on_actionExit_triggered()
+{
+    this->close();
 }
