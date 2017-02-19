@@ -15,12 +15,26 @@
 QString filename;
 QOpenGLContext *my_context;
 QWidget *container;
+OGLWindow *my_window;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    my_window = new OGLWindow();
+    container = QWidget::createWindowContainer(my_window);
+
+    QSurfaceFormat format;
+    format.setDepthBufferSize(24);
+    format.setVersion(3, 3);
+    format.setProfile(QSurfaceFormat::CoreProfile);
+    my_window->setFormat(format);
+
+    setCentralWidget(container);
+    my_context = my_window->context();
+
     QSettings settings("mupen64plus", "gui");
     if (!settings.contains("coreLibPath")) {
         QLibrary myLib("mupen64plus");
@@ -37,6 +51,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    if (emuRunning) {
+        (*CoreDoCommand)(M64CMD_STOP, 0, NULL);
+        co_switch(game_thread);
+    }
     if (coreStarted)
         (*CoreShutdown)();
     DetachCoreLib();
@@ -47,22 +65,11 @@ void MainWindow::on_actionOpen_ROM_triggered()
 {
     filename = QFileDialog::getOpenFileName(this,
         tr("Open ROM"), NULL, tr("ROM Files (*.n64 *.z64 *.v64)"));
-    if (!filename.isNull()) {
+    if (!filename.isNull() && !emuRunning) {
         if (QtAttachCoreLib()) {
             main_thread = co_active();
             game_thread = co_create(65536 * sizeof(void*) * 16, openROM);
-
-            OGLWindow *my_window = new OGLWindow();
-            container = QWidget::createWindowContainer(my_window);
-
-            QSurfaceFormat format;
-            format.setDepthBufferSize(24);
-            format.setVersion(3, 3);
-            format.setProfile(QSurfaceFormat::CoreProfile);
-            my_window->setFormat(format);
-
-            setCentralWidget(container);
-            my_context = my_window->context();
+            my_window->update();
         }
     }
 }
