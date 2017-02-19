@@ -13,14 +13,22 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
-    osal/osal_dynamiclib_unix.c \
-    osal/osal_files_unix.c \
+    mainwindow.cpp \
     vidext.cpp \
     settingsdialog.cpp \
     interface/common.cpp \
     interface/core_interface.cpp \
     interface/plugin.cpp
+
+win32 {
+SOURCES += osal/osal_dynamiclib_win32.c \
+    osal/osal_files_win32.c
+}
+
+!win32 {
+SOURCES += osal/osal_dynamiclib_unix.c \
+    osal/osal_files_unix.c
+}
 
 HEADERS  += mainwindow.h \
     vidext.h \

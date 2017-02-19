@@ -59,7 +59,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::closeEvent (QCloseEvent *event)
 {
-    (*CoreDoCommand)(M64CMD_STOP, 0, NULL);
+    if (QtAttachCoreLib())
+        (*CoreDoCommand)(M64CMD_STOP, 0, NULL);
     event->accept();
 }
 
