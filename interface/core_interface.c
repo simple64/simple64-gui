@@ -338,5 +338,3 @@ m64p_error DetachCoreLib(void)
 
     return M64ERR_SUCCESS;
 }
-
-

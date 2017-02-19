@@ -2,10 +2,7 @@
 #define SETTINGSDIALOG_H
 
 #include <QDialog>
-
-namespace Ui {
-class SettingsDialog;
-}
+#include <QLabel>
 
 class SettingsDialog : public QDialog
 {
@@ -14,6 +11,12 @@ class SettingsDialog : public QDialog
 public:
     explicit SettingsDialog(QWidget *parent = 0);
     ~SettingsDialog();
+private slots:
+    void handleCoreButton();
+    void handlePluginButton();
+private:
+    QLabel *corePath;
+    QLabel *pluginPath;
 };
 
 #endif // SETTINGSDIALOG_H

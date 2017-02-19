@@ -29,8 +29,8 @@
 #include "m64p_types.h"
 
 /* function declarations */
-extern m64p_error AttachCoreLib(const char *CoreLibFilepath);
-extern m64p_error DetachCoreLib(void);
+m64p_error AttachCoreLib(const char *CoreLibFilepath);
+m64p_error DetachCoreLib(void);
 
 /* global variables from core_interface.c */
 extern int g_CoreCapabilities;

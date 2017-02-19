@@ -107,12 +107,8 @@ m64p_video_extension_functions vidExtFunctions = {11,
 
 void openROM()
 {
-    /* load the Mupen64Plus core library */
-    if (AttachCoreLib(qt_CoreDirPath) != M64ERR_SUCCESS)
-        return;
-
     /* start the Mupen64Plus core library, load the configuration file */
-    m64p_error rval = (*CoreStartup)(CORE_API_VERSION, NULL, "/usr/share/mupen64plus", "Core", DebugCallback, NULL, NULL);
+    m64p_error rval = (*CoreStartup)(CORE_API_VERSION, NULL /*Config dir*/, NULL /*Data dir*/, "Core", DebugCallback, NULL, NULL);
     if (rval != M64ERR_SUCCESS)
     {
         DebugMessage(M64MSG_ERROR, "couldn't start Mupen64Plus core library.");
@@ -200,4 +196,5 @@ void openROM()
     /* run the game */
     (*CoreDoCommand)(M64CMD_EXECUTE, 0, NULL);
     free(filename);
+    free(qt_PluginDir);
 }

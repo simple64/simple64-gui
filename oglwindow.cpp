@@ -12,6 +12,8 @@ OGLWindow::~OGLWindow()
 
 void OGLWindow::paintGL()
 {
-    co_switch(game_thread);
-    update();
+    if (game_thread != NULL) {
+        co_switch(game_thread);
+        update();
+    }
 }
