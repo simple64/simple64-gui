@@ -5,10 +5,10 @@
 
 #ifdef __cplusplus
 
-#include <QOpenGLContext>
 #include <QWidget>
-extern QOpenGLContext *my_context;
+#include <QOpenGLWindow>
 extern QWidget *container;
+extern QOpenGLWindow *my_window;
 
 extern "C" {
 #endif

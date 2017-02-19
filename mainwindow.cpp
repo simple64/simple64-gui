@@ -3,7 +3,7 @@
 #include <QMessageBox>
 #include <QSettings>
 #include <QLibrary>
-#include "oglwindow.h"
+#include <QOpenGLWindow>
 #include "settingsdialog.h"
 
 #include "mainwindow.h"
@@ -13,9 +13,8 @@
 #include "plugin.h"
 
 QString filename;
-QOpenGLContext *my_context;
 QWidget *container;
-OGLWindow *my_window;
+QOpenGLWindow *my_window;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -23,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    my_window = new OGLWindow();
+    my_window = new QOpenGLWindow();
     container = QWidget::createWindowContainer(my_window);
 
     QSurfaceFormat format;
@@ -33,7 +32,7 @@ MainWindow::MainWindow(QWidget *parent) :
     my_window->setFormat(format);
 
     setCentralWidget(container);
-    my_context = my_window->context();
+    my_window->makeCurrent();
 
     QSettings settings("mupen64plus", "gui");
     if (!settings.contains("coreLibPath")) {
@@ -53,7 +52,6 @@ MainWindow::~MainWindow()
 {
     if (emuRunning) {
         (*CoreDoCommand)(M64CMD_STOP, 0, NULL);
-        co_switch(game_thread);
     }
     if (coreStarted)
         (*CoreShutdown)();
@@ -67,9 +65,7 @@ void MainWindow::on_actionOpen_ROM_triggered()
         tr("Open ROM"), NULL, tr("ROM Files (*.n64 *.z64 *.v64)"));
     if (!filename.isNull() && !emuRunning) {
         if (QtAttachCoreLib()) {
-            main_thread = co_active();
-            game_thread = co_create(65536 * sizeof(void*) * 16, openROM);
-            my_window->update();
+            openROM();
         }
     }
 }

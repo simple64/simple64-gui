@@ -33,8 +33,6 @@
 /** global variables **/
 int    g_Verbose = 0;
 
-cothread_t main_thread = NULL;
-cothread_t game_thread = NULL;
 int emuRunning = 0;
 
 /*********************************************************************************************************
@@ -156,5 +154,4 @@ void openROM()
     /* close the ROM image */
     (*CoreDoCommand)(M64CMD_ROM_CLOSE, 0, NULL);
     emuRunning = 0;
-    co_switch(main_thread);
 }

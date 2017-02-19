@@ -22,8 +22,6 @@
 #ifndef __COMMON_H__
 #define __COMMON_H__
 
-#include "libco/libco.h"
-
 #ifdef __cplusplus
 #include <QString>
 extern QString filename;
@@ -37,8 +35,6 @@ void DebugCallback(void *Context, int level, const char *message);
 
 extern int  g_Verbose;
 extern int emuRunning;
-extern cothread_t game_thread;
-extern cothread_t main_thread;
 void openROM();
 
 #endif /* __COMMON_H__ */

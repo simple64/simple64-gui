@@ -16,9 +16,7 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     osal/osal_dynamiclib_unix.c \
     osal/osal_files_unix.c \
-    libco/libco.c \
     vidext.cpp \
-    oglwindow.cpp \
     settingsdialog.cpp \
     interface/common.cpp \
     interface/core_interface.cpp \
@@ -27,7 +25,6 @@ SOURCES += main.cpp\
 HEADERS  += mainwindow.h \
     vidext.h \
     interface/common.h \
-    oglwindow.h \
     interface/core_interface.h \
     interface/plugin.h \
     settingsdialog.h \

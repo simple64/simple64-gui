@@ -1,6 +1,7 @@
 #include "vidext.h"
 #include "common.h"
 #include <stdio.h>
+#include <QApplication>
 
 m64p_error qtVidExtFuncInit(void)
 {
@@ -25,7 +26,7 @@ m64p_error qtVidExtFuncSetMode(int Width, int Height, int BitsPerPixel, int Scre
 
 void *qtVidExtFuncGLGetProc(const char* Proc)
 {
-    return (void*)my_context->getProcAddress(Proc);
+    return (void*)my_window->context()->getProcAddress(Proc);
 }
 
 m64p_error qtVidExtFuncGLSetAttr(m64p_GLattr Attr, int Value)
@@ -44,7 +45,8 @@ m64p_error qtVidExtFuncGLGetAttr(m64p_GLattr Attr, int *pValue)
 
 m64p_error qtVidExtFuncGLSwapBuf(void)
 {
-    co_switch(main_thread);
+    my_window->context()->swapBuffers(my_window);
+    qApp->processEvents();
     return M64ERR_SUCCESS;
 }
 
