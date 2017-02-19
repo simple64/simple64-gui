@@ -33,8 +33,6 @@
 /** global variables **/
 int    g_Verbose = 0;
 
-int emuRunning = 0;
-
 /*********************************************************************************************************
  *  Callback functions from the core
  */
@@ -143,7 +141,6 @@ void openROM(QString filename)
     }
 
     /* run the game */
-    emuRunning = 1;
     (*CoreDoCommand)(M64CMD_EXECUTE, 0, NULL);
 
     /* detach plugins from core and unload them */
@@ -153,5 +150,4 @@ void openROM(QString filename)
 
     /* close the ROM image */
     (*CoreDoCommand)(M64CMD_ROM_CLOSE, 0, NULL);
-    emuRunning = 0;
 }

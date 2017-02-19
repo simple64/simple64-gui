@@ -34,7 +34,6 @@ void DebugCallback(void *Context, int level, const char *message);
 #endif
 
 extern int  g_Verbose;
-extern int emuRunning;
 
 #endif /* __COMMON_H__ */
 

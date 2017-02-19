@@ -59,9 +59,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::closeEvent (QCloseEvent *event)
 {
-    if (emuRunning) {
-        (*CoreDoCommand)(M64CMD_STOP, 0, NULL);
-    }
+    (*CoreDoCommand)(M64CMD_STOP, 0, NULL);
     event->accept();
 }
 
@@ -69,9 +67,12 @@ void MainWindow::on_actionOpen_ROM_triggered()
 {
     QString filename = QFileDialog::getOpenFileName(this,
         tr("Open ROM"), NULL, tr("ROM Files (*.n64 *.z64 *.v64)"));
-    if (!filename.isNull() && !emuRunning) {
+    if (!filename.isNull()) {
         if (QtAttachCoreLib()) {
-            openROM(filename);
+            int response;
+            (*CoreDoCommand)(M64CMD_CORE_STATE_QUERY, M64CORE_EMU_STATE, &response);
+            if (response != 2)
+                openROM(filename);
         }
     }
 }
