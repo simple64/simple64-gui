@@ -29,14 +29,13 @@
 #include "m64p_types.h"
 #include "core_interface.h"
 #include "version.h"
-#include "vidext.h"
 
 /** global variables **/
 int    g_Verbose = 0;
-const char* qt_CoreDirPath = NULL;
 
 cothread_t main_thread = NULL;
 cothread_t game_thread = NULL;
+int emuRunning = 0;
 
 /*********************************************************************************************************
  *  Callback functions from the core
@@ -50,30 +49,13 @@ void DebugMessage(int level, const char *message, ...)
   va_start(args, message);
   vsnprintf(msgbuf, 1024, message, args);
 
-  DebugCallback("GUI", level, msgbuf);
+  DebugCallback((char*)"GUI", level, msgbuf);
 
   va_end(args);
 }
 
 void DebugCallback(void *Context, int level, const char *message)
 {
-#ifdef ANDROID
-    if (level == M64MSG_ERROR)
-        __android_log_print(ANDROID_LOG_ERROR, (const char *) Context, "%s", message);
-    else if (level == M64MSG_WARNING)
-        __android_log_print(ANDROID_LOG_WARN, (const char *) Context, "%s", message);
-    else if (level == M64MSG_INFO)
-        __android_log_print(ANDROID_LOG_INFO, (const char *) Context, "%s", message);
-    else if (level == M64MSG_STATUS)
-        __android_log_print(ANDROID_LOG_DEBUG, (const char *) Context, "%s", message);
-    else if (level == M64MSG_VERBOSE)
-    {
-        if (g_Verbose)
-            __android_log_print(ANDROID_LOG_VERBOSE, (const char *) Context, "%s", message);
-    }
-    else
-        __android_log_print(ANDROID_LOG_ERROR, (const char *) Context, "Unknown: %s", message);
-#else
     if (level == M64MSG_ERROR)
         printf("%s Error: %s\n", (const char *) Context, message);
     else if (level == M64MSG_WARNING)
@@ -89,43 +71,12 @@ void DebugCallback(void *Context, int level, const char *message)
     }
     else
         printf("%s Unknown: %s\n", (const char *) Context, message);
-#endif
 }
-
-m64p_video_extension_functions vidExtFunctions = {11,
-                                                 qtVidExtFuncInit,
-                                                 qtVidExtFuncQuit,
-                                                 qtVidExtFuncListModes,
-                                                 qtVidExtFuncSetMode,
-                                                 qtVidExtFuncGLGetProc,
-                                                 qtVidExtFuncGLSetAttr,
-                                                 qtVidExtFuncGLGetAttr,
-                                                 qtVidExtFuncGLSwapBuf,
-                                                 qtVidExtFuncSetCaption,
-                                                 qtVidExtFuncToggleFS,
-                                                 qtVidExtFuncResizeWindow};
 
 void openROM()
 {
-    /* start the Mupen64Plus core library, load the configuration file */
-    m64p_error rval = (*CoreStartup)(CORE_API_VERSION, NULL /*Config dir*/, NULL /*Data dir*/, "Core", DebugCallback, NULL, NULL);
-    if (rval != M64ERR_SUCCESS)
-    {
-        DebugMessage(M64MSG_ERROR, "couldn't start Mupen64Plus core library.");
-        DetachCoreLib();
-        return;
-    }
-
-    rval = CoreOverrideVidExt(&vidExtFunctions);
-    if (rval != M64ERR_SUCCESS)
-    {
-        DebugMessage(M64MSG_ERROR, "couldn't start VidExt library.");
-        DetachCoreLib();
-        return;
-    }
-
     /* load ROM image */
-    FILE *fPtr = fopen(filename, "rb");
+    FILE *fPtr = fopen(filename.toLatin1().data(), "rb");
     if (fPtr == NULL)
     {
         DebugMessage(M64MSG_ERROR, "couldn't open ROM file '%s' for reading.", filename);
@@ -171,7 +122,7 @@ void openROM()
     free(ROM_buffer); /* the core copies the ROM image, so we can release this buffer immediately */
 
     /* search for and load plugins */
-    rval = PluginSearchLoad();
+    m64p_error rval = PluginSearchLoad();
     if (rval != M64ERR_SUCCESS)
     {
         (*CoreDoCommand)(M64CMD_ROM_CLOSE, 0, NULL);
@@ -179,9 +130,9 @@ void openROM()
         DetachCoreLib();
         return;
     }
-
+    int i;
     /* attach plugins to core */
-    for (int i = 0; i < 4; i++)
+    for (i = 0; i < 4; i++)
     {
         if ((*CoreAttachPlugin)(g_PluginMap[i].type, g_PluginMap[i].handle) != M64ERR_SUCCESS)
         {
@@ -194,7 +145,16 @@ void openROM()
     }
 
     /* run the game */
+    emuRunning = 1;
     (*CoreDoCommand)(M64CMD_EXECUTE, 0, NULL);
-    free(filename);
-    free(qt_PluginDir);
+
+    /* detach plugins from core and unload them */
+    for (i = 0; i < 4; i++)
+        (*CoreDetachPlugin)(g_PluginMap[i].type);
+    PluginUnload();
+
+    /* close the ROM image */
+    (*CoreDoCommand)(M64CMD_ROM_CLOSE, 0, NULL);
+    emuRunning = 0;
+    co_switch(main_thread);
 }

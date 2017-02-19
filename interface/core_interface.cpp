@@ -23,6 +23,7 @@
  * library and pointers to the core functions
  */
 
+#include <QMessageBox>
 #include <stdio.h>
 
 #include "core_interface.h"
@@ -32,13 +33,18 @@
 #include "m64p_frontend.h"
 #include "m64p_types.h"
 #include "common.h"
+extern "C" {
 #include "osal_dynamiclib.h"
 #include "osal_preproc.h"
+}
 #include "version.h"
+#include "vidext.h"
 
 /* global data definitions */
 int g_CoreCapabilities;
 int g_CoreAPIVersion;
+QString qtCoreDirPath;
+int coreStarted = 0;
 
 /* definitions of pointers to Core common functions */
 ptr_CoreErrorMessage    CoreErrorMessage = NULL;
@@ -105,6 +111,48 @@ ptr_DebugBreakpointCommand DebugBreakpointCommand = NULL;
 
 /* global variables */
 m64p_dynlib_handle CoreHandle = NULL;
+m64p_video_extension_functions vidExtFunctions = {11,
+                                                 qtVidExtFuncInit,
+                                                 qtVidExtFuncQuit,
+                                                 qtVidExtFuncListModes,
+                                                 qtVidExtFuncSetMode,
+                                                 qtVidExtFuncGLGetProc,
+                                                 qtVidExtFuncGLSetAttr,
+                                                 qtVidExtFuncGLGetAttr,
+                                                 qtVidExtFuncGLSwapBuf,
+                                                 qtVidExtFuncSetCaption,
+                                                 qtVidExtFuncToggleFS,
+                                                 qtVidExtFuncResizeWindow};
+
+bool QtAttachCoreLib()
+{
+    if (AttachCoreLib(qtCoreDirPath.toLatin1().data()) != M64ERR_SUCCESS && CoreHandle == NULL) {
+        QMessageBox msgBox;
+        msgBox.setText("Couldn't load core library, please set the path in settings.");
+        msgBox.exec();
+        return false;
+    }
+    if (!coreStarted) {
+        /* start the Mupen64Plus core library, load the configuration file */
+        m64p_error rval = (*CoreStartup)(CORE_API_VERSION, NULL /*Config dir*/, NULL /*Data dir*/, (char*)"Core", DebugCallback, NULL, NULL);
+        if (rval != M64ERR_SUCCESS)
+        {
+            DebugMessage(M64MSG_ERROR, "couldn't start Mupen64Plus core library.");
+            DetachCoreLib();
+            return false;
+        }
+
+        rval = CoreOverrideVidExt(&vidExtFunctions);
+        if (rval != M64ERR_SUCCESS)
+        {
+            DebugMessage(M64MSG_ERROR, "couldn't start VidExt library.");
+            DetachCoreLib();
+            return false;
+        }
+        coreStarted = 1;
+    }
+    return true;
+}
 
 /* functions */
 m64p_error AttachCoreLib(const char *CoreLibFilepath)

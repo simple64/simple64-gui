@@ -21,6 +21,8 @@ private slots:
 
     void on_actionPlugin_Paths_triggered();
 
+    void on_actionStop_Game_triggered();
+
 private:
     Ui::MainWindow *ui;
 };

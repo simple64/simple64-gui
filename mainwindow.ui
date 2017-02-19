@@ -36,7 +36,14 @@
     </property>
     <addaction name="actionPlugin_Paths"/>
    </widget>
+   <widget class="QMenu" name="menuEmulation">
+    <property name="title">
+     <string>Emulation</string>
+    </property>
+    <addaction name="actionStop_Game"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuEmulation"/>
    <addaction name="menuSettings"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
@@ -61,6 +68,11 @@
   <action name="actionPlugin_Paths">
    <property name="text">
     <string>Plugin Setup</string>
+   </property>
+  </action>
+  <action name="actionStop_Game">
+   <property name="text">
+    <string>Stop Game</string>
    </property>
   </action>
  </widget>

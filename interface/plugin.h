@@ -22,6 +22,7 @@
 #if !defined(PLUGIN_H)
 #define PLUGIN_H
 
+#include <QString>
 #include <limits.h>
 
 #include "m64p_types.h"
@@ -30,11 +31,11 @@
 extern m64p_error PluginSearchLoad(void);
 extern m64p_error PluginUnload(void);
 
-extern const char *qt_PluginDir;
-extern const char *qt_GfxPlugin;
-extern const char *qt_AudioPlugin;
-extern const char *qt_InputPlugin;
-extern const char *qt_RspPlugin;
+extern QString qtPluginDir;
+extern QString qtGfxPlugin;
+extern QString qtAudioPlugin;
+extern QString qtInputPlugin;
+extern QString qtRspPlugin;
 
 typedef struct {
   m64p_plugin_type    type;

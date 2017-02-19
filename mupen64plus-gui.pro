@@ -19,10 +19,10 @@ SOURCES += main.cpp\
     libco/libco.c \
     vidext.cpp \
     oglwindow.cpp \
-    interface/common.c \
-    interface/core_interface.c \
-    interface/plugin.c \
-    settingsdialog.cpp
+    settingsdialog.cpp \
+    interface/common.cpp \
+    interface/core_interface.cpp \
+    interface/plugin.cpp
 
 HEADERS  += mainwindow.h \
     vidext.h \
@@ -30,7 +30,8 @@ HEADERS  += mainwindow.h \
     oglwindow.h \
     interface/core_interface.h \
     interface/plugin.h \
-    settingsdialog.h
+    settingsdialog.h \
+    osal/osal_dynamiclib.h
 
 FORMS    += mainwindow.ui
 

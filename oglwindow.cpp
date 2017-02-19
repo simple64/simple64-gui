@@ -14,6 +14,10 @@ void OGLWindow::paintGL()
 {
     if (game_thread != NULL) {
         co_switch(game_thread);
+        if (!emuRunning) {
+            co_delete(game_thread);
+            game_thread = NULL;
+        }
         update();
     }
 }

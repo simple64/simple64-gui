@@ -27,18 +27,20 @@
 #include "m64p_common.h"
 #include "m64p_types.h"
 #include "common.h"  /* for the debug callback function */
+extern "C" {
 #include "osal_dynamiclib.h"
 #include "osal_files.h"
 #include "osal_preproc.h"
+}
 #include "plugin.h"
 #include "version.h"
 
 /* global variables */
-const char *qt_PluginDir = NULL;
-const char *qt_GfxPlugin = NULL;
-const char *qt_AudioPlugin = NULL;
-const char *qt_InputPlugin = NULL;
-const char *qt_RspPlugin = NULL;
+QString qtPluginDir;
+QString qtGfxPlugin;
+QString qtAudioPlugin;
+QString qtInputPlugin;
+QString qtRspPlugin;
 
 plugin_map_node g_PluginMap[] = {{M64PLUGIN_GFX,   "Video", NULL, "", NULL, 0 },
                                  {M64PLUGIN_AUDIO, "Audio", NULL, "", NULL, 0 },
@@ -107,15 +109,8 @@ m64p_error PluginSearchLoad()
     int i;
 
     /* start by checking the directory given on the command line */
-    if (qt_PluginDir != NULL)
-    {
-        lib_filelist = osal_library_search(qt_PluginDir);
-        if (lib_filelist == NULL)
-        {
-            DebugMessage(M64MSG_ERROR, "No plugins found in plugindir path: %s", qt_PluginDir);
-            return M64ERR_INPUT_NOT_FOUND;
-        }
-    }
+    if (!qtPluginDir.isNull())
+        lib_filelist = osal_library_search(qtPluginDir.toLatin1().data());
 
     /* if still no plugins found, search some common system folders */
     if (lib_filelist == NULL)
@@ -136,10 +131,10 @@ m64p_error PluginSearchLoad()
         int              use_dummy = 0;
         switch (type)
         {
-            case M64PLUGIN_RSP:    cmdline_path = qt_RspPlugin;   break;
-            case M64PLUGIN_GFX:    cmdline_path = qt_GfxPlugin;   break;
-            case M64PLUGIN_AUDIO:  cmdline_path = qt_AudioPlugin; break;
-            case M64PLUGIN_INPUT:  cmdline_path = qt_InputPlugin; break;
+            case M64PLUGIN_RSP:    cmdline_path = qtRspPlugin.toLatin1().data();   break;
+            case M64PLUGIN_GFX:    cmdline_path = qtGfxPlugin.toLatin1().data();   break;
+            case M64PLUGIN_AUDIO:  cmdline_path = qtAudioPlugin.toLatin1().data(); break;
+            case M64PLUGIN_INPUT:  cmdline_path = qtInputPlugin.toLatin1().data(); break;
             default:               cmdline_path = NULL;
         }
         /* first search for a plugin matching what was given on the command line */

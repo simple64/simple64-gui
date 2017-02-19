@@ -1,5 +1,7 @@
 #include "settingsdialog.h"
 #include "ui_settingsdialog.h"
+#include "core_interface.h"
+#include "plugin.h"
 
 #include <QPushButton>
 #include <QSettings>
@@ -14,6 +16,7 @@ void SettingsDialog::handleCoreButton()
     if (!fileName.isNull()) {
         corePath->setText(fileName);
         settings.setValue("coreLibPath", fileName);
+        qtCoreDirPath = settings.value("coreLibPath").toString();
     }
 }
 
@@ -27,6 +30,7 @@ void SettingsDialog::handlePluginButton()
     if (!fileName.isNull()) {
         pluginPath->setText(fileName);
         settings.setValue("pluginDirPath", fileName);
+        qtPluginDir = settings.value("pluginDirPath").toString();
     }
 }
 

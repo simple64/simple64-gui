@@ -28,13 +28,20 @@
 #include "m64p_frontend.h"
 #include "m64p_types.h"
 
+#ifdef __cplusplus
+#include <QString>
+extern QString qtCoreDirPath;
+#endif
+
 /* function declarations */
 m64p_error AttachCoreLib(const char *CoreLibFilepath);
 m64p_error DetachCoreLib(void);
+bool QtAttachCoreLib(void);
 
 /* global variables from core_interface.c */
 extern int g_CoreCapabilities;
 extern int g_CoreAPIVersion;
+extern int coreStarted;
 
 /* declarations of Core library handle and pointers to common functions */
 extern m64p_dynlib_handle      CoreHandle;

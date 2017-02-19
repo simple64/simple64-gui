@@ -24,22 +24,22 @@
 
 #include "libco/libco.h"
 
-extern void DebugMessage(int level, const char *message, ...);
-extern void DebugCallback(void *Context, int level, const char *message);
-
-extern int  g_Verbose;
-extern char* filename;
-extern const char* qt_CoreDirPath;
-extern cothread_t game_thread;
-extern cothread_t main_thread;
-
 #ifdef __cplusplus
+#include <QString>
+extern QString filename;
 extern "C" {
 #endif
-void openROM();
+void DebugMessage(int level, const char *message, ...);
+void DebugCallback(void *Context, int level, const char *message);
 #ifdef __cplusplus
 }
 #endif
+
+extern int  g_Verbose;
+extern int emuRunning;
+extern cothread_t game_thread;
+extern cothread_t main_thread;
+void openROM();
 
 #endif /* __COMMON_H__ */
 
