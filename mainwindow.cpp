@@ -13,7 +13,6 @@
 #include "core_interface.h"
 #include "plugin.h"
 
-QString filename;
 QWidget *container;
 QOpenGLWindow *my_window;
 
@@ -68,11 +67,11 @@ void MainWindow::closeEvent (QCloseEvent *event)
 
 void MainWindow::on_actionOpen_ROM_triggered()
 {
-    filename = QFileDialog::getOpenFileName(this,
+    QString filename = QFileDialog::getOpenFileName(this,
         tr("Open ROM"), NULL, tr("ROM Files (*.n64 *.z64 *.v64)"));
     if (!filename.isNull() && !emuRunning) {
         if (QtAttachCoreLib()) {
-            openROM();
+            openROM(filename);
         }
     }
 }

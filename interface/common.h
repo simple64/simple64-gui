@@ -24,7 +24,7 @@
 
 #ifdef __cplusplus
 #include <QString>
-extern QString filename;
+void openROM(QString filename);
 extern "C" {
 #endif
 void DebugMessage(int level, const char *message, ...);
@@ -35,7 +35,6 @@ void DebugCallback(void *Context, int level, const char *message);
 
 extern int  g_Verbose;
 extern int emuRunning;
-void openROM();
 
 #endif /* __COMMON_H__ */
 

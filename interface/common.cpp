@@ -71,7 +71,7 @@ void DebugCallback(void *Context, int level, const char *message)
         printf("%s Unknown: %s\n", (const char *) Context, message);
 }
 
-void openROM()
+void openROM(QString filename)
 {
     /* load ROM image */
     FILE *fPtr = fopen(filename.toLatin1().data(), "rb");
