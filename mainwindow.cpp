@@ -58,8 +58,13 @@ MainWindow::~MainWindow()
 
 void MainWindow::closeEvent (QCloseEvent *event)
 {
-    if (QtAttachCoreLib())
+    if (QtAttachCoreLib()) {
         (*CoreDoCommand)(M64CMD_STOP, 0, NULL);
+        int response = 0;
+        do {
+            (*CoreDoCommand)(M64CMD_CORE_STATE_QUERY, M64CORE_EMU_STATE, &response);
+        } while (response > 1);
+    }
     event->accept();
 }
 
@@ -71,7 +76,7 @@ void MainWindow::on_actionOpen_ROM_triggered()
         if (QtAttachCoreLib()) {
             int response;
             (*CoreDoCommand)(M64CMD_CORE_STATE_QUERY, M64CORE_EMU_STATE, &response);
-            if (response != 2 && response != 3) {
+            if (response < 2){
                 WorkerThread *workerThread = new WorkerThread();
                 connect(workerThread, &WorkerThread::finished, workerThread, &QObject::deleteLater);
                 my_window->context()->moveToThread(workerThread);
