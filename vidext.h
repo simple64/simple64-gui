@@ -5,9 +5,7 @@
 
 #ifdef __cplusplus
 
-#include <QWidget>
 #include <QOpenGLWindow>
-extern QWidget *container;
 extern QOpenGLWindow *my_window;
 
 extern "C" {

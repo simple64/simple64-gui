@@ -36,7 +36,8 @@ HEADERS  += mainwindow.h \
     interface/core_interface.h \
     interface/plugin.h \
     settingsdialog.h \
-    osal/osal_dynamiclib.h
+    osal/osal_dynamiclib.h \
+    workerthread.h
 
 FORMS    += mainwindow.ui
 

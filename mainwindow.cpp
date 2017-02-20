@@ -3,8 +3,8 @@
 #include <QMessageBox>
 #include <QSettings>
 #include <QLibrary>
-#include <QOpenGLWindow>
 #include <QCloseEvent>
+#include <QOpenGLWindow>
 #include "settingsdialog.h"
 
 #include "mainwindow.h"
@@ -12,8 +12,8 @@
 #include "common.h"
 #include "core_interface.h"
 #include "plugin.h"
+#include "workerthread.h"
 
-QWidget *container;
 QOpenGLWindow *my_window;
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -23,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     my_window = new QOpenGLWindow();
-    container = QWidget::createWindowContainer(my_window);
+    QWidget *container = QWidget::createWindowContainer(my_window);
 
     QSurfaceFormat format;
     format.setDepthBufferSize(24);
@@ -32,7 +32,6 @@ MainWindow::MainWindow(QWidget *parent) :
     my_window->setFormat(format);
 
     setCentralWidget(container);
-    my_window->makeCurrent();
 
     QSettings settings("mupen64plus", "gui");
     if (!settings.contains("coreLibPath")) {
@@ -72,8 +71,13 @@ void MainWindow::on_actionOpen_ROM_triggered()
         if (QtAttachCoreLib()) {
             int response;
             (*CoreDoCommand)(M64CMD_CORE_STATE_QUERY, M64CORE_EMU_STATE, &response);
-            if (response != 2 && response != 3)
-                openROM(filename);
+            if (response != 2 && response != 3) {
+                WorkerThread *workerThread = new WorkerThread();
+                connect(workerThread, &WorkerThread::finished, workerThread, &QObject::deleteLater);
+                my_window->context()->moveToThread(workerThread);
+                workerThread->setFileName(filename);
+                workerThread->start();
+            }
         }
     }
 }

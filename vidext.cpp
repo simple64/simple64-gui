@@ -1,7 +1,6 @@
 #include "vidext.h"
 #include "common.h"
 #include <stdio.h>
-#include <QApplication>
 
 m64p_error qtVidExtFuncInit(void)
 {
@@ -20,7 +19,7 @@ m64p_error qtVidExtFuncListModes(m64p_2d_size *SizeArray, int *NumSize)
 
 m64p_error qtVidExtFuncSetMode(int Width, int Height, int BitsPerPixel, int ScreenMode, int Flags)
 {
-    container->setFixedSize(Width, Height);
+    my_window->makeCurrent();
     return M64ERR_SUCCESS;
 }
 
@@ -46,7 +45,6 @@ m64p_error qtVidExtFuncGLGetAttr(m64p_GLattr Attr, int *pValue)
 m64p_error qtVidExtFuncGLSwapBuf(void)
 {
     my_window->context()->swapBuffers(my_window);
-    qApp->processEvents();
     return M64ERR_SUCCESS;
 }
 
