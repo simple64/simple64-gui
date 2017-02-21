@@ -112,23 +112,11 @@ m64p_error PluginSearchLoad()
     if (!qtPluginDir.isNull())
         lib_filelist = osal_library_search(qtPluginDir.toLatin1().data());
 
-    /* if still no plugins found, search some common system folders */
-    if (lib_filelist == NULL)
-    {
-        for (i = 0; i < osal_libsearchdirs; i++)
-        {
-            lib_filelist = osal_library_search(osal_libsearchpath[i]);
-            if (lib_filelist != NULL)
-                break;
-        }
-    }
-
     /* try to load one of each type of plugin */
     for (i = 0; i < 4; i++)
     {
         m64p_plugin_type type = g_PluginMap[i].type;
         const char      *cmdline_path = NULL;
-        int              use_dummy = 0;
         switch (type)
         {
             case M64PLUGIN_RSP:    cmdline_path = qtRspPlugin.toLatin1().data();   break;
@@ -145,10 +133,6 @@ m64p_error PluginSearchLoad()
             {
                 PluginLoadTry(cmdline_path, i);
             }
-            else if (strcmp(cmdline_path, "dummy") == 0)
-            {
-                use_dummy = 1;
-            }
             else /* otherwise search through the plugin directory to find a match with this name */
             {
                 osal_lib_search *curr = lib_filelist;
@@ -161,16 +145,6 @@ m64p_error PluginSearchLoad()
             }
         }
 
-        /* As a last resort, search for any appropriate plugin in search directory */
-        if (!use_dummy && g_PluginMap[i].handle == NULL)
-        {
-            osal_lib_search *curr = lib_filelist;
-            while (curr != NULL && g_PluginMap[i].handle == NULL)
-            {
-                PluginLoadTry(curr->filepath, i);
-                curr = curr->next;
-            }
-        }
         /* print out the particular plugin used */
         if (g_PluginMap[i].handle == NULL)
         {

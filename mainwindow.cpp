@@ -42,10 +42,43 @@ MainWindow::MainWindow(QWidget *parent) :
             myLib.unload();
         }
     }
+    if (!settings.contains("pluginDirPath")) {
+        QLibrary myLib("mupen64plus-rsp-hle");
+        if (myLib.load()) {
+            QFileInfo pluginPath(myLib.fileName());
+            settings.setValue("pluginDirPath", pluginPath.absolutePath());
+            myLib.unload();
+        }
+    }
+    QString path;
+    if (!settings.contains("videoPlugin")) {
+        path = "mupen64plus-video-GLideN64";
+        settings.setValue("videoPlugin", path + OSAL_DLL_EXTENSION);
+    }
+    if (!settings.contains("audioPlugin")) {
+        path = "mupen64plus-audio-sdl";
+        settings.setValue("audioPlugin", path + OSAL_DLL_EXTENSION);
+    }
+    if (!settings.contains("rspPlugin")) {
+        path = "mupen64plus-rsp-hle";
+        settings.setValue("rspPlugin", path + OSAL_DLL_EXTENSION);
+    }
+    if (!settings.contains("inputPlugin")) {
+        path = "mupen64plus-input-sdl";
+        settings.setValue("inputPlugin", path + OSAL_DLL_EXTENSION);
+    }
     if (!settings.value("coreLibPath").isNull())
         qtCoreDirPath = settings.value("coreLibPath").toString();
     if (!settings.value("pluginDirPath").isNull())
         qtPluginDir = settings.value("pluginDirPath").toString();
+    if (!settings.value("videoPlugin").isNull())
+        qtGfxPlugin = settings.value("videoPlugin").toString();
+    if (!settings.value("audioPlugin").isNull())
+        qtAudioPlugin = settings.value("audioPlugin").toString();
+    if (!settings.value("rspPlugin").isNull())
+        qtRspPlugin = settings.value("rspPlugin").toString();
+    if (!settings.value("inputPlugin").isNull())
+        qtInputPlugin = settings.value("inputPlugin").toString();
 }
 
 MainWindow::~MainWindow()
