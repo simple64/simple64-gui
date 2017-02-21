@@ -37,7 +37,8 @@ HEADERS  += mainwindow.h \
     interface/plugin.h \
     settingsdialog.h \
     osal/osal_dynamiclib.h \
-    workerthread.h
+    workerthread.h \
+    oglwindow.h
 
 FORMS    += mainwindow.ui
 

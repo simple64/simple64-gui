@@ -5,8 +5,8 @@
 
 #ifdef __cplusplus
 
-#include <QOpenGLWindow>
-extern QOpenGLWindow *my_window;
+#include "oglwindow.h"
+extern OGLWindow *my_window;
 
 extern "C" {
 #endif

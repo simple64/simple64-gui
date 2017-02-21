@@ -4,7 +4,7 @@
 #include <QSettings>
 #include <QLibrary>
 #include <QCloseEvent>
-#include <QOpenGLWindow>
+#include "oglwindow.h"
 #include "settingsdialog.h"
 
 #include "mainwindow.h"
@@ -14,7 +14,7 @@
 #include "plugin.h"
 #include "workerthread.h"
 
-QOpenGLWindow *my_window;
+OGLWindow *my_window;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -22,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    my_window = new QOpenGLWindow();
+    my_window = new OGLWindow();
     QWidget *container = QWidget::createWindowContainer(my_window);
 
     QSurfaceFormat format;
