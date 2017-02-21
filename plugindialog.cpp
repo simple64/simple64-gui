@@ -7,6 +7,7 @@
 #include <QSettings>
 #include <QTabWidget>
 #include <QGridLayout>
+#include <QLineEdit>
 
 m64p_handle coreConfigHandle;
 m64p_handle videoGenConfigHandle;
@@ -49,30 +50,30 @@ void paramListCallback(void * context, const char *ParamName, m64p_type ParamTyp
     float l_ParamFloat;
     QString l_ParamString;
     QString helper = (*ConfigGetParameterHelp)(current_handle, ParamName);
-    QLabel *temp = new QLabel(helper);
-    temp->setStyleSheet("border: 1px solid; padding: 10px");
-    my_layout->addWidget(temp, *my_row, 0);
-    QLabel *temp2;
+    QLabel *desc = new QLabel(helper);
+    desc->setStyleSheet("border: 1px solid; padding: 10px");
+    my_layout->addWidget(desc, *my_row, 0);
+    QLineEdit *my_value = new QLineEdit;
     switch (ParamType) {
     case M64TYPE_INT:
         l_ParamInt = (*ConfigGetParamInt)(current_handle, ParamName);
-        temp2 = new QLabel(QString::number(l_ParamInt));
+        my_value->setText(QString::number(l_ParamInt));
         break;
     case M64TYPE_FLOAT:
         l_ParamFloat = (*ConfigGetParamFloat)(current_handle, ParamName);
-        temp2 = new QLabel(QString::number(l_ParamFloat));
+        my_value->setText(QString::number(l_ParamFloat));
         break;
     case M64TYPE_BOOL:
         l_ParamBool = (*ConfigGetParamBool)(current_handle, ParamName);
-        temp2 = new QLabel(QString::number(l_ParamBool));
+        my_value->setText(QString::number(l_ParamBool));
         break;
     case M64TYPE_STRING:
         l_ParamString = (*ConfigGetParamString)(current_handle, ParamName);
-        temp2 = new QLabel(l_ParamString);
+        my_value->setText(l_ParamString);
         break;
     }
-    temp2->setStyleSheet("border: 1px solid; padding: 10px");
-    my_layout->addWidget(temp2, *my_row, 1);
+    my_value->setStyleSheet("border: 1px solid; padding: 10px");
+    my_layout->addWidget(my_value, *my_row, 1);
     ++*my_row;
 }
 
