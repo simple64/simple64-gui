@@ -76,7 +76,7 @@ void MainWindow::on_actionOpen_ROM_triggered()
         if (QtAttachCoreLib()) {
             int response;
             (*CoreDoCommand)(M64CMD_CORE_STATE_QUERY, M64CORE_EMU_STATE, &response);
-            if (response < 2){
+            if (response < 2) {
                 WorkerThread *workerThread = new WorkerThread();
                 connect(workerThread, &WorkerThread::finished, workerThread, &QObject::deleteLater);
                 my_window->context()->moveToThread(workerThread);
