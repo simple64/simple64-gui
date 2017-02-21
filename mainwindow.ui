@@ -35,6 +35,7 @@
      <string>Settings</string>
     </property>
     <addaction name="actionPlugin_Paths"/>
+    <addaction name="actionPlugin_Settings"/>
    </widget>
    <widget class="QMenu" name="menuEmulation">
     <property name="title">
@@ -73,6 +74,11 @@
   <action name="actionStop_Game">
    <property name="text">
     <string>Stop Game</string>
+   </property>
+  </action>
+  <action name="actionPlugin_Settings">
+   <property name="text">
+    <string>Plugin Settings</string>
    </property>
   </action>
  </widget>

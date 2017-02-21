@@ -27,6 +27,8 @@ private slots:
 
     void on_actionExit_triggered();
 
+    void on_actionPlugin_Settings_triggered();
+
 private:
     Ui::MainWindow *ui;
 };

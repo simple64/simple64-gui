@@ -18,7 +18,8 @@ SOURCES += main.cpp\
     settingsdialog.cpp \
     interface/common.cpp \
     interface/core_interface.cpp \
-    interface/plugin.cpp
+    interface/plugin.cpp \
+    plugindialog.cpp
 
 win32 {
 SOURCES += osal/osal_dynamiclib_win32.c \
@@ -38,7 +39,8 @@ HEADERS  += mainwindow.h \
     settingsdialog.h \
     osal/osal_dynamiclib.h \
     workerthread.h \
-    oglwindow.h
+    oglwindow.h \
+    plugindialog.h
 
 FORMS    += mainwindow.ui
 

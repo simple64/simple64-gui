@@ -6,6 +6,7 @@
 #include <QCloseEvent>
 #include "oglwindow.h"
 #include "settingsdialog.h"
+#include "plugindialog.h"
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -136,4 +137,10 @@ void MainWindow::on_actionStop_Game_triggered()
 void MainWindow::on_actionExit_triggered()
 {
     this->close();
+}
+
+void MainWindow::on_actionPlugin_Settings_triggered()
+{
+    PluginDialog *settings = new PluginDialog();
+    settings->show();
 }

@@ -12,12 +12,12 @@ m64p_error qtVidExtFuncQuit(void)
     return M64ERR_SUCCESS;
 }
 
-m64p_error qtVidExtFuncListModes(m64p_2d_size *SizeArray, int *NumSize)
+m64p_error qtVidExtFuncListModes(m64p_2d_size *, int *)
 {
     return M64ERR_SUCCESS;
 }
 
-m64p_error qtVidExtFuncSetMode(int Width, int Height, int BitsPerPixel, int ScreenMode, int Flags)
+m64p_error qtVidExtFuncSetMode(int Width, int Height, int, int, int)
 {
     container->setFixedSize(Width, Height);
     my_window->makeCurrent();
@@ -59,7 +59,7 @@ m64p_error qtVidExtFuncToggleFS(void)
     return M64ERR_SUCCESS;
 }
 
-m64p_error qtVidExtFuncResizeWindow(int Width, int Height)
+m64p_error qtVidExtFuncResizeWindow(int, int)
 {
     return M64ERR_SUCCESS;
 }

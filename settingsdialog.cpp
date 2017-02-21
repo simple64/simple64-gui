@@ -4,7 +4,7 @@
 
 #include <QPushButton>
 #include <QSettings>
-#include <QVBoxLayout>
+#include <QGridLayout>
 #include <QFileDialog>
 #include <QComboBox>
 
@@ -39,17 +39,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
 {
     QSettings settings("mupen64plus", "gui");
 
-    QVBoxLayout *layout = new QVBoxLayout;
-    QHBoxLayout *rowCorePath = new QHBoxLayout;
-    rowCorePath->setSpacing(50);
-    QHBoxLayout *rowPluginPath = new QHBoxLayout;
-    rowPluginPath->setSpacing(50);
-    QHBoxLayout *rowVideoPath = new QHBoxLayout;
-    rowVideoPath->setSpacing(50);
-    QHBoxLayout *rowAudioPath = new QHBoxLayout;
-    rowAudioPath->setSpacing(50);
-    QHBoxLayout *rowRSPPath = new QHBoxLayout;
-    rowRSPPath->setSpacing(50);
+    QGridLayout *layout = new QGridLayout;
 
     QLabel *coreLabel = new QLabel("Core Library Path");
     corePath = new QLabel;
@@ -57,9 +47,9 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     QPushButton *coreButton = new QPushButton("Set Path");
     connect(coreButton, SIGNAL (released()),this, SLOT (handleCoreButton()));
     corePath->setStyleSheet("border: 1px solid black; background: white");
-    rowCorePath->addWidget(coreLabel);
-    rowCorePath->addWidget(corePath);
-    rowCorePath->addWidget(coreButton);
+    layout->addWidget(coreLabel,0,0);
+    layout->addWidget(corePath,0,1);
+    layout->addWidget(coreButton,0,2);
 
     QLabel *pluginLabel = new QLabel("Plugin Dir Path");
     pluginPath = new QLabel;
@@ -67,9 +57,9 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     QPushButton *pluginButton = new QPushButton("Set Path");
     connect(pluginButton, SIGNAL (released()),this, SLOT (handlePluginButton()));
     pluginPath->setStyleSheet("border: 1px solid black; background: white");
-    rowPluginPath->addWidget(pluginLabel);
-    rowPluginPath->addWidget(pluginPath);
-    rowPluginPath->addWidget(pluginButton);
+    layout->addWidget(pluginLabel,1,0);
+    layout->addWidget(pluginPath,1,1);
+    layout->addWidget(pluginButton,1,2);
 
     QDir *PluginDir = new QDir(qtPluginDir);
     QStringList Filter;
@@ -77,7 +67,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     QStringList current;
 
     QLabel *videoLabel = new QLabel("Video Plugin");
-    rowVideoPath->addWidget(videoLabel);
+    layout->addWidget(videoLabel,2,0);
     QComboBox *videoChoice = new QComboBox();
     Filter.replace(0,"mupen64plus-video*");
     current = PluginDir->entryList(Filter);
@@ -92,10 +82,10 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
             temp_settings.setValue("videoPlugin", text);
             qtGfxPlugin = temp_settings.value("videoPlugin").toString();
     });
-    rowVideoPath->addWidget(videoChoice);
+    layout->addWidget(videoChoice,2,1);
 
     QLabel *audioLabel = new QLabel("Audio Plugin");
-    rowAudioPath->addWidget(audioLabel);
+    layout->addWidget(audioLabel,3,0);
     QComboBox *audioChoice = new QComboBox();
     Filter.replace(0,"mupen64plus-audio*");
     current = PluginDir->entryList(Filter);
@@ -110,10 +100,10 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
             temp_settings.setValue("audioPlugin", text);
             qtAudioPlugin = temp_settings.value("audioPlugin").toString();
     });
-    rowAudioPath->addWidget(audioChoice);
+    layout->addWidget(audioChoice,3,1);
 
     QLabel *rspLabel = new QLabel("RSP Plugin");
-    rowRSPPath->addWidget(rspLabel);
+    layout->addWidget(rspLabel,4,0);
     QComboBox *rspChoice = new QComboBox();
     Filter.replace(0,"mupen64plus-rsp*");
     current = PluginDir->entryList(Filter);
@@ -128,17 +118,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
             temp_settings.setValue("rspPlugin", text);
             qtRspPlugin = temp_settings.value("rspPlugin").toString();
     });
-    rowRSPPath->addWidget(rspChoice);
-
-    layout->addLayout(rowCorePath);
-    layout->addLayout(rowPluginPath);
-    layout->addLayout(rowVideoPath);
-    layout->addLayout(rowAudioPath);
-    layout->addLayout(rowRSPPath);
+    layout->addWidget(rspChoice,4,1);
 
     setLayout(layout);
-}
-
-SettingsDialog::~SettingsDialog()
-{
 }
