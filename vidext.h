@@ -6,7 +6,9 @@
 #ifdef __cplusplus
 
 #include "oglwindow.h"
+#include <QWidget>
 extern OGLWindow *my_window;
+extern QWidget *container;
 
 extern "C" {
 #endif

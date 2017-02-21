@@ -1,5 +1,4 @@
 #include "settingsdialog.h"
-#include "ui_settingsdialog.h"
 #include "core_interface.h"
 #include "plugin.h"
 

@@ -15,6 +15,7 @@
 #include "workerthread.h"
 
 OGLWindow *my_window;
+QWidget *container;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -23,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     my_window = new OGLWindow();
-    QWidget *container = QWidget::createWindowContainer(my_window);
+    container = QWidget::createWindowContainer(my_window);
 
     QSurfaceFormat format;
     format.setDepthBufferSize(24);
