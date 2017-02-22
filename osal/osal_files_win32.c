@@ -29,7 +29,7 @@
 #include <windows.h>
 
 #include "m64p_types.h"
-#include "main.h"
+#include "common.h"
 #include "osal_files.h"
 #include "osal_preproc.h"
 
