@@ -11,7 +11,6 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = mupen64plus-gui
 TEMPLATE = app
 
-
 SOURCES += main.cpp\
     mainwindow.cpp \
     vidext.cpp \
@@ -30,6 +29,8 @@ SOURCES += osal/osal_dynamiclib_win32.c \
 !win32 {
 SOURCES += osal/osal_dynamiclib_unix.c \
     osal/osal_files_unix.c
+
+LIBS += -ldl
 }
 
 HEADERS  += mainwindow.h \
@@ -48,4 +49,4 @@ FORMS    += mainwindow.ui
 
 QMAKE_INCDIR += api osal interface
 
-QMAKE_LFLAGS += -ldl
+CONFIG += c++11
