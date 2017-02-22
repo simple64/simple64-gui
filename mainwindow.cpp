@@ -2,7 +2,6 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QSettings>
-#include <QLibrary>
 #include <QCloseEvent>
 #include <QActionGroup>
 #include "oglwindow.h"
@@ -58,19 +57,23 @@ MainWindow::MainWindow(QWidget *parent) :
     container->setFocusPolicy(Qt::StrongFocus);
 
     if (!settings.contains("coreLibPath")) {
-        QLibrary myLib("mupen64plus");
-        if (myLib.load()) {
-            settings.setValue("coreLibPath", myLib.fileName());
-            myLib.unload();
-        }
+        QStringList files;
+        findRecursion("/usr/lib", OSAL_DEFAULT_DYNLIB_FILENAME, &files);
+        findRecursion("/usr/local/lib", OSAL_DEFAULT_DYNLIB_FILENAME, &files);
+        if (files.size() > 0)
+            settings.setValue("coreLibPath", files.at(0));
+        else
+            settings.setValue("coreLibPath", QCoreApplication::applicationDirPath() + QDir::separator() + OSAL_DEFAULT_DYNLIB_FILENAME);
     }
     if (!settings.contains("pluginDirPath")) {
-        QLibrary myLib("mupen64plus-rsp-hle");
-        if (myLib.load()) {
-            QFileInfo pluginPath(myLib.fileName());
+        QStringList files2;
+        findRecursion("/usr/lib", QString("mupen64plus-rsp-hle") + OSAL_DLL_EXTENSION, &files2);
+        findRecursion("/usr/local/lib", QString("mupen64plus-rsp-hle") + OSAL_DLL_EXTENSION, &files2);
+        if (files2.size() > 0) {
+            QFileInfo pluginPath(files2.at(0));
             settings.setValue("pluginDirPath", pluginPath.absolutePath());
-            myLib.unload();
-        }
+        } else
+            settings.setValue("pluginDirPath", QCoreApplication::applicationDirPath());
     }
     QString path;
     if (!settings.contains("videoPlugin")) {
@@ -125,6 +128,15 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::findRecursion(const QString &path, const QString &pattern, QStringList *result)
+{
+    QDir currentDir(path);
+    const QString prefix = path + QLatin1Char('/');
+    foreach (const QString &match, currentDir.entryList(QStringList(pattern), QDir::Files))
+        result->append(prefix + match);
+    foreach (const QString &dir, currentDir.entryList(QDir::Dirs | QDir::NoSymLinks | QDir::NoDotAndDotDot))
+        findRecursion(prefix + dir, pattern, result);
+}
 
 void MainWindow::closeEvent (QCloseEvent *event)
 {

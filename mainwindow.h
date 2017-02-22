@@ -52,6 +52,7 @@ private slots:
 private:
     void openROM(QString filename);
     void updateOpenRecent();
+    void findRecursion(const QString &path, const QString &pattern, QStringList *result);
     Ui::MainWindow *ui;
     QMenu * OpenRecent;
 };
