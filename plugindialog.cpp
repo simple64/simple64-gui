@@ -7,7 +7,7 @@
 #include <QSettings>
 #include <QTabWidget>
 #include <QGridLayout>
-#include <QLineEdit>
+#include "customlineedit.h"
 
 m64p_handle coreConfigHandle;
 m64p_handle videoGenConfigHandle;
@@ -50,10 +50,13 @@ void paramListCallback(void * context, const char *ParamName, m64p_type ParamTyp
     float l_ParamFloat;
     QString l_ParamString;
     QString helper = (*ConfigGetParameterHelp)(current_handle, ParamName);
-    QLabel *desc = new QLabel(helper);
+    QLabel *desc = new QLabel(ParamName);
+    helper.prepend("<span style=\"color:black;\">");
+    helper.append("</span>");
+    desc->setToolTip(helper);
     desc->setStyleSheet("border: 1px solid; padding: 10px");
     my_layout->addWidget(desc, *my_row, 0);
-    QLineEdit *my_value = new QLineEdit;
+    CustomLineEdit *my_value = new CustomLineEdit;
     switch (ParamType) {
     case M64TYPE_INT:
         l_ParamInt = (*ConfigGetParamInt)(current_handle, ParamName);
@@ -72,6 +75,9 @@ void paramListCallback(void * context, const char *ParamName, m64p_type ParamTyp
         my_value->setText(l_ParamString);
         break;
     }
+    my_value->setConfigHandle(current_handle);
+    my_value->setParamType(ParamType);
+    my_value->setParamName(ParamName);
     my_value->setStyleSheet("border: 1px solid; padding: 10px");
     my_layout->addWidget(my_value, *my_row, 1);
     ++*my_row;
@@ -136,4 +142,3 @@ PluginDialog::PluginDialog(QWidget *parent) :
     mainLayout->addWidget(tabWidget);
     setLayout(mainLayout);
 }
-
