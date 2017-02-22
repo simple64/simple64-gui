@@ -4,6 +4,7 @@
 #include <QSettings>
 #include <QLibrary>
 #include <QCloseEvent>
+#include <QActionGroup>
 #include "oglwindow.h"
 #include "settingsdialog.h"
 #include "plugindialog.h"
@@ -23,6 +24,34 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    QSettings settings("mupen64plus", "gui");
+    QActionGroup *my_slots_group = new QActionGroup(this);
+    QAction *my_slots[10];
+    OpenRecent = new QMenu;
+    QMenu * SaveSlot = new QMenu;
+    OpenRecent->setTitle("Open Recent");
+    SaveSlot->setTitle("Change Save Slot");
+    ui->menuFile->insertMenu(ui->actionSave_State, OpenRecent);
+    ui->menuFile->insertSeparator(ui->actionSave_State);
+    ui->menuFile->insertMenu(ui->actionSave_State_To, SaveSlot);
+    ui->menuFile->insertSeparator(ui->actionSave_State_To);
+    for (int i = 0; i < 10; ++i) {
+        my_slots[i] = new QAction(this);
+        my_slots[i]->setCheckable(true);
+        my_slots[i]->setText("Slot " + QString::number(i));
+        my_slots[i]->setActionGroup(my_slots_group);
+        SaveSlot->addAction(my_slots[i]);
+        connect(my_slots[i], &QAction::triggered,[=](bool checked){
+            if (checked) {
+                int slot = my_slots[i]->text().remove("Slot ").toInt();
+                if (QtAttachCoreLib())
+                    (*CoreDoCommand)(M64CMD_STATE_SET_SLOT, slot, NULL);
+            }
+        });
+    }
+    my_slots[0]->setChecked(true);
+
+    updateOpenRecent();
 
     my_window = new OGLWindow();
     container = QWidget::createWindowContainer(my_window);
@@ -36,7 +65,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     setCentralWidget(container);
 
-    QSettings settings("mupen64plus", "gui");
     if (!settings.contains("coreLibPath")) {
         QLibrary myLib("mupen64plus");
         if (myLib.load()) {
@@ -96,31 +124,58 @@ void MainWindow::closeEvent (QCloseEvent *event)
 {
     if (QtAttachCoreLib()) {
         (*CoreDoCommand)(M64CMD_STOP, 0, NULL);
-        int response = 0;
+        int response;
         do {
             (*CoreDoCommand)(M64CMD_CORE_STATE_QUERY, M64CORE_EMU_STATE, &response);
-        } while (response > 1);
+        } while (response != M64EMU_STOPPED);
     }
     event->accept();
+}
+
+void MainWindow::updateOpenRecent()
+{
+    QSettings settings("mupen64plus", "gui");
+    OpenRecent->clear();
+    QAction *recent[5];
+    QStringList list = settings.value("RecentROMs").toString().split(";");
+    for (int i = 0; i < list.size() && i < 5; ++i) {
+        recent[i] = new QAction(this);
+        recent[i]->setText(list.at(i));
+        OpenRecent->addAction(recent[i]);
+    }
+}
+
+void MainWindow::openROM(QString filename)
+{
+    if (QtAttachCoreLib()) {
+        int response;
+        (*CoreDoCommand)(M64CMD_CORE_STATE_QUERY, M64CORE_EMU_STATE, &response);
+        if (response == M64EMU_STOPPED) {
+            WorkerThread *workerThread = new WorkerThread();
+            connect(workerThread, &WorkerThread::finished, workerThread, &QObject::deleteLater);
+            my_window->context()->moveToThread(workerThread);
+            workerThread->setFileName(filename);
+            workerThread->start();
+            QSettings settings("mupen64plus", "gui");
+            QStringList list;
+            if (settings.contains("RecentROMs"))
+                    list = settings.value("RecentROMs").toString().split(";");
+            list.removeAll(filename);
+            list.prepend(filename);
+            if (list.size() > 5)
+                list.removeLast();
+            settings.setValue("RecentROMs",list.join(";"));
+            updateOpenRecent();
+        }
+    }
 }
 
 void MainWindow::on_actionOpen_ROM_triggered()
 {
     QString filename = QFileDialog::getOpenFileName(this,
         tr("Open ROM"), NULL, tr("ROM Files (*.n64 *.z64 *.v64)"));
-    if (!filename.isNull()) {
-        if (QtAttachCoreLib()) {
-            int response;
-            (*CoreDoCommand)(M64CMD_CORE_STATE_QUERY, M64CORE_EMU_STATE, &response);
-            if (response < 2) {
-                WorkerThread *workerThread = new WorkerThread();
-                connect(workerThread, &WorkerThread::finished, workerThread, &QObject::deleteLater);
-                my_window->context()->moveToThread(workerThread);
-                workerThread->setFileName(filename);
-                workerThread->start();
-            }
-        }
-    }
+    if (!filename.isNull())
+        openROM(filename);
 }
 
 void MainWindow::on_actionPlugin_Paths_triggered()
@@ -144,4 +199,100 @@ void MainWindow::on_actionPlugin_Settings_triggered()
 {
     PluginDialog *settings = new PluginDialog();
     settings->show();
+}
+
+void MainWindow::on_actionPause_Game_triggered()
+{
+    if (QtAttachCoreLib()) {
+        int response;
+        (*CoreDoCommand)(M64CMD_CORE_STATE_QUERY, M64CORE_EMU_STATE, &response);
+        if (response == M64EMU_RUNNING)
+            (*CoreDoCommand)(M64CMD_PAUSE, 0, NULL);
+        else if (response == M64EMU_PAUSED)
+            (*CoreDoCommand)(M64CMD_RESUME, 0, NULL);
+    }
+}
+
+void MainWindow::on_actionMute_triggered()
+{
+    if (QtAttachCoreLib()) {
+        int response;
+        (*CoreDoCommand)(M64CMD_CORE_STATE_QUERY, M64CORE_AUDIO_MUTE, &response);
+        if (response == 0) {
+            response = 1;
+            (*CoreDoCommand)(M64CMD_CORE_STATE_SET, M64CORE_AUDIO_MUTE, &response);
+        } else if (response == 1) {
+            response = 0;
+            (*CoreDoCommand)(M64CMD_CORE_STATE_SET, M64CORE_AUDIO_MUTE, &response);
+        }
+    }
+}
+
+void MainWindow::on_actionHard_Reset_triggered()
+{
+    if (QtAttachCoreLib())
+        (*CoreDoCommand)(M64CMD_RESET, 1, NULL);
+}
+
+void MainWindow::on_actionSoft_Reset_triggered()
+{
+    if (QtAttachCoreLib())
+        (*CoreDoCommand)(M64CMD_RESET, 0, NULL);
+}
+
+void MainWindow::on_actionTake_Screenshot_triggered()
+{
+    if (QtAttachCoreLib())
+        (*CoreDoCommand)(M64CMD_TAKE_NEXT_SCREENSHOT, 0, NULL);
+}
+
+void MainWindow::on_actionSave_State_triggered()
+{
+    if (QtAttachCoreLib())
+        (*CoreDoCommand)(M64CMD_STATE_SAVE, 1, NULL);
+}
+
+void MainWindow::on_actionLoad_State_triggered()
+{
+    if (QtAttachCoreLib())
+        (*CoreDoCommand)(M64CMD_STATE_LOAD, 1, NULL);
+}
+
+void MainWindow::on_actionToggle_Fullscreen_triggered()
+{
+    if (QtAttachCoreLib()) {
+        int response;
+        (*CoreDoCommand)(M64CMD_CORE_STATE_QUERY, M64CORE_VIDEO_MODE, &response);
+        if (response == M64VIDEO_WINDOWED) {
+            response = M64VIDEO_FULLSCREEN;
+            (*CoreDoCommand)(M64CMD_CORE_STATE_SET, M64CORE_VIDEO_MODE, &response);
+        } else if (response == M64VIDEO_FULLSCREEN) {
+            response = M64VIDEO_WINDOWED;
+            (*CoreDoCommand)(M64CMD_CORE_STATE_SET, M64CORE_VIDEO_MODE, &response);
+        }
+    }
+}
+
+void MainWindow::on_actionSave_State_To_triggered()
+{
+    QString filename = QFileDialog::getSaveFileName(this,
+        tr("Save State File"), NULL, tr("State Files (*.st*)"));
+    if (!filename.isNull()) {
+        if (!filename.contains(".st"))
+            filename.append(".state");
+        if (QtAttachCoreLib()) {
+            (*CoreDoCommand)(M64CMD_STATE_SAVE, 1, filename.toLatin1().data());
+        }
+    }
+}
+
+void MainWindow::on_actionLoad_State_From_triggered()
+{
+    QString filename = QFileDialog::getOpenFileName(this,
+        tr("Open Save State"), NULL, tr("State Files (*.st*)"));
+    if (!filename.isNull()) {
+        if (QtAttachCoreLib()) {
+            (*CoreDoCommand)(M64CMD_STATE_LOAD, 1, filename.toLatin1().data());
+        }
+    }
 }
