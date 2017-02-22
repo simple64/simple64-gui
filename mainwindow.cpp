@@ -26,6 +26,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     my_window = new OGLWindow();
     container = QWidget::createWindowContainer(my_window);
+    container->setFocusPolicy(Qt::StrongFocus);
 
     QSurfaceFormat format;
     format.setDepthBufferSize(24);

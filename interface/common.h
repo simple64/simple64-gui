@@ -29,6 +29,7 @@ extern "C" {
 #endif
 void DebugMessage(int level, const char *message, ...);
 void DebugCallback(void *Context, int level, const char *message);
+int QT2SDL2(int qtKey);
 #ifdef __cplusplus
 }
 #endif
