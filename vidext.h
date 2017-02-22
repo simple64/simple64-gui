@@ -20,7 +20,7 @@ void *     qtVidExtFuncGLGetProc(const char*Proc);
 m64p_error qtVidExtFuncGLSetAttr(m64p_GLattr Attr, int Value);
 m64p_error qtVidExtFuncGLGetAttr(m64p_GLattr Attr, int *pValue);
 m64p_error qtVidExtFuncGLSwapBuf(void);
-m64p_error qtVidExtFuncSetCaption(const char *Title);
+m64p_error qtVidExtFuncSetCaption(const char *);
 m64p_error qtVidExtFuncToggleFS(void);
 m64p_error qtVidExtFuncResizeWindow(int, int);
 #ifdef __cplusplus

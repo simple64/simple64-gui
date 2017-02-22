@@ -1,6 +1,9 @@
 #include "vidext.h"
 #include "common.h"
+#include "mainwindow.h"
 #include <stdio.h>
+#include <QMenuBar>
+#include <QStatusBar>
 
 m64p_error qtVidExtFuncInit(void)
 {
@@ -49,13 +52,24 @@ m64p_error qtVidExtFuncGLSwapBuf(void)
     return M64ERR_SUCCESS;
 }
 
-m64p_error qtVidExtFuncSetCaption(const char * Title)
+m64p_error qtVidExtFuncSetCaption(const char *)
 {
     return M64ERR_SUCCESS;
 }
 
 m64p_error qtVidExtFuncToggleFS(void)
 {
+    int response;
+    (*CoreDoCommand)(M64CMD_CORE_STATE_QUERY, M64CORE_VIDEO_MODE, &response);
+    if (response == M64VIDEO_WINDOWED) {
+        w->menuBar()->hide();
+        w->statusBar()->hide();
+        w->showFullScreen();
+    } else if (response == M64VIDEO_FULLSCREEN) {
+        w->menuBar()->show();
+        w->statusBar()->show();
+        w->showNormal();
+    }
     return M64ERR_SUCCESS;
 }
 

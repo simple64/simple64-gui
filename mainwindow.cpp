@@ -57,14 +57,6 @@ MainWindow::MainWindow(QWidget *parent) :
     container = QWidget::createWindowContainer(my_window);
     container->setFocusPolicy(Qt::StrongFocus);
 
-    QSurfaceFormat format;
-    format.setDepthBufferSize(24);
-    format.setVersion(3, 3);
-    format.setProfile(QSurfaceFormat::CoreProfile);
-    my_window->setFormat(format);
-
-    setCentralWidget(container);
-
     if (!settings.contains("coreLibPath")) {
         QLibrary myLib("mupen64plus");
         if (myLib.load()) {
@@ -109,6 +101,20 @@ MainWindow::MainWindow(QWidget *parent) :
         qtRspPlugin = settings.value("rspPlugin").toString();
     if (!settings.value("inputPlugin").isNull())
         qtInputPlugin = settings.value("inputPlugin").toString();
+
+    QSurfaceFormat format;
+    format.setDepthBufferSize(24);
+    if (settings.value("videoPlugin").toString().contains("GLideN64")) {
+        format.setVersion(3, 3);
+        format.setProfile(QSurfaceFormat::CoreProfile);
+    }
+    else {
+        format.setVersion(2, 1);
+        format.setProfile(QSurfaceFormat::CompatibilityProfile);
+    }
+    my_window->setFormat(format);
+
+    setCentralWidget(container);
 }
 
 MainWindow::~MainWindow()

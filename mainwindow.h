@@ -55,5 +55,6 @@ private:
     Ui::MainWindow *ui;
     QMenu * OpenRecent;
 };
+extern MainWindow *w;
 
 #endif // MAINWINDOW_H
