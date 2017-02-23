@@ -17,6 +17,7 @@
 
 OGLWindow *my_window;
 QWidget *container;
+WorkerThread *workerThread;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -51,10 +52,6 @@ MainWindow::MainWindow(QWidget *parent) :
     my_slots[0]->setChecked(true);
 
     updateOpenRecent();
-
-    my_window = new OGLWindow();
-    container = QWidget::createWindowContainer(my_window);
-    container->setFocusPolicy(Qt::StrongFocus);
 
     if (!settings.contains("coreLibPath")) {
         QStringList files;
@@ -104,20 +101,6 @@ MainWindow::MainWindow(QWidget *parent) :
         qtRspPlugin = settings.value("rspPlugin").toString();
     if (!settings.value("inputPlugin").isNull())
         qtInputPlugin = settings.value("inputPlugin").toString();
-
-    QSurfaceFormat format;
-    format.setDepthBufferSize(24);
-    if (settings.value("videoPlugin").toString().contains("GLideN64")) {
-        format.setVersion(3, 3);
-        format.setProfile(QSurfaceFormat::CoreProfile);
-    }
-    else {
-        format.setVersion(2, 1);
-        format.setProfile(QSurfaceFormat::CompatibilityProfile);
-    }
-    my_window->setFormat(format);
-
-    setCentralWidget(container);
 }
 
 MainWindow::~MainWindow()
@@ -172,13 +155,28 @@ void MainWindow::openROM(QString filename)
         int response;
         (*CoreDoCommand)(M64CMD_CORE_STATE_QUERY, M64CORE_EMU_STATE, &response);
         if (response == M64EMU_STOPPED) {
-            WorkerThread *workerThread = new WorkerThread();
+            workerThread = new WorkerThread();
             connect(workerThread, &WorkerThread::finished, workerThread, &QObject::deleteLater);
-            my_window->doneCurrent();
-            my_window->context()->moveToThread(workerThread);
             workerThread->setFileName(filename);
-            workerThread->start();
             QSettings settings("mupen64plus", "gui");
+            my_window = new OGLWindow();
+            container = QWidget::createWindowContainer(my_window);
+            container->setFocusPolicy(Qt::StrongFocus);
+
+            QSurfaceFormat format;
+            format.setDepthBufferSize(24);
+            if (settings.value("videoPlugin").toString().contains("GLideN64")) {
+                format.setVersion(3, 3);
+                format.setProfile(QSurfaceFormat::CoreProfile);
+            }
+            else {
+                format.setVersion(2, 1);
+                format.setProfile(QSurfaceFormat::CompatibilityProfile);
+            }
+            my_window->setFormat(format);
+
+            setCentralWidget(container);
+
             QStringList list;
             if (settings.contains("RecentROMs"))
                     list = settings.value("RecentROMs").toString().split(";");

@@ -19,7 +19,9 @@ SOURCES += main.cpp\
     interface/core_interface.cpp \
     interface/plugin.cpp \
     plugindialog.cpp \
-    customlineedit.cpp
+    customlineedit.cpp \
+    oglwindow.cpp \
+    workerthread.cpp
 
 win32 {
 SOURCES += osal/osal_dynamiclib_win32.c \
@@ -43,9 +45,9 @@ HEADERS  += mainwindow.h \
     settingsdialog.h \
     osal/osal_dynamiclib.h \
     workerthread.h \
-    oglwindow.h \
     plugindialog.h \
-    customlineedit.h
+    customlineedit.h \
+    oglwindow.h
 
 FORMS    += mainwindow.ui
 

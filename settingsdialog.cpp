@@ -82,9 +82,6 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
             QSettings temp_settings("mupen64plus", "gui");
             temp_settings.setValue("videoPlugin", text);
             qtGfxPlugin = temp_settings.value("videoPlugin").toString();
-            QMessageBox temp;
-            temp.setText("Please close and re-open this application before using the new video plugin.");
-            temp.exec();
 
     });
     layout->addWidget(videoChoice,2,1);

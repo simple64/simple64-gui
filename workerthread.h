@@ -5,22 +5,17 @@
 #include <QApplication>
 #include <QString>
 #include "common.h"
-#include "vidext.h"
 
 class WorkerThread : public QThread
 {
     Q_OBJECT
-    void run() Q_DECL_OVERRIDE {
-        openROM(m_fileName);
-        my_window->context()->moveToThread(QApplication::instance()->thread());
-    }
+    void run() Q_DECL_OVERRIDE;
 public:
-    void setFileName(QString filename) {
-        m_fileName = filename;
-    }
+    void setFileName(QString filename);
 
 private:
     QString m_fileName;
 };
 
+extern WorkerThread* workerThread;
 #endif // WORKERTHREAD_H
