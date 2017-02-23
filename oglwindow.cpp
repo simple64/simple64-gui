@@ -3,7 +3,7 @@
 #include "workerthread.h"
 extern WorkerThread* workerThread;
 
-void OGLWindow::exposeEvent(QExposeEvent *) {
+void OGLWindow::initializeGL() {
     doneCurrent();
     context()->moveToThread(workerThread);
     workerThread->start();

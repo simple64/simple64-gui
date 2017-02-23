@@ -1,6 +1,7 @@
 #include "vidext.h"
 #include "common.h"
 #include "mainwindow.h"
+#include "workerthread.h"
 #include <stdio.h>
 #include <QMenuBar>
 #include <QStatusBar>
@@ -22,7 +23,8 @@ m64p_error qtVidExtFuncListModes(m64p_2d_size *, int *)
 
 m64p_error qtVidExtFuncSetMode(int Width, int Height, int, int, int)
 {
-    container->setFixedSize(Width, Height);
+    container->resize(Width, Height);
+    workerThread->resizeMainWindow(Width, Height);
     my_window->makeCurrent();
     return M64ERR_SUCCESS;
 }

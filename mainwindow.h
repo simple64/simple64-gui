@@ -15,8 +15,15 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    void setGameRunning(int game_running) {
+        m_game_running = game_running;
+    }
+
 protected:
     void closeEvent(QCloseEvent *event);
+
+public slots:
+    void resizeMainWindow(int Width, int Height);
 
 private slots:
     void on_actionOpen_ROM_triggered();
@@ -55,6 +62,7 @@ private:
     void findRecursion(const QString &path, const QString &pattern, QStringList *result);
     Ui::MainWindow *ui;
     QMenu * OpenRecent;
+    int m_game_running = 0;
 };
 extern MainWindow *w;
 

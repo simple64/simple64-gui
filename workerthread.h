@@ -13,6 +13,9 @@ class WorkerThread : public QThread
 public:
     void setFileName(QString filename);
 
+signals:
+    void resizeMainWindow(int Width, int Height);
+
 private:
     QString m_fileName;
 };

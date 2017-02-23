@@ -111,6 +111,11 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::resizeMainWindow(int Width, int Height)
+{
+    resize(Width, Height + ui->menuBar->height() + ui->statusBar->height());
+}
+
 void MainWindow::findRecursion(const QString &path, const QString &pattern, QStringList *result)
 {
     QDir currentDir(path);
@@ -123,13 +128,9 @@ void MainWindow::findRecursion(const QString &path, const QString &pattern, QStr
 
 void MainWindow::closeEvent (QCloseEvent *event)
 {
-    if (QtAttachCoreLib()) {
+    if (QtAttachCoreLib())
         (*CoreDoCommand)(M64CMD_STOP, 0, NULL);
-        int response;
-        do {
-            (*CoreDoCommand)(M64CMD_CORE_STATE_QUERY, M64CORE_EMU_STATE, &response);
-        } while (response != M64EMU_STOPPED);
-    }
+    while (m_game_running){}
     event->accept();
 }
 

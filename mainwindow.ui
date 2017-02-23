@@ -20,8 +20,11 @@
      <x>0</x>
      <y>0</y>
      <width>640</width>
-     <height>28</height>
+     <height>25</height>
     </rect>
+   </property>
+   <property name="nativeMenuBar">
+    <bool>false</bool>
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
