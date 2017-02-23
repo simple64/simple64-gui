@@ -63,7 +63,7 @@ MainWindow::MainWindow(QWidget *parent) :
         if (files.size() > 0)
             settings.setValue("coreLibPath", files.at(0));
         else
-            settings.setValue("coreLibPath", QCoreApplication::applicationDirPath() + QDir::separator() + OSAL_DEFAULT_DYNLIB_FILENAME);
+            settings.setValue("coreLibPath", QString(".") + QDir::separator() + OSAL_DEFAULT_DYNLIB_FILENAME);
     }
     if (!settings.contains("pluginDirPath")) {
         QStringList files2;
@@ -73,7 +73,7 @@ MainWindow::MainWindow(QWidget *parent) :
             QFileInfo pluginPath(files2.at(0));
             settings.setValue("pluginDirPath", pluginPath.absolutePath());
         } else
-            settings.setValue("pluginDirPath", QCoreApplication::applicationDirPath());
+            settings.setValue("pluginDirPath", QString(".") + QDir::separator());
     }
     QString path;
     if (!settings.contains("videoPlugin")) {
