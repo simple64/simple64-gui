@@ -174,6 +174,7 @@ void MainWindow::openROM(QString filename)
         if (response == M64EMU_STOPPED) {
             WorkerThread *workerThread = new WorkerThread();
             connect(workerThread, &WorkerThread::finished, workerThread, &QObject::deleteLater);
+            my_window->doneCurrent();
             my_window->context()->moveToThread(workerThread);
             workerThread->setFileName(filename);
             workerThread->start();

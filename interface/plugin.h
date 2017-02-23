@@ -41,7 +41,7 @@ typedef struct {
   m64p_plugin_type    type;
   char                name[8];
   m64p_dynlib_handle  handle;
-  char                filename[PATH_MAX];
+  std::string         filename;
   const char         *libname;
   int                 libversion;
   } plugin_map_node;

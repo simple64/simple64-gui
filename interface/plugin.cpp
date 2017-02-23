@@ -48,11 +48,11 @@ plugin_map_node g_PluginMap[] = {{M64PLUGIN_GFX,   "Video", NULL, "", NULL, 0 },
                                  {M64PLUGIN_RSP,   "RSP",   NULL, "", NULL, 0 } };
 
 /* local functions */
-static m64p_error PluginLoadTry(const char *filepath, int MapIndex)
+static m64p_error PluginLoadTry(std::string filepath, int MapIndex)
 {
     /* try to open a shared library at the given filepath */
     m64p_dynlib_handle handle;
-    m64p_error rval = osal_dynlib_open(&handle, filepath);
+    m64p_error rval = osal_dynlib_open(&handle, filepath.c_str());
     if (rval != M64ERR_SUCCESS)
         return rval;
 
@@ -61,7 +61,7 @@ static m64p_error PluginLoadTry(const char *filepath, int MapIndex)
     if (PluginGetVersion == NULL)
     {
         if (g_Verbose)
-            DebugMessage(M64MSG_ERROR, "library '%s' is not a Mupen64Plus library.", filepath);
+            DebugMessage(M64MSG_ERROR, "library '%s' is not a Mupen64Plus library.", filepath.c_str());
         osal_dynlib_close(handle);
         return M64ERR_INCOMPATIBLE;
     }
@@ -81,21 +81,21 @@ static m64p_error PluginLoadTry(const char *filepath, int MapIndex)
     ptr_PluginStartup PluginStartup = (ptr_PluginStartup) osal_dynlib_getproc(handle, "PluginStartup");
     if (PluginStartup == NULL)
     {
-        DebugMessage(M64MSG_ERROR, "library '%s' broken.  No PluginStartup() function found.", filepath);
+        DebugMessage(M64MSG_ERROR, "library '%s' broken.  No PluginStartup() function found.", filepath.c_str());
         osal_dynlib_close(handle);
         return M64ERR_INCOMPATIBLE;
     }
     rval = (*PluginStartup)(CoreHandle, g_PluginMap[MapIndex].name, DebugCallback);  /* DebugCallback is in main.c */
     if (rval != M64ERR_SUCCESS)
     {
-        DebugMessage(M64MSG_ERROR, "Error: %s plugin library '%s' failed to start.", g_PluginMap[MapIndex].name, filepath);
+        DebugMessage(M64MSG_ERROR, "Error: %s plugin library '%s' failed to start.", g_PluginMap[MapIndex].name, filepath.c_str());
         osal_dynlib_close(handle);
         return rval;
     }
 
     /* plugin loaded successfully, so set the plugin map's members */
     g_PluginMap[MapIndex].handle = handle;
-    strcpy(g_PluginMap[MapIndex].filename, filepath);
+    g_PluginMap[MapIndex].filename = filepath;
     g_PluginMap[MapIndex].libname = PluginName;
     g_PluginMap[MapIndex].libversion = PluginVersion;
 
@@ -116,32 +116,29 @@ m64p_error PluginSearchLoad()
     for (i = 0; i < 4; i++)
     {
         m64p_plugin_type type = g_PluginMap[i].type;
-        const char      *cmdline_path = NULL;
+        std::string cmdline_path;
         switch (type)
         {
-            case M64PLUGIN_RSP:    cmdline_path = qtRspPlugin.toLatin1().data();   break;
-            case M64PLUGIN_GFX:    cmdline_path = qtGfxPlugin.toLatin1().data();   break;
-            case M64PLUGIN_AUDIO:  cmdline_path = qtAudioPlugin.toLatin1().data(); break;
-            case M64PLUGIN_INPUT:  cmdline_path = qtInputPlugin.toLatin1().data(); break;
-            default:               cmdline_path = NULL;
+            case M64PLUGIN_RSP:    cmdline_path = qtRspPlugin.toStdString();   break;
+            case M64PLUGIN_GFX:    cmdline_path = qtGfxPlugin.toStdString();   break;
+            case M64PLUGIN_AUDIO:  cmdline_path = qtAudioPlugin.toStdString(); break;
+            case M64PLUGIN_INPUT:  cmdline_path = qtInputPlugin.toStdString(); break;
+            default:               cmdline_path = "";
         }
-        /* first search for a plugin matching what was given on the command line */
-        if (cmdline_path != NULL)
+
+        /* if full path was given, try loading exactly this file */
+        if (strchr(cmdline_path.c_str(), OSAL_DIR_SEPARATOR) != NULL)
         {
-            /* if full path was given, try loading exactly this file */
-            if (strchr(cmdline_path, OSAL_DIR_SEPARATOR) != NULL)
+            PluginLoadTry(cmdline_path, i);
+        }
+        else /* otherwise search through the plugin directory to find a match with this name */
+        {
+            osal_lib_search *curr = lib_filelist;
+            while (curr != NULL && g_PluginMap[i].handle == NULL)
             {
-                PluginLoadTry(cmdline_path, i);
-            }
-            else /* otherwise search through the plugin directory to find a match with this name */
-            {
-                osal_lib_search *curr = lib_filelist;
-                while (curr != NULL && g_PluginMap[i].handle == NULL)
-                {
-                    if (strncmp(curr->filename, cmdline_path, strlen(cmdline_path)) == 0)
-                        PluginLoadTry(curr->filepath, i);
-                    curr = curr->next;
-                }
+                if (curr->filename == cmdline_path)
+                    PluginLoadTry(curr->filepath, i);
+                curr = curr->next;
             }
         }
 

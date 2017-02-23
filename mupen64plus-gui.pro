@@ -24,6 +24,8 @@ SOURCES += main.cpp\
 win32 {
 SOURCES += osal/osal_dynamiclib_win32.c \
     osal/osal_files_win32.c
+
+DEFINES -= UNICODE
 }
 
 !win32 {
