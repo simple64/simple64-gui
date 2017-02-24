@@ -43,7 +43,14 @@ m64p_error qtVidExtFuncGLGetAttr(m64p_GLattr Attr, int *pValue)
 {
     if (Attr == M64P_GL_CONTEXT_PROFILE_MASK)
     {
-        *pValue = M64P_GL_CONTEXT_PROFILE_CORE;
+        switch(my_window->format().profile()) {
+        case QSurfaceFormat::CoreProfile:
+            *pValue = M64P_GL_CONTEXT_PROFILE_CORE;
+            break;
+        case QSurfaceFormat::CompatibilityProfile:
+            *pValue = M64P_GL_CONTEXT_PROFILE_COMPATIBILITY;
+            break;
+        }
     }
     return M64ERR_SUCCESS;
 }

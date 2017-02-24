@@ -130,7 +130,8 @@ void MainWindow::closeEvent (QCloseEvent *event)
 {
     if (QtAttachCoreLib())
         (*CoreDoCommand)(M64CMD_STOP, 0, NULL);
-    while (m_game_running){}
+    if (workerThread != nullptr)
+        while (workerThread->isRunning()){}
     event->accept();
 }
 
@@ -157,7 +158,6 @@ void MainWindow::openROM(QString filename)
         (*CoreDoCommand)(M64CMD_CORE_STATE_QUERY, M64CORE_EMU_STATE, &response);
         if (response == M64EMU_STOPPED) {
             workerThread = new WorkerThread();
-            connect(workerThread, &WorkerThread::finished, workerThread, &QObject::deleteLater);
             workerThread->setFileName(filename);
             QSettings settings("mupen64plus", "gui");
             my_window = new OGLWindow();
