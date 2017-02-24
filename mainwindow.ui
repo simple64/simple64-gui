@@ -147,7 +147,7 @@
   </action>
   <action name="actionToggle_Fullscreen">
    <property name="text">
-    <string>Toggle Fullscreen</string>
+    <string>Toggle Fullscreen (Alt + Return)</string>
    </property>
   </action>
  </widget>

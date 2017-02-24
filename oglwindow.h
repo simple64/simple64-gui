@@ -14,12 +14,7 @@ protected:
 
     void initializeGL() Q_DECL_OVERRIDE;
 
-    void resizeEvent(QResizeEvent *event) {
-        QOpenGLWindow::resizeEvent(event);
-        int size = (event->size().width() << 16) + event->size().height();
-        if (QtAttachCoreLib())
-            (*CoreDoCommand)(M64CMD_CORE_STATE_SET, M64CORE_VIDEO_SIZE, &size);
-    }
+    void resizeEvent(QResizeEvent *event);
 
     void keyPressEvent(QKeyEvent *event);
 

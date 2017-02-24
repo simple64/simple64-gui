@@ -25,6 +25,7 @@
 #ifdef __cplusplus
 #include <QString>
 void openROM(QString filename);
+int QT2SDL2MOD(Qt::KeyboardModifiers modifiers);
 extern "C" {
 #endif
 void DebugMessage(int level, const char *message, ...);

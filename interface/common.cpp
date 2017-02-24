@@ -29,6 +29,7 @@
 #include "m64p_types.h"
 #include "core_interface.h"
 #include "SDL_scancode.h"
+#include "SDL_keycode.h"
 #include "version.h"
 
 /** global variables **/
@@ -151,6 +152,20 @@ void openROM(QString filename)
 
     /* close the ROM image */
     (*CoreDoCommand)(M64CMD_ROM_CLOSE, 0, NULL);
+}
+
+int QT2SDL2MOD(Qt::KeyboardModifiers modifiers)
+{
+    int value = 0;
+    if (modifiers && Qt::ShiftModifier)
+        value |= KMOD_SHIFT;
+    if (modifiers && Qt::ControlModifier)
+        value |= KMOD_CTRL;
+    if (modifiers && Qt::AltModifier)
+        value |= KMOD_ALT;
+    if (modifiers && Qt::MetaModifier)
+        value |= KMOD_GUI;
+    return value;
 }
 
 int QT2SDL2(int qtKey)
