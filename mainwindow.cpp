@@ -16,7 +16,6 @@
 #include "workerthread.h"
 
 OGLWindow *my_window;
-QWidget *container;
 WorkerThread *workerThread;
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -161,7 +160,7 @@ void MainWindow::openROM(QString filename)
             workerThread->setFileName(filename);
             QSettings settings("mupen64plus", "gui");
             my_window = new OGLWindow();
-            container = QWidget::createWindowContainer(my_window);
+            QWidget *container = QWidget::createWindowContainer(my_window);
             container->setFocusPolicy(Qt::StrongFocus);
 
             QSurfaceFormat format;

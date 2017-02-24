@@ -23,7 +23,6 @@ m64p_error qtVidExtFuncListModes(m64p_2d_size *, int *)
 
 m64p_error qtVidExtFuncSetMode(int Width, int Height, int, int, int)
 {
-    container->resize(Width, Height);
     workerThread->resizeMainWindow(Width, Height);
     my_window->makeCurrent();
     return M64ERR_SUCCESS;
