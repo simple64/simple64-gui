@@ -6,8 +6,11 @@
 #include <QMenuBar>
 #include <QStatusBar>
 
+static int init;
+
 m64p_error qtVidExtFuncInit(void)
 {
+    init = 0;
     return M64ERR_SUCCESS;
 }
 
@@ -23,8 +26,11 @@ m64p_error qtVidExtFuncListModes(m64p_2d_size *, int *)
 
 m64p_error qtVidExtFuncSetMode(int Width, int Height, int, int, int)
 {
-    workerThread->resizeMainWindow(Width, Height);
-    my_window->makeCurrent();
+    if (!init) {
+        workerThread->resizeMainWindow(Width, Height);
+        my_window->makeCurrent();
+        init = 1;
+    }
     return M64ERR_SUCCESS;
 }
 

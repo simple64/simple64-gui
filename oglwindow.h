@@ -19,7 +19,11 @@ protected:
     void keyPressEvent(QKeyEvent *event);
 
     void keyReleaseEvent(QKeyEvent *event);
+
+    void timerEvent(QTimerEvent *te);
 private:
-    int exposed = 0;
+    int m_width;
+    int m_height;
+    int timerId;
 };
 #endif // OGLWINDOW_H
