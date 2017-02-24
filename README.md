@@ -1,5 +1,7 @@
 # mupen64plus-gui
 
+![m64p](http://i.imgur.com/NIa5Btx.png)
+
 mupen64plus-gui is written in Qt5. It supports everything you'd expect from a mupen64plus frontend (plugin selection, configuration editing, save state management, screenshots, pausing, etc..)
 
 You can try this out by downloading [**m64p**](https://m64p.github.io/). **m64p** is mupen64plus + GLideN64 + this GUI
