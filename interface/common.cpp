@@ -436,6 +436,39 @@ int QT2SDL2(int qtKey)
     case Qt::Key_Z:
         returnValue = SDL_SCANCODE_Z;
         break;
+    case Qt::Key_BracketLeft:
+        returnValue = SDL_SCANCODE_LEFTBRACKET;
+        break;
+    case Qt::Key_BracketRight:
+        returnValue = SDL_SCANCODE_RIGHTBRACKET;
+        break;
+    case Qt::Key_Minus:
+        returnValue = SDL_SCANCODE_MINUS;
+        break;
+    case Qt::Key_Semicolon:
+        returnValue = SDL_SCANCODE_SEMICOLON;
+        break;
+    case Qt::Key_Slash:
+        returnValue = SDL_SCANCODE_SLASH;
+        break;
+    case Qt::Key_Backslash:
+        returnValue = SDL_SCANCODE_BACKSLASH;
+        break;
+    case Qt::Key_Apostrophe:
+        returnValue = SDL_SCANCODE_APOSTROPHE;
+        break;
+    case Qt::Key_Comma:
+        returnValue = SDL_SCANCODE_COMMA;
+        break;
+    case Qt::Key_Period:
+        returnValue = SDL_SCANCODE_PERIOD;
+        break;
+    case Qt::Key_Equal:
+        returnValue = SDL_SCANCODE_EQUALS;
+        break;
+    case Qt::Key_QuoteLeft:
+        returnValue = SDL_SCANCODE_GRAVE;
+        break;
     default:
         returnValue = -1;
         break;
