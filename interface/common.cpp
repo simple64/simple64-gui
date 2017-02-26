@@ -111,7 +111,7 @@ void openROM(QString filename)
     /* Try to load the ROM image into the core */
     if ((*CoreDoCommand)(M64CMD_ROM_OPEN, (int) romlength, ROM_buffer) != M64ERR_SUCCESS)
     {
-        DebugMessage(M64MSG_ERROR, "core failed to open ROM image file '%s'.", filename);
+        DebugMessage(M64MSG_ERROR, "core failed to open ROM image file '%s'.", filename.toUtf8().constData());
         free(ROM_buffer);
         (*CoreShutdown)();
         DetachCoreLib();
