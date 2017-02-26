@@ -151,7 +151,7 @@ m64p_error PluginSearchLoad()
         {
             DebugMessage(M64MSG_INFO, "using %s plugin: '%s' v%i.%i.%i", g_PluginMap[i].name,
                    g_PluginMap[i].libname, VERSION_PRINTF_SPLIT(g_PluginMap[i].libversion));
-            DebugMessage(M64MSG_VERBOSE, "%s plugin library: %s", g_PluginMap[i].name, g_PluginMap[i].filename);
+            DebugMessage(M64MSG_VERBOSE, "%s plugin library: %s", g_PluginMap[i].name, g_PluginMap[i].filename.c_str());
         }
     }
 

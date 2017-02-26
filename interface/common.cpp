@@ -77,7 +77,7 @@ void openROM(QString filename)
     FILE *fPtr = fopen(filename.toLatin1().data(), "rb");
     if (fPtr == NULL)
     {
-        DebugMessage(M64MSG_ERROR, "couldn't open ROM file '%s' for reading.", filename);
+        DebugMessage(M64MSG_ERROR, "couldn't open ROM file '%s' for reading.", filename.toUtf8().constData());
         (*CoreShutdown)();
         DetachCoreLib();
         return;
@@ -91,7 +91,7 @@ void openROM(QString filename)
     unsigned char *ROM_buffer = (unsigned char *) malloc(romlength);
     if (ROM_buffer == NULL)
     {
-        DebugMessage(M64MSG_ERROR, "couldn't allocate %li-byte buffer for ROM image file '%s'.", romlength, filename);
+        DebugMessage(M64MSG_ERROR, "couldn't allocate %li-byte buffer for ROM image file '%s'.", romlength, filename.toUtf8().constData());
         fclose(fPtr);
         (*CoreShutdown)();
         DetachCoreLib();
@@ -99,7 +99,7 @@ void openROM(QString filename)
     }
     else if (fread(ROM_buffer, 1, romlength, fPtr) != romlength)
     {
-        DebugMessage(M64MSG_ERROR, "couldn't read %li bytes from ROM image file '%s'.", romlength, filename);
+        DebugMessage(M64MSG_ERROR, "couldn't read %li bytes from ROM image file '%s'.", romlength, filename.toUtf8().constData());
         free(ROM_buffer);
         fclose(fPtr);
         (*CoreShutdown)();
