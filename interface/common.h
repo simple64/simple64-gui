@@ -23,8 +23,8 @@
 #define __COMMON_H__
 
 #ifdef __cplusplus
-#include <QString>
-void openROM(QString filename);
+#include <Qt>
+void openROM(std::string filename);
 int QT2SDL2MOD(Qt::KeyboardModifiers modifiers);
 extern "C" {
 #endif
