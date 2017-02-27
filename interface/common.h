@@ -24,6 +24,7 @@
 
 #ifdef __cplusplus
 #include <Qt>
+#include <string>
 void openROM(std::string filename);
 int QT2SDL2MOD(Qt::KeyboardModifiers modifiers);
 extern "C" {
