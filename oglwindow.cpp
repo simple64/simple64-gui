@@ -6,7 +6,6 @@ extern WorkerThread* workerThread;
 void OGLWindow::initializeGL() {
     doneCurrent();
     context()->moveToThread(workerThread);
-    init = 1;
 }
 
 void OGLWindow::keyPressEvent(QKeyEvent *event)
