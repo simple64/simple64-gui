@@ -1,10 +1,7 @@
 #include "vidext.h"
 #include "common.h"
-#include "mainwindow.h"
 #include "workerthread.h"
 #include <stdio.h>
-#include <QMenuBar>
-#include <QStatusBar>
 
 static int init;
 
@@ -24,12 +21,13 @@ m64p_error qtVidExtFuncListModes(m64p_2d_size *, int *)
     return M64ERR_SUCCESS;
 }
 
-m64p_error qtVidExtFuncSetMode(int Width, int Height, int, int, int)
+m64p_error qtVidExtFuncSetMode(int Width, int Height, int, int ScreenMode, int)
 {
     if (!init) {
         workerThread->resizeMainWindow(Width, Height);
         my_window->makeCurrent();
         init = 1;
+        workerThread->toggleFS(ScreenMode);
     }
     return M64ERR_SUCCESS;
 }
@@ -76,17 +74,7 @@ m64p_error qtVidExtFuncSetCaption(const char *)
 
 m64p_error qtVidExtFuncToggleFS(void)
 {
-    int response;
-    (*CoreDoCommand)(M64CMD_CORE_STATE_QUERY, M64CORE_VIDEO_MODE, &response);
-    if (response == M64VIDEO_WINDOWED) {
-        w->menuBar()->hide();
-        w->statusBar()->hide();
-        w->showFullScreen();
-    } else if (response == M64VIDEO_FULLSCREEN) {
-        w->menuBar()->show();
-        w->statusBar()->show();
-        w->showNormal();
-    }
+    workerThread->toggleFS(M64VIDEO_NONE);
     return M64ERR_SUCCESS;
 }
 

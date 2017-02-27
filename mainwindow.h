@@ -21,6 +21,7 @@ protected:
 
 public slots:
     void resizeMainWindow(int Width, int Height);
+    void toggleFS(int force);
 
 private slots:
     void on_actionOpen_ROM_triggered();

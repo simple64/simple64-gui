@@ -6,6 +6,7 @@
 void WorkerThread::run()
 {
     connect(this, SIGNAL(resizeMainWindow(int,int)), w, SLOT(resizeMainWindow(int, int)), Qt::QueuedConnection);
+    connect(this, SIGNAL(toggleFS(int)), w, SLOT(toggleFS(int)), Qt::QueuedConnection);
     openROM(m_fileName.toStdString());
     (*ConfigSaveFile)();
     my_window->doneCurrent();

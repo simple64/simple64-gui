@@ -115,6 +115,22 @@ void MainWindow::resizeMainWindow(int Width, int Height)
     resize(Width, Height + ui->menuBar->height() + ui->statusBar->height());
 }
 
+void MainWindow::toggleFS(int force)
+{
+    int response = M64VIDEO_NONE;
+    if (force == M64VIDEO_NONE)
+        (*CoreDoCommand)(M64CMD_CORE_STATE_QUERY, M64CORE_VIDEO_MODE, &response);
+    if (response == M64VIDEO_WINDOWED || force == M64VIDEO_FULLSCREEN) {
+        menuBar()->hide();
+        statusBar()->hide();
+        showFullScreen();
+    } else if (response == M64VIDEO_FULLSCREEN || force == M64VIDEO_WINDOWED) {
+        menuBar()->show();
+        statusBar()->show();
+        showNormal();
+    }
+}
+
 void MainWindow::findRecursion(const QString &path, const QString &pattern, QStringList *result)
 {
     QDir currentDir(path);

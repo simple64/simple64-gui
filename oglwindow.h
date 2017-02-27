@@ -24,6 +24,6 @@ protected:
 private:
     int m_width;
     int m_height;
-    int timerId;
+    int timerId = 0;
 };
 #endif // OGLWINDOW_H
