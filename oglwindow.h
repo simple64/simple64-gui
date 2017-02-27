@@ -9,6 +9,8 @@
 
 class OGLWindow : public QOpenGLWindow
 {
+public:
+    int isInit() { return init; }
 protected:
     void exposeEvent(QExposeEvent *) Q_DECL_OVERRIDE {}
 
@@ -25,5 +27,6 @@ private:
     int m_width;
     int m_height;
     int timerId = 0;
+    int init = 0;
 };
 #endif // OGLWINDOW_H

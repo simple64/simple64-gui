@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QSettings>
+#include <QSurfaceFormat>
 
 namespace Ui {
 class MainWindow;
@@ -22,6 +23,8 @@ protected:
 public slots:
     void resizeMainWindow(int Width, int Height);
     void toggleFS(int force);
+    void createOGLWindow(QSurfaceFormat format);
+    void setTitle(std::string title);
 
 private slots:
     void on_actionOpen_ROM_triggered();

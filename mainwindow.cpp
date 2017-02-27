@@ -166,6 +166,24 @@ void MainWindow::updateOpenRecent()
     }
 }
 
+void MainWindow::setTitle(std::string title)
+{
+    QString _title = QString::fromStdString(title);
+    _title.prepend("mupen64plus: ");
+    this->setWindowTitle(_title);
+}
+
+void MainWindow::createOGLWindow(QSurfaceFormat format)
+{
+    my_window = new OGLWindow();
+    QWidget *container = QWidget::createWindowContainer(my_window);
+    container->setFocusPolicy(Qt::StrongFocus);
+
+    my_window->setFormat(format);
+
+    setCentralWidget(container);
+}
+
 void MainWindow::openROM(QString filename)
 {
     if (QtAttachCoreLib()) {
@@ -174,25 +192,9 @@ void MainWindow::openROM(QString filename)
         if (response == M64EMU_STOPPED) {
             workerThread = new WorkerThread();
             workerThread->setFileName(filename);
+            workerThread->start();
+
             QSettings settings("mupen64plus", "gui");
-            my_window = new OGLWindow();
-            QWidget *container = QWidget::createWindowContainer(my_window);
-            container->setFocusPolicy(Qt::StrongFocus);
-
-            QSurfaceFormat format;
-            format.setDepthBufferSize(24);
-            if (settings.value("videoPlugin").toString().contains("GLideN64")) {
-                format.setVersion(3, 3);
-                format.setProfile(QSurfaceFormat::CoreProfile);
-            }
-            else {
-                format.setVersion(2, 1);
-                format.setProfile(QSurfaceFormat::CompatibilityProfile);
-            }
-            my_window->setFormat(format);
-
-            setCentralWidget(container);
-
             QStringList list;
             if (settings.contains("RecentROMs"))
                     list = settings.value("RecentROMs").toString().split(";");

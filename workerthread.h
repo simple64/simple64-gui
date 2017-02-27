@@ -4,6 +4,7 @@
 #include <QThread>
 #include <QApplication>
 #include <QString>
+#include <QSurfaceFormat>
 #include "common.h"
 
 class WorkerThread : public QThread
@@ -16,6 +17,8 @@ public:
 signals:
     void resizeMainWindow(int Width, int Height);
     void toggleFS(int force);
+    void createOGLWindow(QSurfaceFormat format);
+    void setTitle(std::string title);
 
 private:
     QString m_fileName;
