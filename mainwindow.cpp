@@ -40,9 +40,10 @@ MainWindow::MainWindow(QWidget *parent) :
         my_slots[i]->setText("Slot " + QString::number(i));
         my_slots[i]->setActionGroup(my_slots_group);
         SaveSlot->addAction(my_slots[i]);
-        connect(my_slots[i], &QAction::triggered,[=](bool checked){
+        QAction *temp_slot = my_slots[i];
+        connect(temp_slot, &QAction::triggered,[=](bool checked){
             if (checked) {
-                int slot = my_slots[i]->text().remove("Slot ").toInt();
+                int slot = temp_slot->text().remove("Slot ").toInt();
                 if (QtAttachCoreLib())
                     (*CoreDoCommand)(M64CMD_STATE_SET_SLOT, slot, NULL);
             }
@@ -162,8 +163,9 @@ void MainWindow::updateOpenRecent()
         recent[i] = new QAction(this);
         recent[i]->setText(list.at(i));
         OpenRecent->addAction(recent[i]);
-        connect(recent[i], &QAction::triggered,[=](){
-                    openROM(recent[i]->text());
+        QAction *temp_recent = recent[i];
+        connect(temp_recent, &QAction::triggered,[=](){
+                    openROM(temp_recent->text());
                 });
     }
 }
