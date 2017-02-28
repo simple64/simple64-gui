@@ -112,7 +112,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::resizeMainWindow(int Width, int Height)
 {
-    resize(Width, Height + ui->menuBar->height() + ui->statusBar->height());
+    resize(Width, Height + (menuBar()->isNativeMenuBar() ? 0 : ui->menuBar->height()) + ui->statusBar->height());
 }
 
 void MainWindow::toggleFS(int force)
@@ -121,11 +121,13 @@ void MainWindow::toggleFS(int force)
     if (force == M64VIDEO_NONE)
         (*CoreDoCommand)(M64CMD_CORE_STATE_QUERY, M64CORE_VIDEO_MODE, &response);
     if (response == M64VIDEO_WINDOWED || force == M64VIDEO_FULLSCREEN) {
-        menuBar()->hide();
+        if (!menuBar()->isNativeMenuBar())
+            menuBar()->hide();
         statusBar()->hide();
         showFullScreen();
     } else if (response == M64VIDEO_FULLSCREEN || force == M64VIDEO_WINDOWED) {
-        menuBar()->show();
+        if (!menuBar()->isNativeMenuBar())
+            menuBar()->show();
         statusBar()->show();
         showNormal();
     }
