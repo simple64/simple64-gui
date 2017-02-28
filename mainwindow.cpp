@@ -41,9 +41,9 @@ MainWindow::MainWindow(QWidget *parent) :
         my_slots[i]->setActionGroup(my_slots_group);
         SaveSlot->addAction(my_slots[i]);
         QAction *temp_slot = my_slots[i];
-        connect(temp_slot[i], &QAction::triggered,[=](bool checked){
+        connect(temp_slot, &QAction::triggered,[=](bool checked){
             if (checked) {
-                int slot = temp_slot[i]->text().remove("Slot ").toInt();
+                int slot = temp_slot->text().remove("Slot ").toInt();
                 if (QtAttachCoreLib())
                     (*CoreDoCommand)(M64CMD_STATE_SET_SLOT, slot, NULL);
             }
