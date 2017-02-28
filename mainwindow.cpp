@@ -162,7 +162,7 @@ void MainWindow::updateOpenRecent()
         recent[i]->setText(list.at(i));
         OpenRecent->addAction(recent[i]);
         QAction *temp_recent = recent[i];
-        connect(recent[i], &QAction::triggered,[=](){
+        connect(temp_recent, &QAction::triggered,[=](){
                     openROM(temp_recent->text());
                 });
     }
