@@ -7,6 +7,7 @@
 #include <QSettings>
 #include <QTabWidget>
 #include <QGridLayout>
+#include <QValidator>
 #include "settingclasses.h"
 
 m64p_handle coreConfigHandle;
@@ -61,11 +62,13 @@ void paramListCallback(void * context, const char *ParamName, m64p_type ParamTyp
         my_Widget = new CustomLineEdit;
         l_ParamInt = (*ConfigGetParamInt)(current_handle, ParamName);
         ((CustomLineEdit*)my_Widget)->setText(QString::number(l_ParamInt));
+        ((CustomLineEdit*)my_Widget)->setValidator(new QIntValidator());
         break;
     case M64TYPE_FLOAT:
         my_Widget = new CustomLineEdit;
         l_ParamFloat = (*ConfigGetParamFloat)(current_handle, ParamName);
         ((CustomLineEdit*)my_Widget)->setText(QString::number(l_ParamFloat));
+        ((CustomLineEdit*)my_Widget)->setValidator(new QDoubleValidator());
         break;
     case M64TYPE_BOOL:
         my_Widget = new CustomCheckBox;
