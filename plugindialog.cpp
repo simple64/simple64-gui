@@ -7,7 +7,7 @@
 #include <QSettings>
 #include <QTabWidget>
 #include <QGridLayout>
-#include "customlineedit.h"
+#include "settingclasses.h"
 
 m64p_handle coreConfigHandle;
 m64p_handle videoGenConfigHandle;
@@ -24,23 +24,22 @@ int videoRow;
 
 void paramListCallback(void * context, const char *ParamName, m64p_type ParamType)
 {
-    QString my_context = (char*)context;
     QGridLayout *my_layout;
     int * my_row;
     m64p_handle current_handle;
-    if (my_context == "Core") {
+    if (strcmp((char*)context, "Core") == 0) {
         my_layout = coreLayout;
         my_row = &coreLayoutRow;
         current_handle = coreConfigHandle;
-    } else if (my_context == "Video-General") {
+    } else if (strcmp((char*)context, "Video-General") == 0) {
         my_layout = videoGenLayout;
         my_row = &videoGenRow;
         current_handle = videoGenConfigHandle;
-    } else if (my_context == "Audio") {
+    } else if (strcmp((char*)context, "Audio") == 0) {
         my_layout = audioLayout;
         my_row = &audioRow;
         current_handle = audioConfigHandle;
-    } else if (my_context == "Video") {
+    } else if (strcmp((char*)context, "Video") == 0) {
         my_layout = videoLayout;
         my_row = &videoRow;
         current_handle = videoConfigHandle;
@@ -56,30 +55,41 @@ void paramListCallback(void * context, const char *ParamName, m64p_type ParamTyp
     desc->setToolTip(helper);
     desc->setStyleSheet("border: 1px solid; padding: 10px");
     my_layout->addWidget(desc, *my_row, 0);
-    CustomLineEdit *my_value = new CustomLineEdit;
+    void *my_Widget;
     switch (ParamType) {
     case M64TYPE_INT:
+        my_Widget = new CustomLineEdit;
         l_ParamInt = (*ConfigGetParamInt)(current_handle, ParamName);
-        my_value->setText(QString::number(l_ParamInt));
+        ((CustomLineEdit*)my_Widget)->setText(QString::number(l_ParamInt));
         break;
     case M64TYPE_FLOAT:
+        my_Widget = new CustomLineEdit;
         l_ParamFloat = (*ConfigGetParamFloat)(current_handle, ParamName);
-        my_value->setText(QString::number(l_ParamFloat));
+        ((CustomLineEdit*)my_Widget)->setText(QString::number(l_ParamFloat));
         break;
     case M64TYPE_BOOL:
+        my_Widget = new CustomCheckBox;
         l_ParamBool = (*ConfigGetParamBool)(current_handle, ParamName);
-        my_value->setText(QString::number(l_ParamBool));
+        ((CustomCheckBox*)my_Widget)->setCheckState(l_ParamBool ? Qt::Checked : Qt::Unchecked);
         break;
     case M64TYPE_STRING:
+        my_Widget = new CustomLineEdit;
         l_ParamString = (*ConfigGetParamString)(current_handle, ParamName);
-        my_value->setText(l_ParamString);
+        ((CustomLineEdit*)my_Widget)->setText(l_ParamString);
         break;
     }
-    my_value->setConfigHandle(current_handle);
-    my_value->setParamType(ParamType);
-    my_value->setParamName(ParamName);
-    my_value->setStyleSheet("border: 1px solid; padding: 10px");
-    my_layout->addWidget(my_value, *my_row, 1);
+    if (ParamType == M64TYPE_BOOL) {
+        ((CustomCheckBox*)my_Widget)->setConfigHandle(current_handle);
+        ((CustomCheckBox*)my_Widget)->setParamType(ParamType);
+        ((CustomCheckBox*)my_Widget)->setParamName(ParamName);
+        ((CustomCheckBox*)my_Widget)->setStyleSheet("border: 1px solid; padding: 10px");
+    } else {
+        ((CustomLineEdit*)my_Widget)->setConfigHandle(current_handle);
+        ((CustomLineEdit*)my_Widget)->setParamType(ParamType);
+        ((CustomLineEdit*)my_Widget)->setParamName(ParamName);
+        ((CustomLineEdit*)my_Widget)->setStyleSheet("border: 1px solid; padding: 10px");
+    }
+    my_layout->addWidget((QWidget*)my_Widget, *my_row, 1);
     ++*my_row;
 }
 
