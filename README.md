@@ -11,6 +11,7 @@ You can try this out by downloading [**m64p**](https://m64p.github.io/). **m64p*
 On Ubuntu you'll want to install ```qt5-default```
 ```
 git clone https://github.com/m64p/mupen64plus-gui.git
+cd mupen64plus-gui
 mkdir build
 cd build
 qmake ../mupen64plus-gui.pro
@@ -20,7 +21,7 @@ then you can run ```./mupen64plus-gui```
 
 ## Some techincal details:
 
-It requires Qt 5.4.
+It requires Qt 5.4 (this comes statically linked with the Windows binary build in m64p, so you don't need to worry about this on Windows).
 
 It is high-performance. The emulator runs in it's own thread. The game is displayed inside a QOpenGLWindow (native OpenGL Window, no extra rendering done by Qt).
 
