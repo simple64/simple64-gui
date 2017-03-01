@@ -22,14 +22,14 @@ CheatDialog::CheatDialog()
         while (pCur != NULL)
         {
             cheatName = pCur->Name;
+            QLabel* label = new QLabel(cheatName);
             if (pCur->Description != NULL) {
                 desc = pCur->Description;
                 desc.prepend("<span style=\"color:black;\">");
                 desc.append("</span>");
+                label->setToolTip(desc);
             }
-            QLabel* label = new QLabel(cheatName);
             label->setStyleSheet("border: 1px solid; padding: 10px");
-            label->setToolTip(desc);
             cheatLayout->addWidget(label, p, 0);
             if(pCur->VariableLine == -1) {
                 CheatCheckBox* checkBox = new CheatCheckBox();
