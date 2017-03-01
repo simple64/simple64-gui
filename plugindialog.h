@@ -7,8 +7,7 @@ class PluginDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit PluginDialog(QWidget *parent = 0);
-    ~PluginDialog(){}
+    PluginDialog();
 };
 
 #endif // PLUGINDIALOG_H

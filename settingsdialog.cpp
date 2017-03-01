@@ -35,8 +35,7 @@ void SettingsDialog::handlePluginButton()
     }
 }
 
-SettingsDialog::SettingsDialog(QWidget *parent) :
-    QDialog(parent)
+SettingsDialog::SettingsDialog()
 {
     QSettings settings("mupen64plus", "gui");
 

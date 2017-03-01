@@ -96,8 +96,7 @@ void paramListCallback(void * context, const char *ParamName, m64p_type ParamTyp
     ++*my_row;
 }
 
-PluginDialog::PluginDialog(QWidget *parent) :
-    QDialog(parent)
+PluginDialog::PluginDialog()
 {
     if (!QtAttachCoreLib())
         return;

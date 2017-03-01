@@ -1,5 +1,7 @@
 #include "settingclasses.h"
 #include "core_interface.h"
+#include "cheat.h"
+#include "common.h"
 
 CustomLineEdit::CustomLineEdit()
 {
@@ -16,6 +18,8 @@ CustomLineEdit::CustomLineEdit()
         case M64TYPE_STRING:
             (*ConfigSetParameter)(m_CurrentHandle, m_ParamName.c_str(), m_ParamType, this->text().toLatin1().data());
             break;
+        default:
+            break;
         }
         (*ConfigSaveFile)();
     });
@@ -27,5 +31,37 @@ CustomCheckBox::CustomCheckBox()
         int value = state == Qt::Checked ? 1 : 0;
         (*ConfigSetParameter)(m_CurrentHandle, m_ParamName.c_str(), m_ParamType, &value);
         (*ConfigSaveFile)();
+    });
+}
+
+CheatCheckBox::CheatCheckBox()
+{
+    m_Checked = false;
+    connect(this, &QAbstractButton::clicked, [=](bool checked){
+        sCheatInfo *pCheat;
+        pCheat = CheatFindCode(m_Number);
+        if (checked && !m_Checked) {
+            if (pCheat == NULL)
+               DebugMessage(M64MSG_WARNING, "invalid cheat code number %i", m_Number);
+            else
+            {
+                if (pCheat->VariableLine != -1 && pCheat->Count > pCheat->VariableLine && m_Option < pCheat->Codes[pCheat->VariableLine].var_count)
+                    pCheat->Codes[pCheat->VariableLine].var_to_use = m_Option;
+                CheatActivate(pCheat);
+                pCheat->active = true;
+            }
+            m_Checked = true;
+        }
+        else {
+            (*CoreCheatEnabled)(pCheat->Name, 0);
+            pCheat->active = false;
+            if (m_ButtonGroup != nullptr)
+                m_ButtonGroup->setChecked(true);
+        }
+    });
+    connect(this, &QCheckBox::stateChanged, [=](int state){
+        int value = state == Qt::Checked ? 1 : 0;
+        if (!value)
+            m_Checked = false;
     });
 }

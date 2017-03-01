@@ -59,6 +59,8 @@
     <addaction name="actionStop_Game"/>
     <addaction name="actionHard_Reset"/>
     <addaction name="actionSoft_Reset"/>
+    <addaction name="separator"/>
+    <addaction name="actionCheats"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEmulation"/>
@@ -148,6 +150,11 @@
   <action name="actionToggle_Fullscreen">
    <property name="text">
     <string>Toggle Fullscreen (Alt + Return)</string>
+   </property>
+  </action>
+  <action name="actionCheats">
+   <property name="text">
+    <string>Cheats</string>
    </property>
   </action>
  </widget>

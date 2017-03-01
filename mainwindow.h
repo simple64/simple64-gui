@@ -57,6 +57,8 @@ private slots:
 
     void on_actionLoad_State_From_triggered();
 
+    void on_actionCheats_triggered();
+
 private:
     void openROM(QString filename);
     void updateOpenRecent();

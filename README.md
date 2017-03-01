@@ -27,5 +27,3 @@ It is high-performance. The emulator runs in it's own thread. The game is displa
 ## TODO
 
 Controller configuration (auto-configuration already works).
-
-Cheats.

@@ -45,4 +45,25 @@ private:
     m64p_handle m_CurrentHandle;
 };
 
+class CheatCheckBox : public QCheckBox
+{
+public:
+    CheatCheckBox();
+    void setNumber(int num) {
+        m_Number = num;
+    }
+    void setOption(int opt) {
+        m_Option = opt;
+    }
+    void setButtonGroup (QCheckBox* bgroup) {
+        m_ButtonGroup = bgroup;
+    }
+
+private:
+    int m_Number;
+    int m_Option;
+    bool m_Checked;
+    QCheckBox* m_ButtonGroup;
+};
+
 #endif // CUSTOMLINEEDIT_H

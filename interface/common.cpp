@@ -31,6 +31,7 @@
 #include "SDL_scancode.h"
 #include "SDL_keycode.h"
 #include "version.h"
+#include "cheat.h"
 
 /** global variables **/
 int    g_Verbose = 0;
@@ -141,6 +142,24 @@ void openROM(std::string filename)
             return;
         }
     }
+    m64p_rom_header    l_RomHeader;
+    /* get the ROM header for the currently loaded ROM image from the core */
+    if ((*CoreDoCommand)(M64CMD_ROM_GET_HEADER, sizeof(l_RomHeader), &l_RomHeader) != M64ERR_SUCCESS)
+    {
+        DebugMessage(M64MSG_WARNING, "couldn't get ROM header information from core library");
+        return;
+    }
+
+    /* generate section name from ROM's CRC and country code */
+    char RomSection[24];
+    sprintf(RomSection, "%08X-%08X-C:%X", sl(l_RomHeader.CRC1), sl(l_RomHeader.CRC2), l_RomHeader.Country_code & 0xff);
+
+    /* parse through the cheat INI file and load up any cheat codes found for this ROM */
+    ReadCheats(RomSection);
+    if (!l_RomFound || l_CheatCodesFound == 0)
+    {
+        DebugMessage(M64MSG_WARNING, "no cheat codes found for ROM image '%.20s'", l_RomHeader.Name);
+    }
 
     /* run the game */
     (*CoreDoCommand)(M64CMD_EXECUTE, 0, NULL);
@@ -152,6 +171,8 @@ void openROM(std::string filename)
 
     /* close the ROM image */
     (*CoreDoCommand)(M64CMD_ROM_CLOSE, 0, NULL);
+
+    CheatFreeAll();
 }
 
 int QT2SDL2MOD(Qt::KeyboardModifiers modifiers)

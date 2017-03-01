@@ -14,6 +14,7 @@
 #include "core_interface.h"
 #include "plugin.h"
 #include "workerthread.h"
+#include "cheatdialog.h"
 
 OGLWindow *my_window;
 WorkerThread *workerThread;
@@ -337,4 +338,10 @@ void MainWindow::on_actionLoad_State_From_triggered()
             (*CoreDoCommand)(M64CMD_STATE_LOAD, 1, filename.toLatin1().data());
         }
     }
+}
+
+void MainWindow::on_actionCheats_triggered()
+{
+    CheatDialog *cheats = new CheatDialog();
+    cheats->show();
 }

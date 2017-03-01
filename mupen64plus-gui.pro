@@ -21,7 +21,9 @@ SOURCES += main.cpp\
     plugindialog.cpp \
     oglwindow.cpp \
     workerthread.cpp \
-    settingclasses.cpp
+    settingclasses.cpp \
+    cheatdialog.cpp \
+    interface/cheat.cpp
 
 win32 {
 SOURCES += osal/osal_dynamiclib_win32.c \
@@ -47,7 +49,9 @@ HEADERS  += mainwindow.h \
     workerthread.h \
     plugindialog.h \
     oglwindow.h \
-    settingclasses.h
+    settingclasses.h \
+    cheatdialog.h \
+    interface/cheat.h
 
 FORMS    += mainwindow.ui
 
