@@ -17,7 +17,6 @@ CheatDialog::CheatDialog()
     QString cheatName;
     QString desc;
     int p = 0;
-    printf("rom found: %i, l_cheatcodesfound: %i\n", l_RomFound, l_CheatCodesFound);
     if (l_RomFound && l_CheatCodesFound != 0) {
         sCheatInfo *pCur = l_CheatList;
         while (pCur != NULL)
