@@ -240,8 +240,10 @@ void MainWindow::on_actionExit_triggered()
 
 void MainWindow::on_actionPlugin_Settings_triggered()
 {
-    PluginDialog *settings = new PluginDialog();
-    settings->show();
+    if (QtAttachCoreLib()) {
+        PluginDialog *settings = new PluginDialog();
+        settings->show();
+    }
 }
 
 void MainWindow::on_actionPause_Game_triggered()

@@ -98,8 +98,6 @@ void paramListCallback(void * context, const char *ParamName, m64p_type ParamTyp
 
 PluginDialog::PluginDialog()
 {
-    if (!QtAttachCoreLib())
-        return;
     coreLayoutRow = 0;
     videoGenRow = 0;
     audioRow = 0;
