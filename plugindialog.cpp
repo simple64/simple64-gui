@@ -1,6 +1,7 @@
 #include "plugindialog.h"
 #include "core_interface.h"
 #include "osal_preproc.h"
+#include "plugin.h"
 
 #include <QLabel>
 #include <QScrollArea>
@@ -98,6 +99,13 @@ void paramListCallback(void * context, const char *ParamName, m64p_type ParamTyp
 
 PluginDialog::PluginDialog()
 {
+    int value;
+    (*CoreDoCommand)(M64CMD_CORE_STATE_QUERY, M64CORE_EMU_STATE, &value);
+    if (value == M64EMU_STOPPED) {
+        PluginSearchLoad();
+        PluginUnload();
+    }
+
     coreLayoutRow = 0;
     videoGenRow = 0;
     audioRow = 0;
