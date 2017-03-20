@@ -23,7 +23,10 @@ SOURCES += main.cpp\
     workerthread.cpp \
     settingclasses.cpp \
     cheatdialog.cpp \
-    interface/cheat.cpp
+    interface/cheat.cpp \
+    controllerdialog.cpp \
+    keyselect.cpp \
+    interface/sdl_key_converter.c
 
 win32 {
 SOURCES += osal/osal_dynamiclib_win32.c \
@@ -51,12 +54,17 @@ HEADERS  += mainwindow.h \
     oglwindow.h \
     settingclasses.h \
     cheatdialog.h \
-    interface/cheat.h
+    interface/cheat.h \
+    controllerdialog.h \
+    keyselect.h \
+    interface/sdl_key_converter.h
 
 FORMS    += mainwindow.ui
 
 QMAKE_INCDIR += api osal interface
 
 CONFIG += c++11
+
+LIBS += -lSDL2
 
 QMAKE_PROJECT_DEPTH = 0

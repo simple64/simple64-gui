@@ -15,6 +15,7 @@
 #include "plugin.h"
 #include "workerthread.h"
 #include "cheatdialog.h"
+#include "controllerdialog.h"
 
 OGLWindow *my_window;
 WorkerThread *workerThread;
@@ -346,4 +347,12 @@ void MainWindow::on_actionCheats_triggered()
 {
     CheatDialog *cheats = new CheatDialog();
     cheats->show();
+}
+
+void MainWindow::on_actionController_Configuration_triggered()
+{
+    if (QtAttachCoreLib()) {
+        ControllerDialog *controller = new ControllerDialog();
+        controller->show();
+    }
 }

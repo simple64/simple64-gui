@@ -13,7 +13,7 @@ void SettingsDialog::handleCoreButton()
 {
     QSettings settings("mupen64plus", "gui");
     QString fileName = QFileDialog::getOpenFileName(this,
-        tr("Locate Core Library"), NULL, tr("Shares Libraries (*.dylib *.so* *.dll)"));
+        tr("Locate Core Library"), NULL, tr("Shared Libraries (*.dylib *.so* *.dll)"));
     if (!fileName.isNull()) {
         corePath->setText(fileName);
         settings.setValue("coreLibPath", fileName);

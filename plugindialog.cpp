@@ -52,9 +52,11 @@ void paramListCallback(void * context, const char *ParamName, m64p_type ParamTyp
     QString l_ParamString;
     QString helper = (*ConfigGetParameterHelp)(current_handle, ParamName);
     QLabel *desc = new QLabel(ParamName);
-    helper.prepend("<span style=\"color:black;\">");
-    helper.append("</span>");
-    desc->setToolTip(helper);
+    if (!helper.isEmpty()) {
+       helper.prepend("<span style=\"color:black;\">");
+       helper.append("</span>");
+       desc->setToolTip(helper);
+    }
     desc->setStyleSheet("border: 1px solid; padding: 10px");
     my_layout->addWidget(desc, *my_row, 0);
     void *my_Widget;
@@ -122,6 +124,8 @@ PluginDialog::PluginDialog()
     (*ConfigListParameters)(coreConfigHandle, (char*)"Core", paramListCallback);
     QScrollArea *coreScroll = new QScrollArea;
     coreScroll->setWidget(coreSettings);
+    coreScroll->setMinimumWidth(coreSettings->sizeHint().width() + 20);
+    coreScroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     tabWidget->addTab(coreScroll, tr("Core"));
 
     QWidget *videoGenSettings = new QWidget;
@@ -131,6 +135,8 @@ PluginDialog::PluginDialog()
     (*ConfigListParameters)(videoGenConfigHandle, (char*)"Video-General", paramListCallback);
     QScrollArea *videoGenScroll = new QScrollArea;
     videoGenScroll->setWidget(videoGenSettings);
+    videoGenScroll->setMinimumWidth(videoGenSettings->sizeHint().width() + 20);
+    videoGenScroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     tabWidget->addTab(videoGenScroll, tr("Video-General"));
 
     QWidget *audioSettings = new QWidget;
@@ -143,6 +149,8 @@ PluginDialog::PluginDialog()
     (*ConfigListParameters)(audioConfigHandle, (char*)"Audio", paramListCallback);
     QScrollArea *audioScroll = new QScrollArea;
     audioScroll->setWidget(audioSettings);
+    audioScroll->setMinimumWidth(audioSettings->sizeHint().width() + 20);
+    audioScroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     tabWidget->addTab(audioScroll, tr("Audio Plugin"));
 
     QWidget *videoSettings = new QWidget;
@@ -155,6 +163,8 @@ PluginDialog::PluginDialog()
     (*ConfigListParameters)(videoConfigHandle, (char*)"Video", paramListCallback);
     QScrollArea *videoScroll = new QScrollArea;
     videoScroll->setWidget(videoSettings);
+    videoScroll->setMinimumWidth(videoSettings->sizeHint().width() + 20);
+    videoScroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     tabWidget->addTab(videoScroll, tr("Video Plugin"));
 
     mainLayout->addWidget(tabWidget);

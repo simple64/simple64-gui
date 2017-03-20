@@ -6,6 +6,12 @@ mupen64plus-gui is written in Qt5. It supports everything you'd expect from a mu
 
 You can try this out by downloading [**m64p**](https://m64p.github.io/). **m64p** is mupen64plus + GLideN64 + this GUI
 
+##Dependencies
+
+Qt 5.4 (this comes statically linked with the Windows binary build in m64p, so you don't need to worry about this on Windows).
+
+SDL2
+
 ## Building (tested on Linux and MinGW)
 
 On Ubuntu you'll want to install ```qt5-default```
@@ -18,13 +24,3 @@ qmake ../mupen64plus-gui.pro
 make -j4
 ```
 then you can run ```./mupen64plus-gui```
-
-## Some techincal details:
-
-It requires Qt 5.4 (this comes statically linked with the Windows binary build in m64p, so you don't need to worry about this on Windows).
-
-It is high-performance. The emulator runs in it's own thread. The game is displayed inside a QOpenGLWindow (native OpenGL Window, no extra rendering done by Qt).
-
-## TODO
-
-Controller configuration (auto-configuration already works).

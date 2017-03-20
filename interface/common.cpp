@@ -28,8 +28,7 @@
 #include "plugin.h"
 #include "m64p_types.h"
 #include "core_interface.h"
-#include "SDL_scancode.h"
-#include "SDL_keycode.h"
+#include <SDL2/SDL_keyboard.h>
 #include "version.h"
 #include "cheat.h"
 
@@ -85,9 +84,8 @@ void openROM(std::string filename)
     }
 
     /* get the length of the ROM, allocate memory buffer, load it from disk */
-    long romlength = 0;
     fseek(fPtr, 0L, SEEK_END);
-    romlength = ftell(fPtr);
+    size_t romlength = (size_t)ftell(fPtr);
     fseek(fPtr, 0L, SEEK_SET);
     unsigned char *ROM_buffer = (unsigned char *) malloc(romlength);
     if (ROM_buffer == NULL)
@@ -191,7 +189,7 @@ int QT2SDL2MOD(Qt::KeyboardModifiers modifiers)
 
 int QT2SDL2(int qtKey)
 {
-    int returnValue;
+    SDL_Scancode returnValue;
     switch (qtKey) {
     case Qt::Key_Escape:
         returnValue = SDL_SCANCODE_ESCAPE;
@@ -491,7 +489,7 @@ int QT2SDL2(int qtKey)
         returnValue = SDL_SCANCODE_GRAVE;
         break;
     default:
-        returnValue = -1;
+        returnValue = SDL_SCANCODE_UNKNOWN;
         break;
     }
 

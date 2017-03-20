@@ -12,7 +12,7 @@ void OGLWindow::keyPressEvent(QKeyEvent *event)
 {
     int modValue = QT2SDL2MOD(event->modifiers());
     int keyValue = QT2SDL2(event->key());
-    if (keyValue != -1 && QtAttachCoreLib())
+    if (keyValue != 0 && QtAttachCoreLib())
         (*CoreDoCommand)(M64CMD_SEND_SDL_KEYDOWN, (modValue << 16) + keyValue, NULL);
 }
 
@@ -20,7 +20,7 @@ void OGLWindow::keyReleaseEvent(QKeyEvent *event)
 {
     int modValue = QT2SDL2MOD(event->modifiers());
     int keyValue = QT2SDL2(event->key());
-    if (keyValue != -1 && QtAttachCoreLib())
+    if (keyValue != 0 && QtAttachCoreLib())
         (*CoreDoCommand)(M64CMD_SEND_SDL_KEYUP, (modValue << 16) + keyValue, NULL);
 }
 

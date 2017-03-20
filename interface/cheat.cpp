@@ -201,7 +201,7 @@ void ReadCheats(char *RomSection)
         return;
     }
     fseek(fPtr, 0L, SEEK_END);
-    long IniLength = ftell(fPtr);
+    size_t IniLength = (size_t)ftell(fPtr);
     fseek(fPtr, 0L, SEEK_SET);
     l_IniText = (char *) malloc(IniLength + 1);
     if (l_IniText == NULL)

@@ -66,6 +66,8 @@ CheatDialog::CheatDialog()
     }
     cheatSettings->setLayout(cheatLayout);
     scrollArea->setWidget(cheatSettings);
+    scrollArea->setMinimumWidth(cheatSettings->sizeHint().width() + 20);
+    scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     mainLayout->addWidget(scrollArea);
     this->setLayout(mainLayout);
 
