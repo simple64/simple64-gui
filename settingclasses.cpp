@@ -87,14 +87,12 @@ CustomComboBox::CustomComboBox()
                 temp = index;
                 (*ConfigSetParameter)(m_CurrentHandle, "name", M64TYPE_STRING, SDL_JoystickName(SDL_JoystickOpen(index)));
             }
-            (*ConfigSetParameter)(m_CurrentHandle, m_ParamName.c_str(), m_ParamType, &temp);
         } else if (m_ParamName == "mode") {
             if (index)
                 *m_Auto = true;
             else
                 *m_Auto = false;
             temp = index;
-            (*ConfigSetParameter)(m_CurrentHandle, m_ParamName.c_str(), m_ParamType, &temp);
         } else if (m_ParamName == "plugin") {
             switch (index) {
             case 0:
@@ -110,6 +108,7 @@ CustomComboBox::CustomComboBox()
                 break;
             }
         }
+        (*ConfigSetParameter)(m_CurrentHandle, m_ParamName.c_str(), m_ParamType, &temp);
         if (m_ParamName == "mode" || m_ParamName == "device") {
             p1Row = 0;
             p2Row = 0;
@@ -119,10 +118,7 @@ CustomComboBox::CustomComboBox()
             (*ConfigListParameters)(p2Handle, (char*)"Input-SDL-Control2", controllerListCallback);
             (*ConfigListParameters)(p3Handle, (char*)"Input-SDL-Control3", controllerListCallback);
             (*ConfigListParameters)(p4Handle, (char*)"Input-SDL-Control4", controllerListCallback);
-            (*ConfigSaveFile)();
-            return;
         }
-        (*ConfigSetParameter)(m_CurrentHandle, m_ParamName.c_str(), m_ParamType, &temp);
         (*ConfigSaveFile)();
     });
 }
