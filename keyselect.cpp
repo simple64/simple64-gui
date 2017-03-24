@@ -96,7 +96,6 @@ void KeySelect::timerEvent(QTimerEvent *te)
         killTimer(te->timerId());
         m_timer = 0;
         this->close();
-        return;
     }
 }
 
