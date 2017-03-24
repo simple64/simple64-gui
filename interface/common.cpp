@@ -28,7 +28,7 @@
 #include "plugin.h"
 #include "m64p_types.h"
 #include "core_interface.h"
-#include <SDL2/SDL_keyboard.h>
+#include <SDL2/SDL_keycode.h>
 #include "version.h"
 #include "cheat.h"
 
