@@ -14,6 +14,7 @@
 m64p_handle coreConfigHandle;
 m64p_handle videoGenConfigHandle;
 m64p_handle audioConfigHandle;
+m64p_handle rspConfigHandle;
 m64p_handle videoConfigHandle;
 QGridLayout *coreLayout;
 int coreLayoutRow;
@@ -21,6 +22,8 @@ QGridLayout *videoGenLayout;
 int videoGenRow;
 QGridLayout *audioLayout;
 int audioRow;
+QGridLayout *rspLayout;
+int rspRow;
 QGridLayout *videoLayout;
 int videoRow;
 
@@ -45,6 +48,10 @@ void paramListCallback(void * context, const char *ParamName, m64p_type ParamTyp
         my_layout = videoLayout;
         my_row = &videoRow;
         current_handle = videoConfigHandle;
+    } else if (strcmp((char*)context, "RSP") == 0) {
+        my_layout = rspLayout;
+        my_row = &rspRow;
+        current_handle = rspConfigHandle;
     }
     int l_ParamInt;
     bool l_ParamBool;
@@ -139,13 +146,29 @@ PluginDialog::PluginDialog()
     videoGenScroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     tabWidget->addTab(videoGenScroll, tr("Video-General"));
 
+    QWidget *rspSettings = new QWidget;
+    rspLayout = new QGridLayout;
+    rspSettings->setLayout(rspLayout);
+    QString name = settings.value("rspPlugin").toString();
+    name.remove(OSAL_DLL_EXTENSION);
+    QStringList name2 = name.split("-");
+    QString name3 = name2.at(1) + "-" + name2.at(2);
+    (*ConfigOpenSection)(name3.toLatin1().data(), &rspConfigHandle);
+    (*ConfigListParameters)(rspConfigHandle, (char*)"RSP", paramListCallback);
+    QScrollArea *rspScroll = new QScrollArea;
+    rspScroll->setWidget(rspSettings);
+    rspScroll->setMinimumWidth(rspSettings->sizeHint().width() + 20);
+    rspScroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    tabWidget->addTab(rspScroll, tr("RSP Plugin"));
+
     QWidget *audioSettings = new QWidget;
     audioLayout = new QGridLayout;
     audioSettings->setLayout(audioLayout);
-    QString name = settings.value("audioPlugin").toString();
-    name.remove("mupen64plus-");
+    name = settings.value("audioPlugin").toString();
     name.remove(OSAL_DLL_EXTENSION);
-    (*ConfigOpenSection)(name.toLatin1().data(), &audioConfigHandle);
+    name2 = name.split("-");
+    name3 = name2.at(1) + "-" + name2.at(2);
+    (*ConfigOpenSection)(name3.toLatin1().data(), &audioConfigHandle);
     (*ConfigListParameters)(audioConfigHandle, (char*)"Audio", paramListCallback);
     QScrollArea *audioScroll = new QScrollArea;
     audioScroll->setWidget(audioSettings);
@@ -157,9 +180,10 @@ PluginDialog::PluginDialog()
     videoLayout = new QGridLayout;
     videoSettings->setLayout(videoLayout);
     name = settings.value("videoPlugin").toString();
-    name.remove("mupen64plus-");
     name.remove(OSAL_DLL_EXTENSION);
-    (*ConfigOpenSection)(name.toLatin1().data(), &videoConfigHandle);
+    name2 = name.split("-");
+    name3 = name2.at(1) + "-" + name2.at(2);
+    (*ConfigOpenSection)(name3.toLatin1().data(), &videoConfigHandle);
     (*ConfigListParameters)(videoConfigHandle, (char*)"Video", paramListCallback);
     QScrollArea *videoScroll = new QScrollArea;
     videoScroll->setWidget(videoSettings);
