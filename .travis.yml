@@ -1,0 +1,32 @@
+# Copying and distribution of this file, with or without modification,
+# are permitted in any medium without royalty provided this notice is
+# preserved.  This file is offered as-is, without any warranty.
+# Names of contributors must not be used to endorse or promote products
+# derived from this file without specific prior written permission.
+
+
+# See YAML format https://en.wikipedia.org/wiki/YAML
+# See Travis CI (Continuous Integration) https://docs.travis-ci.com/
+
+
+language: cpp
+
+os:
+  - linux
+
+compiler:
+  - clang
+  - gcc
+
+addons:
+  apt:
+    packages:
+      - qt5-qmake
+      - qt5-default
+      - libsdl2-dev
+
+script:
+  - mkdir build
+  - cd build
+  - qmake ../mupen64plus-gui.pro
+  - make -j`nproc`
