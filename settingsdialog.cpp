@@ -72,6 +72,7 @@ SettingsDialog::SettingsDialog()
     Filter.replace(0,"mupen64plus-video*");
     current = PluginDir->entryList(Filter);
     videoChoice->addItems(current);
+    videoChoice->addItem("dummy");
     int my_index = videoChoice->findText(qtGfxPlugin);
     if (my_index != -1) {
         videoChoice->setCurrentIndex(my_index);
@@ -91,6 +92,7 @@ SettingsDialog::SettingsDialog()
     Filter.replace(0,"mupen64plus-audio*");
     current = PluginDir->entryList(Filter);
     audioChoice->addItems(current);
+    audioChoice->addItem("dummy");
     my_index = audioChoice->findText(qtAudioPlugin);
     if (my_index != -1) {
         audioChoice->setCurrentIndex(my_index);
@@ -109,6 +111,7 @@ SettingsDialog::SettingsDialog()
     Filter.replace(0,"mupen64plus-rsp*");
     current = PluginDir->entryList(Filter);
     rspChoice->addItems(current);
+    rspChoice->addItem("dummy");
     my_index = rspChoice->findText(qtRspPlugin);
     if (my_index != -1) {
         rspChoice->setCurrentIndex(my_index);
