@@ -29,9 +29,9 @@ int videoRow;
 
 void paramListCallback(void * context, const char *ParamName, m64p_type ParamType)
 {
-    QGridLayout *my_layout;
-    int * my_row;
-    m64p_handle current_handle;
+    QGridLayout *my_layout = nullptr;
+    int * my_row = nullptr;
+    m64p_handle current_handle = nullptr;
     if (strcmp((char*)context, "Core") == 0) {
         my_layout = coreLayout;
         my_row = &coreLayoutRow;
@@ -66,7 +66,7 @@ void paramListCallback(void * context, const char *ParamName, m64p_type ParamTyp
     }
     desc->setStyleSheet("border: 1px solid; padding: 10px");
     my_layout->addWidget(desc, *my_row, 0);
-    void *my_Widget;
+    void *my_Widget = nullptr;
     switch (ParamType) {
     case M64TYPE_INT:
         my_Widget = new CustomLineEdit;

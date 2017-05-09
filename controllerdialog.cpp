@@ -33,10 +33,10 @@ void controllerListCallback(void * context, const char *ParamName, m64p_type Par
     if (strcmp(ParamName, "version") == 0 || strcmp(ParamName, "name") == 0)
         return;
 
-    int *myRow;
-    bool *pAuto;
-    QGridLayout *my_layout;
-    m64p_handle current_handle;
+    int *myRow = nullptr;
+    bool *pAuto = nullptr;
+    QGridLayout *my_layout = nullptr;
+    m64p_handle current_handle = nullptr;
     if (strcmp((char*)context, "Input-SDL-Control1") == 0) {
         current_handle = p1Handle;
         my_layout = p1Layout;
@@ -66,8 +66,8 @@ void controllerListCallback(void * context, const char *ParamName, m64p_type Par
         }
     }
 
-    int l_ParamInt;
-    bool l_ParamBool;
+    int l_ParamInt = 0;
+    bool l_ParamBool = 0;
     QString l_ParamString;
     QString helper = (*ConfigGetParameterHelp)(current_handle, ParamName);
     QLabel *desc = new QLabel(ParamName);
