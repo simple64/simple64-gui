@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <QCoreApplication>
 
 #include "core_interface.h"
 #include "m64p_common.h"
@@ -111,6 +112,8 @@ m64p_error PluginSearchLoad()
     /* start by checking the directory given on the command line */
     if (!qtPluginDir.isNull())
         lib_filelist = osal_library_search(qtPluginDir.toLatin1().data());
+    if (lib_filelist == NULL)
+        lib_filelist = osal_library_search(QCoreApplication::applicationDirPath().toLatin1().data());
 
     /* try to load one of each type of plugin */
     for (i = 0; i < 4; i++)
