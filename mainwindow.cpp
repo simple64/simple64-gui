@@ -66,8 +66,8 @@ MainWindow::MainWindow(QWidget *parent) :
     }
     if (!settings.contains("pluginDirPath")) {
         QStringList files2;
-        findRecursion("/usr/lib", QString("mupen64plus-rsp-hle") + OSAL_DLL_EXTENSION, &files2);
-        findRecursion("/usr/local/lib", QString("mupen64plus-rsp-hle") + OSAL_DLL_EXTENSION, &files2);
+        findRecursion("/usr/lib", QString("mupen64plus-rsp-cxd4-sse2") + OSAL_DLL_EXTENSION, &files2);
+        findRecursion("/usr/local/lib", QString("mupen64plus-rsp-cxd4-sse2") + OSAL_DLL_EXTENSION, &files2);
         if (files2.size() > 0) {
             QFileInfo pluginPath(files2.at(0));
             settings.setValue("pluginDirPath", pluginPath.absolutePath());
@@ -109,7 +109,7 @@ MainWindow::MainWindow(QWidget *parent) :
     if (!settings.contains("rspPlugin")) {
         Filter.replace(0,"mupen64plus-rsp*");
         current = PluginDir->entryList(Filter);
-        default_value = "mupen64plus-rsp-hle";
+        default_value = "mupen64plus-rsp-cxd4-sse2";
         default_value += OSAL_DLL_EXTENSION;
         if (current.isEmpty())
             settings.setValue("rspPlugin", default_value);
