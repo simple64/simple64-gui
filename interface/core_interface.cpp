@@ -390,6 +390,7 @@ m64p_error DetachCoreLib(void)
     /* detach the shared library */
     osal_dynlib_close(CoreHandle);
     CoreHandle = NULL;
+    coreStarted = 0;
 
     return M64ERR_SUCCESS;
 }

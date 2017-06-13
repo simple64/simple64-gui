@@ -5,6 +5,7 @@
 #include "common.h"
 
 #include <QLabel>
+#include <QMessageBox>
 #include <QScrollArea>
 #include <QTabWidget>
 #include <QVBoxLayout>
@@ -204,6 +205,27 @@ void controllerListCallback(void * context, const char *ParamName, m64p_type Par
     ++*myRow;
 }
 
+void ControllerDialog::handleResetButton()
+{
+    int value;
+    (*CoreDoCommand)(M64CMD_CORE_STATE_QUERY, M64CORE_EMU_STATE, &value);
+    if (value == M64EMU_STOPPED) {
+        (*ConfigDeleteSection)("Input-SDL-Control1");
+        (*ConfigDeleteSection)("Input-SDL-Control2");
+        (*ConfigDeleteSection)("Input-SDL-Control3");
+        (*ConfigDeleteSection)("Input-SDL-Control4");
+        (*ConfigSaveFile)();
+        (*CoreShutdown)();
+        (*DetachCoreLib)();
+        this->close();
+    }
+    else {
+        QMessageBox msgBox;
+        msgBox.setText("Emulator must be stopped.");
+        msgBox.exec();
+    }
+}
+
 ControllerDialog::ControllerDialog()
 {
     int value;
@@ -277,5 +299,8 @@ ControllerDialog::ControllerDialog()
     tabWidget->addTab(p4Scroll, tr("Player 4"));
 
     mainLayout->addWidget(tabWidget);
+    QPushButton *resetButton = new QPushButton("Reset All Settings");
+    connect(resetButton, SIGNAL (released()),this, SLOT (handleResetButton()));
+    mainLayout->addWidget(resetButton);
     setLayout(mainLayout);
 }

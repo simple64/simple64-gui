@@ -9,6 +9,7 @@
 #include <QTabWidget>
 #include <QGridLayout>
 #include <QValidator>
+#include <QMessageBox>
 #include "settingclasses.h"
 
 m64p_handle coreConfigHandle;
@@ -106,6 +107,28 @@ void paramListCallback(void * context, const char *ParamName, m64p_type ParamTyp
     ++*my_row;
 }
 
+void PluginDialog::handleResetButton()
+{
+    int value;
+    (*CoreDoCommand)(M64CMD_CORE_STATE_QUERY, M64CORE_EMU_STATE, &value);
+    if (value == M64EMU_STOPPED) {
+        (*ConfigDeleteSection)("Core");
+        (*ConfigDeleteSection)("Video-General");
+        (*ConfigDeleteSection)(RSPName.toLatin1().data());
+        (*ConfigDeleteSection)(AudioName.toLatin1().data());
+        (*ConfigDeleteSection)(VideoName.toLatin1().data());
+        (*ConfigSaveFile)();
+        (*CoreShutdown)();
+        (*DetachCoreLib)();
+        this->close();
+    }
+    else {
+        QMessageBox msgBox;
+        msgBox.setText("Emulator must be stopped.");
+        msgBox.exec();
+    }
+}
+
 PluginDialog::PluginDialog()
 {
     int value;
@@ -152,8 +175,8 @@ PluginDialog::PluginDialog()
     QString name = settings.value("rspPlugin").toString();
     name.remove(OSAL_DLL_EXTENSION);
     QStringList name2 = name.split("-");
-    QString name3 = name2.at(1) + "-" + name2.at(2);
-    (*ConfigOpenSection)(name3.toLatin1().data(), &rspConfigHandle);
+    RSPName = name2.at(1) + "-" + name2.at(2);
+    (*ConfigOpenSection)(RSPName.toLatin1().data(), &rspConfigHandle);
     (*ConfigListParameters)(rspConfigHandle, (char*)"RSP", paramListCallback);
     QScrollArea *rspScroll = new QScrollArea;
     rspScroll->setWidget(rspSettings);
@@ -167,8 +190,8 @@ PluginDialog::PluginDialog()
     name = settings.value("audioPlugin").toString();
     name.remove(OSAL_DLL_EXTENSION);
     name2 = name.split("-");
-    name3 = name2.at(1) + "-" + name2.at(2);
-    (*ConfigOpenSection)(name3.toLatin1().data(), &audioConfigHandle);
+    AudioName = name2.at(1) + "-" + name2.at(2);
+    (*ConfigOpenSection)(AudioName.toLatin1().data(), &audioConfigHandle);
     (*ConfigListParameters)(audioConfigHandle, (char*)"Audio", paramListCallback);
     QScrollArea *audioScroll = new QScrollArea;
     audioScroll->setWidget(audioSettings);
@@ -182,8 +205,8 @@ PluginDialog::PluginDialog()
     name = settings.value("videoPlugin").toString();
     name.remove(OSAL_DLL_EXTENSION);
     name2 = name.split("-");
-    name3 = name2.at(1) + "-" + name2.at(2);
-    (*ConfigOpenSection)(name3.toLatin1().data(), &videoConfigHandle);
+    VideoName = name2.at(1) + "-" + name2.at(2);
+    (*ConfigOpenSection)(VideoName.toLatin1().data(), &videoConfigHandle);
     (*ConfigListParameters)(videoConfigHandle, (char*)"Video", paramListCallback);
     QScrollArea *videoScroll = new QScrollArea;
     videoScroll->setWidget(videoSettings);
@@ -192,5 +215,8 @@ PluginDialog::PluginDialog()
     tabWidget->addTab(videoScroll, tr("Video Plugin"));
 
     mainLayout->addWidget(tabWidget);
+    QPushButton *resetButton = new QPushButton("Reset All Settings");
+    connect(resetButton, SIGNAL (released()),this, SLOT (handleResetButton()));
+    mainLayout->addWidget(resetButton);
     setLayout(mainLayout);
 }

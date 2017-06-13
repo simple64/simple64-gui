@@ -20,6 +20,8 @@ class ControllerDialog : public QDialog
     Q_OBJECT
 public:
     ControllerDialog();
+private slots:
+    void handleResetButton();
 };
 
 #endif // CONTROLLERDIALOG_H
