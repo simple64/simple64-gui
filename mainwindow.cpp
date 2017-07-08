@@ -226,24 +226,23 @@ void MainWindow::createOGLWindow(QSurfaceFormat format)
 void MainWindow::openROM(QString filename)
 {
     if (QtAttachCoreLib()) {
-        int response;
-        (*CoreDoCommand)(M64CMD_CORE_STATE_QUERY, M64CORE_EMU_STATE, &response);
-        if (response == M64EMU_STOPPED) {
-            workerThread = new WorkerThread();
-            workerThread->setFileName(filename);
-            workerThread->start();
+        (*CoreDoCommand)(M64CMD_STOP, 0, NULL);
+        if (workerThread != nullptr)
+            while (workerThread->isRunning()){}
+        workerThread = new WorkerThread();
+        workerThread->setFileName(filename);
+        workerThread->start();
 
-            QSettings settings("mupen64plus", "gui");
-            QStringList list;
-            if (settings.contains("RecentROMs"))
-                    list = settings.value("RecentROMs").toString().split(";");
-            list.removeAll(filename);
-            list.prepend(filename);
-            if (list.size() > 5)
-                list.removeLast();
-            settings.setValue("RecentROMs",list.join(";"));
-            updateOpenRecent();
-        }
+        QSettings settings("mupen64plus", "gui");
+        QStringList list;
+        if (settings.contains("RecentROMs"))
+            list = settings.value("RecentROMs").toString().split(";");
+        list.removeAll(filename);
+        list.prepend(filename);
+        if (list.size() > 5)
+            list.removeLast();
+        settings.setValue("RecentROMs",list.join(";"));
+        updateOpenRecent();
     }
 }
 
