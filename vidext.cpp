@@ -19,6 +19,7 @@ m64p_error qtVidExtFuncInit(void)
 
 m64p_error qtVidExtFuncQuit(void)
 {
+    workerThread->toggleFS(M64VIDEO_WINDOWED);
     return M64ERR_SUCCESS;
 }
 
