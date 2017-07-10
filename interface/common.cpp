@@ -176,13 +176,13 @@ void openROM(std::string filename)
 int QT2SDL2MOD(Qt::KeyboardModifiers modifiers)
 {
     int value = 0;
-    if (modifiers && Qt::ShiftModifier)
+    if (modifiers & Qt::ShiftModifier)
         value |= KMOD_SHIFT;
-    if (modifiers && Qt::ControlModifier)
+    if (modifiers & Qt::ControlModifier)
         value |= KMOD_CTRL;
-    if (modifiers && Qt::AltModifier)
+    if (modifiers & Qt::AltModifier)
         value |= KMOD_ALT;
-    if (modifiers && Qt::MetaModifier)
+    if (modifiers & Qt::MetaModifier)
         value |= KMOD_GUI;
     return value;
 }
