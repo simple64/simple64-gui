@@ -183,9 +183,10 @@ void MainWindow::closeEvent (QCloseEvent *event)
 {
     if (QtAttachCoreLib())
         (*CoreDoCommand)(M64CMD_STOP, 0, NULL);
-    if (workerThread != nullptr)
+    if (workerThread != nullptr) {
         while (workerThread->isRunning())
             QCoreApplication::processEvents();
+    }
     event->accept();
 }
 
@@ -228,9 +229,10 @@ void MainWindow::openROM(QString filename)
 {
     if (QtAttachCoreLib()) {
         (*CoreDoCommand)(M64CMD_STOP, 0, NULL);
-        if (workerThread != nullptr)
+        if (workerThread != nullptr) {
             while (workerThread->isRunning())
                 QCoreApplication::processEvents();
+        }
         workerThread = new WorkerThread();
         workerThread->setFileName(filename);
         workerThread->start();
