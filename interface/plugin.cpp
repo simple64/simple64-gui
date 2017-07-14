@@ -24,6 +24,7 @@
 #include <string.h>
 #include <QCoreApplication>
 
+#include "workerthread.h"
 #include "core_interface.h"
 #include "m64p_common.h"
 #include "m64p_types.h"
@@ -148,7 +149,8 @@ m64p_error PluginSearchLoad()
         /* print out the particular plugin used */
         if (g_PluginMap[i].handle == NULL)
         {
-            DebugMessage(M64MSG_INFO, "using %s plugin: <dummy>", g_PluginMap[i].name);
+            QString name = g_PluginMap[i].name;
+            workerThread->pluginWarning(name);
         }
         else
         {

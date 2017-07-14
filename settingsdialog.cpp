@@ -76,6 +76,9 @@ SettingsDialog::SettingsDialog()
     int my_index = videoChoice->findText(qtGfxPlugin);
     if (my_index != -1) {
         videoChoice->setCurrentIndex(my_index);
+    } else {
+        settings.setValue("videoPlugin", videoChoice->currentText());
+        qtGfxPlugin = settings.value("videoPlugin").toString();
     }
     connect(videoChoice, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::activated),
         [=](const QString &text) {
@@ -96,6 +99,9 @@ SettingsDialog::SettingsDialog()
     my_index = audioChoice->findText(qtAudioPlugin);
     if (my_index != -1) {
         audioChoice->setCurrentIndex(my_index);
+    } else {
+        settings.setValue("audioPlugin", audioChoice->currentText());
+        qtAudioPlugin = settings.value("audioPlugin").toString();
     }
     connect(audioChoice, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::activated),
         [=](const QString &text) {
@@ -115,6 +121,9 @@ SettingsDialog::SettingsDialog()
     my_index = rspChoice->findText(qtRspPlugin);
     if (my_index != -1) {
         rspChoice->setCurrentIndex(my_index);
+    } else {
+        settings.setValue("rspPlugin", rspChoice->currentText());
+        qtRspPlugin = settings.value("rspPlugin").toString();
     }
     connect(rspChoice, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::activated),
         [=](const QString &text) {

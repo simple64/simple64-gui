@@ -25,6 +25,7 @@ public slots:
     void toggleFS(int force);
     void createOGLWindow(QSurfaceFormat format);
     void setTitle(std::string title);
+    void pluginWarning(QString name);
 
 private slots:
     void on_actionOpen_ROM_triggered();

@@ -214,6 +214,13 @@ void MainWindow::setTitle(std::string title)
     this->setWindowTitle(_title);
 }
 
+void MainWindow::pluginWarning(QString name)
+{
+    QMessageBox msgBox;
+    msgBox.setText("No " + name + " plugin attached. Please go to \"Settings->Plugin Selection\" and choose one.");
+    msgBox.exec();
+}
+
 void MainWindow::createOGLWindow(QSurfaceFormat format)
 {
     my_window = new OGLWindow();
