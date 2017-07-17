@@ -152,7 +152,8 @@ void controllerListCallback(void * context, const char *ParamName, m64p_type Par
         ((CustomComboBox*)my_Widget)->setParamName(ParamName);
         ((CustomComboBox*)my_Widget)->insertItem(0, "None");
         ((CustomComboBox*)my_Widget)->insertItem(1, "Mem pak");
-        ((CustomComboBox*)my_Widget)->insertItem(2, "Rumble pak");
+        ((CustomComboBox*)my_Widget)->insertItem(2, "Transfer pak");
+        ((CustomComboBox*)my_Widget)->insertItem(3, "Rumble pak");
         switch (l_ParamInt) {
         case 1:
             ((CustomComboBox*)my_Widget)->setCurrentIndex(0);
@@ -160,13 +161,15 @@ void controllerListCallback(void * context, const char *ParamName, m64p_type Par
         case 2:
             ((CustomComboBox*)my_Widget)->setCurrentIndex(1);
             break;
-        case 5:
+        case 4:
             ((CustomComboBox*)my_Widget)->setCurrentIndex(2);
+            break;
+        case 5:
+            ((CustomComboBox*)my_Widget)->setCurrentIndex(3);
             break;
         default:
             break;
         }
-        ((CustomComboBox*)my_Widget)->setDisabled(*pAuto);
     }
     else if (strcmp(ParamName, "mouse") == 0) {
         my_Widget = new CustomCheckBox;

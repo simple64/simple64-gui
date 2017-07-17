@@ -102,6 +102,9 @@ CustomComboBox::CustomComboBox()
                 temp = 2;
                 break;
             case 2:
+                temp = 4;
+                break;
+            case 3:
                 temp = 5;
                 break;
             default:
