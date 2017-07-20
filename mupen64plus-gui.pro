@@ -41,7 +41,8 @@ LIBS += -Wl,-Bdynamic -lSDL2
 SOURCES += osal/osal_dynamiclib_unix.c \
     osal/osal_files_unix.c
 
-LIBS += -ldl -lSDL2
+LIBS += -L/usr/local/lib -ldl -lSDL2
+INCLUDEPATH += /usr/local/include
 }
 
 HEADERS  += mainwindow.h \
