@@ -39,7 +39,7 @@ private:
     m64p_handle m_CurrentHandle;
     CustomPushButton *m_Button;
     bool m_Axis;
-    bool m_Number;
+    int m_Number;
     std::string m_Value;
     std::string m_PrevValue;
     int m_joyBlacklist[256];
