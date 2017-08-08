@@ -378,7 +378,7 @@ void MainWindow::on_actionSave_State_To_triggered()
 void MainWindow::on_actionLoad_State_From_triggered()
 {
     QString filename = QFileDialog::getOpenFileName(this,
-        tr("Open Save State"), NULL, tr("State Files (*.st*)"));
+        tr("Open Save State"), NULL, tr("State Files (*.st* *.pj*)"));
     if (!filename.isNull()) {
         if (QtAttachCoreLib()) {
             (*CoreDoCommand)(M64CMD_STATE_LOAD, 1, filename.toLatin1().data());
