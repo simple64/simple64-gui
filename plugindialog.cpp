@@ -71,38 +71,44 @@ void paramListCallback(void * context, const char *ParamName, m64p_type ParamTyp
     switch (ParamType) {
     case M64TYPE_INT:
         my_Widget = new CustomLineEdit;
+        ((CustomLineEdit*)my_Widget)->setConfigHandle(current_handle);
+        ((CustomLineEdit*)my_Widget)->setParamType(ParamType);
+        ((CustomLineEdit*)my_Widget)->setParamName(ParamName);
+        ((CustomLineEdit*)my_Widget)->setStyleSheet("border: 1px solid; padding: 10px");
         l_ParamInt = (*ConfigGetParamInt)(current_handle, ParamName);
         ((CustomLineEdit*)my_Widget)->setText(QString::number(l_ParamInt));
         ((CustomLineEdit*)my_Widget)->setValidator(new QIntValidator());
         break;
     case M64TYPE_FLOAT:
         my_Widget = new CustomLineEdit;
+        ((CustomLineEdit*)my_Widget)->setConfigHandle(current_handle);
+        ((CustomLineEdit*)my_Widget)->setParamType(ParamType);
+        ((CustomLineEdit*)my_Widget)->setParamName(ParamName);
+        ((CustomLineEdit*)my_Widget)->setStyleSheet("border: 1px solid; padding: 10px");
         l_ParamFloat = (*ConfigGetParamFloat)(current_handle, ParamName);
         ((CustomLineEdit*)my_Widget)->setText(QString::number(l_ParamFloat));
         ((CustomLineEdit*)my_Widget)->setValidator(new QDoubleValidator());
         break;
     case M64TYPE_BOOL:
         my_Widget = new CustomCheckBox;
+        ((CustomCheckBox*)my_Widget)->setConfigHandle(current_handle);
+        ((CustomCheckBox*)my_Widget)->setParamType(ParamType);
+        ((CustomCheckBox*)my_Widget)->setParamName(ParamName);
+        ((CustomCheckBox*)my_Widget)->setStyleSheet("border: 1px solid; padding: 10px");
         l_ParamBool = (*ConfigGetParamBool)(current_handle, ParamName);
         ((CustomCheckBox*)my_Widget)->setCheckState(l_ParamBool ? Qt::Checked : Qt::Unchecked);
         break;
     case M64TYPE_STRING:
         my_Widget = new CustomLineEdit;
-        l_ParamString = (*ConfigGetParamString)(current_handle, ParamName);
-        ((CustomLineEdit*)my_Widget)->setText(l_ParamString);
-        break;
-    }
-    if (ParamType == M64TYPE_BOOL) {
-        ((CustomCheckBox*)my_Widget)->setConfigHandle(current_handle);
-        ((CustomCheckBox*)my_Widget)->setParamType(ParamType);
-        ((CustomCheckBox*)my_Widget)->setParamName(ParamName);
-        ((CustomCheckBox*)my_Widget)->setStyleSheet("border: 1px solid; padding: 10px");
-    } else {
         ((CustomLineEdit*)my_Widget)->setConfigHandle(current_handle);
         ((CustomLineEdit*)my_Widget)->setParamType(ParamType);
         ((CustomLineEdit*)my_Widget)->setParamName(ParamName);
         ((CustomLineEdit*)my_Widget)->setStyleSheet("border: 1px solid; padding: 10px");
+        l_ParamString = (*ConfigGetParamString)(current_handle, ParamName);
+        ((CustomLineEdit*)my_Widget)->setText(l_ParamString);
+        break;
     }
+
     my_layout->addWidget((QWidget*)my_Widget, *my_row, 1);
     ++*my_row;
 }
