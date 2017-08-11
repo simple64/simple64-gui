@@ -228,12 +228,14 @@ void ControllerDialog::handleResetButton()
 
 ControllerDialog::ControllerDialog()
 {
+    m64p_error res;
     int value;
     (*CoreDoCommand)(M64CMD_CORE_STATE_QUERY, M64CORE_EMU_STATE, &value);
     if (value == M64EMU_STOPPED) {
         PluginSearchLoad();
         PluginUnload();
     }
+
     if (!SDL_WasInit(SDL_INIT_JOYSTICK)) {
         if (SDL_InitSubSystem(SDL_INIT_JOYSTICK) == -1)
         {
@@ -257,8 +259,9 @@ ControllerDialog::ControllerDialog()
     QWidget *p1Settings = new QWidget;
     p1Layout = new QGridLayout;
     p1Settings->setLayout(p1Layout);
-    (*ConfigOpenSection)("Input-SDL-Control1", &p1Handle);
-    (*ConfigListParameters)(p1Handle, (char*)"Input-SDL-Control1", controllerListCallback);
+    res = (*ConfigOpenSection)("Input-SDL-Control1", &p1Handle);
+    if (res == M64ERR_SUCCESS)
+        (*ConfigListParameters)(p1Handle, (char*)"Input-SDL-Control1", controllerListCallback);
     QScrollArea *p1Scroll = new QScrollArea;
     p1Scroll->setWidget(p1Settings);
     p1Scroll->setMinimumWidth(p1Settings->sizeHint().width() + 20);
@@ -268,8 +271,9 @@ ControllerDialog::ControllerDialog()
     QWidget *p2Settings = new QWidget;
     p2Layout = new QGridLayout;
     p2Settings->setLayout(p2Layout);
-    (*ConfigOpenSection)("Input-SDL-Control2", &p2Handle);
-    (*ConfigListParameters)(p2Handle, (char*)"Input-SDL-Control2", controllerListCallback);
+    res = (*ConfigOpenSection)("Input-SDL-Control2", &p2Handle);
+    if (res == M64ERR_SUCCESS)
+        (*ConfigListParameters)(p2Handle, (char*)"Input-SDL-Control2", controllerListCallback);
     QScrollArea *p2Scroll = new QScrollArea;
     p2Scroll->setWidget(p2Settings);
     p2Scroll->setMinimumWidth(p2Settings->sizeHint().width() + 20);
@@ -279,8 +283,9 @@ ControllerDialog::ControllerDialog()
     QWidget *p3Settings = new QWidget;
     p3Layout = new QGridLayout;
     p3Settings->setLayout(p3Layout);
-    (*ConfigOpenSection)("Input-SDL-Control3", &p3Handle);
-    (*ConfigListParameters)(p3Handle, (char*)"Input-SDL-Control3", controllerListCallback);
+    res = (*ConfigOpenSection)("Input-SDL-Control3", &p3Handle);
+    if (res == M64ERR_SUCCESS)
+        (*ConfigListParameters)(p3Handle, (char*)"Input-SDL-Control3", controllerListCallback);
     QScrollArea *p3Scroll = new QScrollArea;
     p3Scroll->setWidget(p3Settings);
     p3Scroll->setMinimumWidth(p3Settings->sizeHint().width() + 20);
@@ -290,8 +295,9 @@ ControllerDialog::ControllerDialog()
     QWidget *p4Settings = new QWidget;
     p4Layout = new QGridLayout;
     p4Settings->setLayout(p4Layout);
-    (*ConfigOpenSection)("Input-SDL-Control4", &p4Handle);
-    (*ConfigListParameters)(p4Handle, (char*)"Input-SDL-Control4", controllerListCallback);
+    res = (*ConfigOpenSection)("Input-SDL-Control4", &p4Handle);
+    if (res == M64ERR_SUCCESS)
+        (*ConfigListParameters)(p4Handle, (char*)"Input-SDL-Control4", controllerListCallback);
     QScrollArea *p4Scroll = new QScrollArea;
     p4Scroll->setWidget(p4Settings);
     p4Scroll->setMinimumWidth(p4Settings->sizeHint().width() + 20);

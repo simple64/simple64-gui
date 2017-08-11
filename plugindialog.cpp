@@ -131,6 +131,7 @@ void PluginDialog::handleResetButton()
 
 PluginDialog::PluginDialog()
 {
+    m64p_error res;
     int value;
     (*CoreDoCommand)(M64CMD_CORE_STATE_QUERY, M64CORE_EMU_STATE, &value);
     if (value == M64EMU_STOPPED) {
@@ -150,8 +151,9 @@ PluginDialog::PluginDialog()
     QWidget *coreSettings = new QWidget;
     coreLayout = new QGridLayout;
     coreSettings->setLayout(coreLayout);
-    (*ConfigOpenSection)("Core", &coreConfigHandle);
-    (*ConfigListParameters)(coreConfigHandle, (char*)"Core", paramListCallback);
+    res = (*ConfigOpenSection)("Core", &coreConfigHandle);
+    if (res == M64ERR_SUCCESS)
+        (*ConfigListParameters)(coreConfigHandle, (char*)"Core", paramListCallback);
     QScrollArea *coreScroll = new QScrollArea;
     coreScroll->setWidget(coreSettings);
     coreScroll->setMinimumWidth(coreSettings->sizeHint().width() + 20);
@@ -161,8 +163,9 @@ PluginDialog::PluginDialog()
     QWidget *videoGenSettings = new QWidget;
     videoGenLayout = new QGridLayout;
     videoGenSettings->setLayout(videoGenLayout);
-    (*ConfigOpenSection)("Video-General", &videoGenConfigHandle);
-    (*ConfigListParameters)(videoGenConfigHandle, (char*)"Video-General", paramListCallback);
+    res = (*ConfigOpenSection)("Video-General", &videoGenConfigHandle);
+    if (res == M64ERR_SUCCESS)
+        (*ConfigListParameters)(videoGenConfigHandle, (char*)"Video-General", paramListCallback);
     QScrollArea *videoGenScroll = new QScrollArea;
     videoGenScroll->setWidget(videoGenSettings);
     videoGenScroll->setMinimumWidth(videoGenSettings->sizeHint().width() + 20);
@@ -176,8 +179,9 @@ PluginDialog::PluginDialog()
     name.remove(OSAL_DLL_EXTENSION);
     QStringList name2 = name.split("-");
     RSPName = name2.at(1) + "-" + name2.at(2);
-    (*ConfigOpenSection)(RSPName.toLatin1().data(), &rspConfigHandle);
-    (*ConfigListParameters)(rspConfigHandle, (char*)"RSP", paramListCallback);
+    res = (*ConfigOpenSection)(RSPName.toLatin1().data(), &rspConfigHandle);
+    if (res == M64ERR_SUCCESS)
+        (*ConfigListParameters)(rspConfigHandle, (char*)"RSP", paramListCallback);
     QScrollArea *rspScroll = new QScrollArea;
     rspScroll->setWidget(rspSettings);
     rspScroll->setMinimumWidth(rspSettings->sizeHint().width() + 20);
@@ -191,8 +195,9 @@ PluginDialog::PluginDialog()
     name.remove(OSAL_DLL_EXTENSION);
     name2 = name.split("-");
     AudioName = name2.at(1) + "-" + name2.at(2);
-    (*ConfigOpenSection)(AudioName.toLatin1().data(), &audioConfigHandle);
-    (*ConfigListParameters)(audioConfigHandle, (char*)"Audio", paramListCallback);
+    res = (*ConfigOpenSection)(AudioName.toLatin1().data(), &audioConfigHandle);
+    if (res == M64ERR_SUCCESS)
+        (*ConfigListParameters)(audioConfigHandle, (char*)"Audio", paramListCallback);
     QScrollArea *audioScroll = new QScrollArea;
     audioScroll->setWidget(audioSettings);
     audioScroll->setMinimumWidth(audioSettings->sizeHint().width() + 20);
@@ -206,8 +211,9 @@ PluginDialog::PluginDialog()
     name.remove(OSAL_DLL_EXTENSION);
     name2 = name.split("-");
     VideoName = name2.at(1) + "-" + name2.at(2);
-    (*ConfigOpenSection)(VideoName.toLatin1().data(), &videoConfigHandle);
-    (*ConfigListParameters)(videoConfigHandle, (char*)"Video", paramListCallback);
+    res = (*ConfigOpenSection)(VideoName.toLatin1().data(), &videoConfigHandle);
+    if (res == M64ERR_SUCCESS)
+        (*ConfigListParameters)(videoConfigHandle, (char*)"Video", paramListCallback);
     QScrollArea *videoScroll = new QScrollArea;
     videoScroll->setWidget(videoSettings);
     videoScroll->setMinimumWidth(videoSettings->sizeHint().width() + 20);
