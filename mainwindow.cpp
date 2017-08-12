@@ -161,11 +161,13 @@ void MainWindow::toggleFS(int force)
             menuBar()->hide();
         statusBar()->hide();
         showFullScreen();
+        setCursor(Qt::BlankCursor);
     } else if (response == M64VIDEO_FULLSCREEN || force == M64VIDEO_WINDOWED) {
         if (!menuBar()->isNativeMenuBar())
             menuBar()->show();
         statusBar()->show();
         showNormal();
+        setCursor(Qt::ArrowCursor);
     }
 }
 
