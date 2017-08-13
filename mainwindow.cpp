@@ -234,6 +234,12 @@ void MainWindow::createOGLWindow(QSurfaceFormat format)
     setCentralWidget(container);
 }
 
+void MainWindow::deleteOGLWindow()
+{
+    my_window->doneCurrent();
+    my_window->destroy();
+}
+
 void MainWindow::openROM(QString filename)
 {
     if (QtAttachCoreLib()) {

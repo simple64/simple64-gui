@@ -18,6 +18,7 @@ signals:
     void resizeMainWindow(int Width, int Height);
     void toggleFS(int force);
     void createOGLWindow(QSurfaceFormat format);
+    void deleteOGLWindow();
     void setTitle(std::string title);
     void pluginWarning(QString name);
 
