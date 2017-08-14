@@ -22,10 +22,12 @@
 #ifndef __COMMON_H__
 #define __COMMON_H__
 
+#include "m64p_types.h"
+
 #ifdef __cplusplus
 #include <Qt>
 #include <string>
-void openROM(std::string filename);
+m64p_error openROM(std::string filename);
 int QT2SDL2MOD(Qt::KeyboardModifiers modifiers);
 extern "C" {
 #endif

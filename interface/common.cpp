@@ -26,7 +26,6 @@
 #include <stdio.h>
 #include "common.h"
 #include "plugin.h"
-#include "m64p_types.h"
 #include "core_interface.h"
 #include <SDL2/SDL_keycode.h>
 #include "version.h"
@@ -71,7 +70,7 @@ void DebugCallback(void *Context, int level, const char *message)
         printf("%s Unknown: %s\n", (const char *) Context, message);
 }
 
-void openROM(std::string filename)
+m64p_error openROM(std::string filename)
 {
     /* load ROM image */
     FILE *fPtr = fopen(filename.c_str(), "rb");
@@ -80,7 +79,7 @@ void openROM(std::string filename)
         DebugMessage(M64MSG_ERROR, "couldn't open ROM file '%s' for reading.", filename.c_str());
         (*CoreShutdown)();
         DetachCoreLib();
-        return;
+        return M64ERR_INVALID_STATE;
     }
 
     /* get the length of the ROM, allocate memory buffer, load it from disk */
@@ -94,7 +93,7 @@ void openROM(std::string filename)
         fclose(fPtr);
         (*CoreShutdown)();
         DetachCoreLib();
-        return;
+        return M64ERR_INVALID_STATE;
     }
     else if (fread(ROM_buffer, 1, romlength, fPtr) != romlength)
     {
@@ -103,7 +102,7 @@ void openROM(std::string filename)
         fclose(fPtr);
         (*CoreShutdown)();
         DetachCoreLib();
-        return;
+        return M64ERR_INVALID_STATE;
     }
     fclose(fPtr);
 
@@ -114,7 +113,7 @@ void openROM(std::string filename)
         free(ROM_buffer);
         (*CoreShutdown)();
         DetachCoreLib();
-        return;
+        return M64ERR_INVALID_STATE;
     }
     free(ROM_buffer); /* the core copies the ROM image, so we can release this buffer immediately */
 
@@ -125,7 +124,7 @@ void openROM(std::string filename)
         (*CoreDoCommand)(M64CMD_ROM_CLOSE, 0, NULL);
         (*CoreShutdown)();
         DetachCoreLib();
-        return;
+        return M64ERR_INVALID_STATE;
     }
     int i;
     /* attach plugins to core */
@@ -137,7 +136,7 @@ void openROM(std::string filename)
             (*CoreDoCommand)(M64CMD_ROM_CLOSE, 0, NULL);
             (*CoreShutdown)();
             DetachCoreLib();
-            return;
+            return M64ERR_INVALID_STATE;
         }
     }
     m64p_rom_header    l_RomHeader;
@@ -145,7 +144,7 @@ void openROM(std::string filename)
     if ((*CoreDoCommand)(M64CMD_ROM_GET_HEADER, sizeof(l_RomHeader), &l_RomHeader) != M64ERR_SUCCESS)
     {
         DebugMessage(M64MSG_WARNING, "couldn't get ROM header information from core library");
-        return;
+        return M64ERR_INVALID_STATE;
     }
 
     /* generate section name from ROM's CRC and country code */
@@ -171,6 +170,8 @@ void openROM(std::string filename)
     (*CoreDoCommand)(M64CMD_ROM_CLOSE, 0, NULL);
 
     CheatFreeAll();
+
+    return M64ERR_SUCCESS;
 }
 
 int QT2SDL2MOD(Qt::KeyboardModifiers modifiers)

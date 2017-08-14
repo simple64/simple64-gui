@@ -11,11 +11,13 @@ void WorkerThread::run()
     connect(this, SIGNAL(deleteOGLWindow()), w, SLOT(deleteOGLWindow()), Qt::BlockingQueuedConnection);
     connect(this, SIGNAL(setTitle(std::string)), w, SLOT(setTitle(std::string)), Qt::BlockingQueuedConnection);
     connect(this, SIGNAL(pluginWarning(QString)), w, SLOT(pluginWarning(QString)), Qt::BlockingQueuedConnection);
-    openROM(m_fileName.toStdString());
-    (*ConfigSaveFile)();
-    my_window->doneCurrent();
-    my_window->context()->moveToThread(QApplication::instance()->thread());
-    deleteOGLWindow();
+    m64p_error res = openROM(m_fileName.toStdString());
+    if (res == M64ERR_SUCCESS) {
+        (*ConfigSaveFile)();
+        my_window->doneCurrent();
+        my_window->context()->moveToThread(QApplication::instance()->thread());
+        deleteOGLWindow();
+    }
 }
 
 void WorkerThread::setFileName(QString filename)

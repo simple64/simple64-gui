@@ -14,6 +14,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
+    void openROM(QString filename);
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
@@ -64,7 +65,6 @@ private slots:
     void on_actionController_Configuration_triggered();
 
 private:
-    void openROM(QString filename);
     void updateOpenRecent();
     void findRecursion(const QString &path, const QString &pattern, QStringList *result);
     Ui::MainWindow *ui;
