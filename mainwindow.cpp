@@ -68,6 +68,9 @@ MainWindow::MainWindow(QWidget *parent) :
         QStringList files2;
         findRecursion("/usr/lib", QString("mupen64plus-rsp-cxd4-sse2") + OSAL_DLL_EXTENSION, &files2);
         findRecursion("/usr/local/lib", QString("mupen64plus-rsp-cxd4-sse2") + OSAL_DLL_EXTENSION, &files2);
+        findRecursion("/usr/lib", QString("mupen64plus-rsp-hle") + OSAL_DLL_EXTENSION, &files2);
+        findRecursion("/usr/local/lib", QString("mupen64plus-rsp-hle") + OSAL_DLL_EXTENSION, &files2);
+
         if (files2.size() > 0) {
             QFileInfo pluginPath(files2.at(0));
             settings.setValue("pluginDirPath", pluginPath.absolutePath());
