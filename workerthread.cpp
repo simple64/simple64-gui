@@ -14,9 +14,11 @@ void WorkerThread::run()
     m64p_error res = openROM(m_fileName.toStdString());
     if (res == M64ERR_SUCCESS) {
         (*ConfigSaveFile)();
-        my_window->doneCurrent();
-        my_window->context()->moveToThread(QApplication::instance()->thread());
-        deleteOGLWindow();
+        if (my_window != nullptr) {
+            my_window->doneCurrent();
+            my_window->context()->moveToThread(QApplication::instance()->thread());
+            deleteOGLWindow();
+        }
     }
 }
 

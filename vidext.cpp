@@ -47,6 +47,7 @@ m64p_error qtVidExtFuncSetMode(int Width, int Height, int, int ScreenMode, int)
 
 void *qtVidExtFuncGLGetProc(const char* Proc)
 {
+    if (!init) return NULL;
     return (void*)my_window->context()->getProcAddress(Proc);
 }
 
@@ -111,6 +112,7 @@ m64p_error qtVidExtFuncGLSetAttr(m64p_GLattr Attr, int Value)
 
 m64p_error qtVidExtFuncGLGetAttr(m64p_GLattr Attr, int *pValue)
 {
+    if (!init) return M64ERR_NOT_INIT;
     QSurfaceFormat::SwapBehavior SB = my_window->format().swapBehavior();
     switch (Attr) {
     case M64P_GL_DOUBLEBUFFER:

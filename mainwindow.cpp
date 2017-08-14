@@ -17,8 +17,8 @@
 #include "cheatdialog.h"
 #include "controllerdialog.h"
 
-OGLWindow *my_window;
-WorkerThread *workerThread;
+OGLWindow *my_window = nullptr;
+WorkerThread *workerThread = nullptr;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -240,6 +240,7 @@ void MainWindow::deleteOGLWindow()
 {
     my_window->doneCurrent();
     my_window->destroy();
+    my_window = nullptr;
 }
 
 void MainWindow::openROM(QString filename)
