@@ -150,7 +150,10 @@ m64p_error PluginSearchLoad()
         if (g_PluginMap[i].handle == NULL)
         {
             QString name = g_PluginMap[i].name;
-            workerThread->pluginWarning(name);
+            if (workerThread != nullptr) {
+                if (workerThread->isRunning())
+                    workerThread->pluginWarning(name);
+            }
         }
         else
         {
