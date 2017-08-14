@@ -60,6 +60,7 @@
     <addaction name="actionStop_Game"/>
     <addaction name="actionHard_Reset"/>
     <addaction name="actionSoft_Reset"/>
+    <addaction name="actionToggle_Speed_Limiter"/>
     <addaction name="separator"/>
     <addaction name="actionCheats"/>
    </widget>
@@ -161,6 +162,11 @@
   <action name="actionController_Configuration">
    <property name="text">
     <string>Controller Configuration</string>
+   </property>
+  </action>
+  <action name="actionToggle_Speed_Limiter">
+   <property name="text">
+    <string>Toggle Speed Limiter</string>
    </property>
   </action>
  </widget>

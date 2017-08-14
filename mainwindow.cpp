@@ -413,3 +413,13 @@ void MainWindow::on_actionController_Configuration_triggered()
         controller->show();
     }
 }
+
+void MainWindow::on_actionToggle_Speed_Limiter_triggered()
+{
+    if (QtAttachCoreLib()) {
+        int value;
+        (*CoreDoCommand)(M64CMD_CORE_STATE_QUERY, M64CORE_SPEED_LIMITER, &value);
+        value = !value;
+        (*CoreDoCommand)(M64CMD_CORE_STATE_SET, M64CORE_SPEED_LIMITER, &value);
+    }
+}

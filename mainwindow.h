@@ -64,6 +64,8 @@ private slots:
 
     void on_actionController_Configuration_triggered();
 
+    void on_actionToggle_Speed_Limiter_triggered();
+
 private:
     void updateOpenRecent();
     void findRecursion(const QString &path, const QString &pattern, QStringList *result);
