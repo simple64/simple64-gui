@@ -161,13 +161,11 @@ void MainWindow::toggleFS(int force)
             menuBar()->hide();
         statusBar()->hide();
         showFullScreen();
-        setCursor(Qt::BlankCursor);
     } else if (response == M64VIDEO_FULLSCREEN || force == M64VIDEO_WINDOWED) {
         if (!menuBar()->isNativeMenuBar())
             menuBar()->show();
         statusBar()->show();
         showNormal();
-        setCursor(Qt::ArrowCursor);
     }
 }
 
@@ -229,6 +227,7 @@ void MainWindow::createOGLWindow(QSurfaceFormat format)
     QWidget *container = QWidget::createWindowContainer(my_window);
     container->setFocusPolicy(Qt::StrongFocus);
 
+    my_window->setCursor(Qt::BlankCursor);
     my_window->setFormat(format);
 
     setCentralWidget(container);
