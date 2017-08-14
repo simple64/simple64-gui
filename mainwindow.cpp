@@ -269,10 +269,14 @@ void MainWindow::openROM(QString filename)
 
 void MainWindow::on_actionOpen_ROM_triggered()
 {
+    QSettings settings("mupen64plus", "gui");
     QString filename = QFileDialog::getOpenFileName(this,
-        tr("Open ROM"), NULL, tr("ROM Files (*.n64 *.z64 *.v64)"));
-    if (!filename.isNull())
+        tr("Open ROM"), settings.value("ROMdir").toString(), tr("ROM Files (*.n64 *.z64 *.v64)"));
+    if (!filename.isNull()) {
+        QFileInfo info(filename);
+        settings.setValue("ROMdir", info.absoluteDir().absolutePath());
         openROM(filename);
+    }
 }
 
 void MainWindow::on_actionPlugin_Paths_triggered()
