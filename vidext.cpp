@@ -10,6 +10,7 @@ static QSurfaceFormat format;
 m64p_error qtVidExtFuncInit(void)
 {
     init = 0;
+    format.setOption(QSurfaceFormat::DeprecatedFunctions, 1);
     format.setDepthBufferSize(24);
     format.setProfile(QSurfaceFormat::CompatibilityProfile);
     format.setMajorVersion(2);
