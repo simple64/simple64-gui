@@ -102,7 +102,7 @@ MainWindow::MainWindow(QWidget *parent) :
     if (!settings.contains("audioPlugin")) {
         Filter.replace(0,"mupen64plus-audio*");
         current = PluginDir->entryList(Filter);
-        default_value = "mupen64plus-audio-sdl2";
+        default_value = "mupen64plus-audio-sdl";
         default_value += OSAL_DLL_EXTENSION;
         if (current.isEmpty())
             settings.setValue("audioPlugin", default_value);
