@@ -107,7 +107,7 @@ SettingsDialog::SettingsDialog()
     layout->addWidget(pluginButton,1,2);
 
     QLabel *note = new QLabel("Note: If you change the Config Path, you need to close and re-open mupen64plus-gui before it will take effect.");
-    QLabel *configLabel = new QLabel("Config Path");
+    QLabel *configLabel = new QLabel("Config Dir Path");
     configPath = new QLineEdit;
     configPath->setText(settings.value("configDirPath").toString());
     QPushButton *configButton = new QPushButton("Set Path");

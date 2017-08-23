@@ -81,7 +81,7 @@
   </action>
   <action name="actionPlugin_Paths">
    <property name="text">
-    <string>Plugin Selection</string>
+    <string>Plugin and Path Selection</string>
    </property>
   </action>
   <action name="actionStop_Game">
@@ -91,7 +91,7 @@
   </action>
   <action name="actionPlugin_Settings">
    <property name="text">
-    <string>Plugin Settings</string>
+    <string>Core and Plugin Settings</string>
    </property>
   </action>
   <action name="actionOpen_Recent">
