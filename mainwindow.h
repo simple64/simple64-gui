@@ -72,6 +72,8 @@ private:
     Ui::MainWindow *ui;
     QMenu * OpenRecent;
 };
+
 extern MainWindow *w;
+extern QSettings *settings;
 
 #endif // MAINWINDOW_H

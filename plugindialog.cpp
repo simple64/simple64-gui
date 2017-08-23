@@ -1,4 +1,5 @@
 #include "plugindialog.h"
+#include "mainwindow.h"
 #include "core_interface.h"
 #include "osal_preproc.h"
 #include "plugin.h"
@@ -149,7 +150,6 @@ PluginDialog::PluginDialog()
     videoGenRow = 0;
     audioRow = 0;
     videoRow = 0;
-    QSettings settings("mupen64plus-gui.ini", QSettings::IniFormat);
     QVBoxLayout *mainLayout = new QVBoxLayout;
     QTabWidget *tabWidget = new QTabWidget;
     tabWidget->setUsesScrollButtons(false);
@@ -181,7 +181,7 @@ PluginDialog::PluginDialog()
     QWidget *rspSettings = new QWidget;
     rspLayout = new QGridLayout;
     rspSettings->setLayout(rspLayout);
-    QString name = settings.value("rspPlugin").toString();
+    QString name = settings->value("rspPlugin").toString();
     name.remove(OSAL_DLL_EXTENSION);
     QStringList name2 = name.split("-");
     if (name2.size() > 2)
@@ -198,7 +198,7 @@ PluginDialog::PluginDialog()
     QWidget *audioSettings = new QWidget;
     audioLayout = new QGridLayout;
     audioSettings->setLayout(audioLayout);
-    name = settings.value("audioPlugin").toString();
+    name = settings->value("audioPlugin").toString();
     name.remove(OSAL_DLL_EXTENSION);
     name2 = name.split("-");
     if (name2.size() > 2)
@@ -215,7 +215,7 @@ PluginDialog::PluginDialog()
     QWidget *videoSettings = new QWidget;
     videoLayout = new QGridLayout;
     videoSettings->setLayout(videoLayout);
-    name = settings.value("videoPlugin").toString();
+    name = settings->value("videoPlugin").toString();
     name.remove(OSAL_DLL_EXTENSION);
     name2 = name.split("-");
     if (name2.size() > 2)

@@ -1,7 +1,6 @@
 #include <QString>
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QSettings>
 #include <QCloseEvent>
 #include <QActionGroup>
 #include "oglwindow.h"
@@ -20,13 +19,20 @@
 #define RECENT_SIZE 10
 OGLWindow *my_window = nullptr;
 WorkerThread *workerThread = nullptr;
+QSettings *settings = nullptr;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    QSettings settings("mupen64plus-gui.ini", QSettings::IniFormat);
+
+    QString ini_path = QDir(QCoreApplication::applicationDirPath()).filePath("mupen64plus-gui.ini");
+    settings = new QSettings(ini_path, QSettings::IniFormat);
+
+    if (!settings->isWritable())
+        settings = new QSettings("mupen64plus", "gui");
+
     QActionGroup *my_slots_group = new QActionGroup(this);
     QAction *my_slots[10];
     OpenRecent = new QMenu;
@@ -56,16 +62,16 @@ MainWindow::MainWindow(QWidget *parent) :
 
     updateOpenRecent();
 
-    if (!settings.contains("coreLibPath")) {
+    if (!settings->contains("coreLibPath")) {
         QStringList files;
         findRecursion("/usr/lib", OSAL_DEFAULT_DYNLIB_FILENAME, &files);
         findRecursion("/usr/local/lib", OSAL_DEFAULT_DYNLIB_FILENAME, &files);
         if (files.size() > 0)
-            settings.setValue("coreLibPath", files.at(0));
+            settings->setValue("coreLibPath", files.at(0));
         else
-            settings.setValue("coreLibPath", QString(".") + QDir::separator() + OSAL_DEFAULT_DYNLIB_FILENAME);
+            settings->setValue("coreLibPath", QString(".") + QDir::separator() + OSAL_DEFAULT_DYNLIB_FILENAME);
     }
-    if (!settings.contains("pluginDirPath")) {
+    if (!settings->contains("pluginDirPath")) {
         QStringList files2;
         findRecursion("/usr/lib", QString("mupen64plus-rsp-cxd4-sse2") + OSAL_DLL_EXTENSION, &files2);
         findRecursion("/usr/local/lib", QString("mupen64plus-rsp-cxd4-sse2") + OSAL_DLL_EXTENSION, &files2);
@@ -74,74 +80,74 @@ MainWindow::MainWindow(QWidget *parent) :
 
         if (files2.size() > 0) {
             QFileInfo pluginPath(files2.at(0));
-            settings.setValue("pluginDirPath", pluginPath.absolutePath());
+            settings->setValue("pluginDirPath", pluginPath.absolutePath());
         } else
-            settings.setValue("pluginDirPath", QString(".") + QDir::separator());
+            settings->setValue("pluginDirPath", QString(".") + QDir::separator());
     }
-    if (!settings.value("coreLibPath").isNull())
-        qtCoreDirPath = settings.value("coreLibPath").toString();
-    if (!settings.value("pluginDirPath").isNull())
-        qtPluginDir = settings.value("pluginDirPath").toString();
-    if (!settings.value("configDirPath").isNull())
-        qtConfigDir = settings.value("configDirPath").toString();
+    if (!settings->value("coreLibPath").isNull())
+        qtCoreDirPath = settings->value("coreLibPath").toString();
+    if (!settings->value("pluginDirPath").isNull())
+        qtPluginDir = settings->value("pluginDirPath").toString();
+    if (!settings->value("configDirPath").isNull())
+        qtConfigDir = settings->value("configDirPath").toString();
 
     QDir *PluginDir = new QDir(qtPluginDir);
     QStringList Filter;
     Filter.append("");
     QStringList current;
     QString default_value;
-    if (!settings.contains("videoPlugin")) {
+    if (!settings->contains("videoPlugin")) {
         Filter.replace(0,"mupen64plus-video*");
         current = PluginDir->entryList(Filter);
         default_value = "mupen64plus-video-GLideN64";
         default_value += OSAL_DLL_EXTENSION;
         if (current.isEmpty())
-            settings.setValue("videoPlugin", default_value);
+            settings->setValue("videoPlugin", default_value);
         else if (current.indexOf(default_value) != -1)
-            settings.setValue("videoPlugin", default_value);
+            settings->setValue("videoPlugin", default_value);
         else
-            settings.setValue("videoPlugin", current.at(0));
+            settings->setValue("videoPlugin", current.at(0));
     }
-    if (!settings.contains("audioPlugin")) {
+    if (!settings->contains("audioPlugin")) {
         Filter.replace(0,"mupen64plus-audio*");
         current = PluginDir->entryList(Filter);
         default_value = "mupen64plus-audio-sdl";
         default_value += OSAL_DLL_EXTENSION;
         if (current.isEmpty())
-            settings.setValue("audioPlugin", default_value);
+            settings->setValue("audioPlugin", default_value);
         else
-            settings.setValue("audioPlugin", current.at(0));
+            settings->setValue("audioPlugin", current.at(0));
     }
-    if (!settings.contains("rspPlugin")) {
+    if (!settings->contains("rspPlugin")) {
         Filter.replace(0,"mupen64plus-rsp*");
         current = PluginDir->entryList(Filter);
         default_value = "mupen64plus-rsp-cxd4-sse2";
         default_value += OSAL_DLL_EXTENSION;
         if (current.isEmpty())
-            settings.setValue("rspPlugin", default_value);
+            settings->setValue("rspPlugin", default_value);
         else if (current.indexOf(default_value) != -1)
-            settings.setValue("rspPlugin", default_value);
+            settings->setValue("rspPlugin", default_value);
         else
-            settings.setValue("rspPlugin", current.at(0));
+            settings->setValue("rspPlugin", current.at(0));
     }
-    if (!settings.contains("inputPlugin")) {
+    if (!settings->contains("inputPlugin")) {
         Filter.replace(0,"mupen64plus-input*");
         current = PluginDir->entryList(Filter);
         default_value = "mupen64plus-input-sdl";
         default_value += OSAL_DLL_EXTENSION;
         if (current.isEmpty())
-            settings.setValue("inputPlugin", default_value);
+            settings->setValue("inputPlugin", default_value);
         else
-            settings.setValue("inputPlugin", current.at(0));
+            settings->setValue("inputPlugin", current.at(0));
     }
-    if (!settings.value("videoPlugin").isNull())
-        qtGfxPlugin = settings.value("videoPlugin").toString();
-    if (!settings.value("audioPlugin").isNull())
-        qtAudioPlugin = settings.value("audioPlugin").toString();
-    if (!settings.value("rspPlugin").isNull())
-        qtRspPlugin = settings.value("rspPlugin").toString();
-    if (!settings.value("inputPlugin").isNull())
-        qtInputPlugin = settings.value("inputPlugin").toString();
+    if (!settings->value("videoPlugin").isNull())
+        qtGfxPlugin = settings->value("videoPlugin").toString();
+    if (!settings->value("audioPlugin").isNull())
+        qtAudioPlugin = settings->value("audioPlugin").toString();
+    if (!settings->value("rspPlugin").isNull())
+        qtRspPlugin = settings->value("rspPlugin").toString();
+    if (!settings->value("inputPlugin").isNull())
+        qtInputPlugin = settings->value("inputPlugin").toString();
 }
 
 MainWindow::~MainWindow()
@@ -198,10 +204,9 @@ void MainWindow::closeEvent (QCloseEvent *event)
 
 void MainWindow::updateOpenRecent()
 {
-    QSettings settings("mupen64plus-gui.ini", QSettings::IniFormat);
     OpenRecent->clear();
     QAction *recent[RECENT_SIZE];
-    QStringList list = settings.value("RecentROMs").toString().split(";");
+    QStringList list = settings->value("RecentROMs").toString().split(";");
     for (int i = 0; i < list.size() && i < RECENT_SIZE; ++i) {
         recent[i] = new QAction(this);
         recent[i]->setText(list.at(i));
@@ -258,27 +263,25 @@ void MainWindow::openROM(QString filename)
         workerThread->setFileName(filename);
         workerThread->start();
 
-        QSettings settings("mupen64plus-gui.ini", QSettings::IniFormat);
         QStringList list;
-        if (settings.contains("RecentROMs"))
-            list = settings.value("RecentROMs").toString().split(";");
+        if (settings->contains("RecentROMs"))
+            list = settings->value("RecentROMs").toString().split(";");
         list.removeAll(filename);
         list.prepend(filename);
         if (list.size() > RECENT_SIZE)
             list.removeLast();
-        settings.setValue("RecentROMs",list.join(";"));
+        settings->setValue("RecentROMs",list.join(";"));
         updateOpenRecent();
     }
 }
 
 void MainWindow::on_actionOpen_ROM_triggered()
 {
-    QSettings settings("mupen64plus-gui.ini", QSettings::IniFormat);
     QString filename = QFileDialog::getOpenFileName(this,
-        tr("Open ROM"), settings.value("ROMdir").toString(), tr("ROM Files (*.n64 *.z64 *.v64)"));
+        tr("Open ROM"), settings->value("ROMdir").toString(), tr("ROM Files (*.n64 *.z64 *.v64)"));
     if (!filename.isNull()) {
         QFileInfo info(filename);
-        settings.setValue("ROMdir", info.absoluteDir().absolutePath());
+        settings->setValue("ROMdir", info.absoluteDir().absolutePath());
         openROM(filename);
     }
 }
