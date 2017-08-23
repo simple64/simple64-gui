@@ -17,6 +17,7 @@
 #include "cheatdialog.h"
 #include "controllerdialog.h"
 
+#define RECENT_SIZE 10
 OGLWindow *my_window = nullptr;
 WorkerThread *workerThread = nullptr;
 
@@ -197,9 +198,9 @@ void MainWindow::updateOpenRecent()
 {
     QSettings settings("mupen64plus", "gui");
     OpenRecent->clear();
-    QAction *recent[5];
+    QAction *recent[RECENT_SIZE];
     QStringList list = settings.value("RecentROMs").toString().split(";");
-    for (int i = 0; i < list.size() && i < 5; ++i) {
+    for (int i = 0; i < list.size() && i < RECENT_SIZE; ++i) {
         recent[i] = new QAction(this);
         recent[i]->setText(list.at(i));
         OpenRecent->addAction(recent[i]);
@@ -261,7 +262,7 @@ void MainWindow::openROM(QString filename)
             list = settings.value("RecentROMs").toString().split(";");
         list.removeAll(filename);
         list.prepend(filename);
-        if (list.size() > 5)
+        if (list.size() > RECENT_SIZE)
             list.removeLast();
         settings.setValue("RecentROMs",list.join(";"));
         updateOpenRecent();
