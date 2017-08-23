@@ -31,6 +31,7 @@
 #ifdef __cplusplus
 #include <QString>
 extern QString qtCoreDirPath;
+extern QString qtConfigDir;
 #endif
 
 /* function declarations */

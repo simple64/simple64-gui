@@ -149,7 +149,7 @@ PluginDialog::PluginDialog()
     videoGenRow = 0;
     audioRow = 0;
     videoRow = 0;
-    QSettings settings("mupen64plus", "gui");
+    QSettings settings("mupen64plus-gui.ini", QSettings::IniFormat);
     QVBoxLayout *mainLayout = new QVBoxLayout;
     QTabWidget *tabWidget = new QTabWidget;
     tabWidget->setUsesScrollButtons(false);

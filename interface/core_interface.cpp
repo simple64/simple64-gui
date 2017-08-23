@@ -46,6 +46,7 @@ extern "C" {
 int g_CoreCapabilities;
 int g_CoreAPIVersion;
 QString qtCoreDirPath;
+QString qtConfigDir;
 int coreStarted = 0;
 
 /* definitions of pointers to Core common functions */
@@ -136,7 +137,11 @@ bool QtAttachCoreLib()
     }
     if (!coreStarted) {
         /* start the Mupen64Plus core library, load the configuration file */
-        m64p_error rval = (*CoreStartup)(CORE_API_VERSION, NULL /*Config dir*/, QCoreApplication::applicationDirPath().toLatin1().data(), (char*)"Core", DebugCallback, NULL, NULL);
+        m64p_error rval;
+        if (!qtConfigDir.isEmpty())
+            rval = (*CoreStartup)(CORE_API_VERSION, qtConfigDir.toLatin1().data() /*Config dir*/, QCoreApplication::applicationDirPath().toLatin1().data(), (char*)"Core", DebugCallback, NULL, NULL);
+        else
+            rval = (*CoreStartup)(CORE_API_VERSION, NULL /*Config dir*/, QCoreApplication::applicationDirPath().toLatin1().data(), (char*)"Core", DebugCallback, NULL, NULL);
         if (rval != M64ERR_SUCCESS)
         {
             DebugMessage(M64MSG_ERROR, "couldn't start Mupen64Plus core library.");

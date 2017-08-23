@@ -2,6 +2,7 @@
 #define SETTINGSDIALOG_H
 
 #include <QDialog>
+#include <QLineEdit>
 #include <QLabel>
 
 class SettingsDialog : public QDialog
@@ -13,9 +14,15 @@ public:
 private slots:
     void handleCoreButton();
     void handlePluginButton();
+    void handleConfigButton();
+    void handleClearConfigButton();
+    void handleCoreEdit();
+    void handlePluginEdit();
+    void handleConfigEdit();
 private:
-    QLabel *corePath;
-    QLabel *pluginPath;
+    QLineEdit *corePath;
+    QLineEdit *pluginPath;
+    QLineEdit *configPath;
 };
 
 #endif // SETTINGSDIALOG_H

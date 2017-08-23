@@ -111,7 +111,7 @@ m64p_error PluginSearchLoad()
     int i;
 
     /* start by checking the directory given on the command line */
-    if (!qtPluginDir.isNull())
+    if (!qtPluginDir.isEmpty())
         lib_filelist = osal_library_search(qtPluginDir.toLatin1().data());
     if (lib_filelist == NULL)
         lib_filelist = osal_library_search(QCoreApplication::applicationDirPath().toLatin1().data());

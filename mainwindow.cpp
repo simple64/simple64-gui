@@ -26,7 +26,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    QSettings settings("mupen64plus", "gui");
+    QSettings settings("mupen64plus-gui.ini", QSettings::IniFormat);
     QActionGroup *my_slots_group = new QActionGroup(this);
     QAction *my_slots[10];
     OpenRecent = new QMenu;
@@ -82,6 +82,8 @@ MainWindow::MainWindow(QWidget *parent) :
         qtCoreDirPath = settings.value("coreLibPath").toString();
     if (!settings.value("pluginDirPath").isNull())
         qtPluginDir = settings.value("pluginDirPath").toString();
+    if (!settings.value("configDirPath").isNull())
+        qtConfigDir = settings.value("configDirPath").toString();
 
     QDir *PluginDir = new QDir(qtPluginDir);
     QStringList Filter;
@@ -196,7 +198,7 @@ void MainWindow::closeEvent (QCloseEvent *event)
 
 void MainWindow::updateOpenRecent()
 {
-    QSettings settings("mupen64plus", "gui");
+    QSettings settings("mupen64plus-gui.ini", QSettings::IniFormat);
     OpenRecent->clear();
     QAction *recent[RECENT_SIZE];
     QStringList list = settings.value("RecentROMs").toString().split(";");
@@ -256,7 +258,7 @@ void MainWindow::openROM(QString filename)
         workerThread->setFileName(filename);
         workerThread->start();
 
-        QSettings settings("mupen64plus", "gui");
+        QSettings settings("mupen64plus-gui.ini", QSettings::IniFormat);
         QStringList list;
         if (settings.contains("RecentROMs"))
             list = settings.value("RecentROMs").toString().split(";");
@@ -271,7 +273,7 @@ void MainWindow::openROM(QString filename)
 
 void MainWindow::on_actionOpen_ROM_triggered()
 {
-    QSettings settings("mupen64plus", "gui");
+    QSettings settings("mupen64plus-gui.ini", QSettings::IniFormat);
     QString filename = QFileDialog::getOpenFileName(this,
         tr("Open ROM"), settings.value("ROMdir").toString(), tr("ROM Files (*.n64 *.z64 *.v64)"));
     if (!filename.isNull()) {
