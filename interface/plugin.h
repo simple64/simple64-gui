@@ -42,7 +42,7 @@ typedef struct {
   char                name[8];
   m64p_dynlib_handle  handle;
   std::string         filename;
-  const char         *libname;
+  std::string         libname;
   int                 libversion;
   } plugin_map_node;
 

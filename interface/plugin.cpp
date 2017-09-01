@@ -44,10 +44,10 @@ QString qtAudioPlugin;
 QString qtInputPlugin;
 QString qtRspPlugin;
 
-plugin_map_node g_PluginMap[] = {{M64PLUGIN_GFX,   "Video", NULL, "", NULL, 0 },
-                                 {M64PLUGIN_AUDIO, "Audio", NULL, "", NULL, 0 },
-                                 {M64PLUGIN_INPUT, "Input", NULL, "", NULL, 0 },
-                                 {M64PLUGIN_RSP,   "RSP",   NULL, "", NULL, 0 } };
+plugin_map_node g_PluginMap[] = {{M64PLUGIN_GFX,   "Video", NULL, "", "", 0 },
+                                 {M64PLUGIN_AUDIO, "Audio", NULL, "", "", 0 },
+                                 {M64PLUGIN_INPUT, "Input", NULL, "", "", 0 },
+                                 {M64PLUGIN_RSP,   "RSP",   NULL, "", "", 0 } };
 
 /* local functions */
 static m64p_error PluginLoadTry(std::string filepath, int MapIndex)
@@ -158,7 +158,7 @@ m64p_error PluginSearchLoad()
         else
         {
             DebugMessage(M64MSG_INFO, "using %s plugin: '%s' v%i.%i.%i", g_PluginMap[i].name,
-                   g_PluginMap[i].libname, VERSION_PRINTF_SPLIT(g_PluginMap[i].libversion));
+                   g_PluginMap[i].libname.c_str(), VERSION_PRINTF_SPLIT(g_PluginMap[i].libversion));
             DebugMessage(M64MSG_VERBOSE, "%s plugin library: %s", g_PluginMap[i].name, g_PluginMap[i].filename.c_str());
         }
     }
@@ -186,8 +186,8 @@ m64p_error PluginUnload(void)
         osal_dynlib_close(g_PluginMap[i].handle);
         /* clear out the plugin map's members */
         g_PluginMap[i].handle = NULL;
-        g_PluginMap[i].filename[0] = 0;
-        g_PluginMap[i].libname = NULL;
+        g_PluginMap[i].filename.clear();
+        g_PluginMap[i].libname.clear();
         g_PluginMap[i].libversion = 0;
     }
 
