@@ -183,5 +183,26 @@ SettingsDialog::SettingsDialog()
     });
     layout->addWidget(rspChoice,6,1);
 
+    QLabel *inputLabel = new QLabel("Input Plugin");
+    layout->addWidget(inputLabel,7,0);
+    QComboBox *inputChoice = new QComboBox();
+    Filter.replace(0,"mupen64plus-input*");
+    current = PluginDir->entryList(Filter);
+    inputChoice->addItems(current);
+    inputChoice->addItem("dummy");
+    my_index = inputChoice->findText(qtInputPlugin);
+    if (my_index != -1) {
+        inputChoice->setCurrentIndex(my_index);
+    } else {
+        settings->setValue("inputPlugin", inputChoice->currentText());
+        qtInputPlugin = settings->value("inputPlugin").toString();
+    }
+    connect(inputChoice, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::activated),
+        [=](const QString &text) {
+            settings->setValue("inputPlugin", text);
+            qtInputPlugin = settings->value("inputPlugin").toString();
+    });
+    layout->addWidget(inputChoice,7,1);
+
     setLayout(layout);
 }

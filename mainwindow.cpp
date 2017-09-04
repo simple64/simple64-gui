@@ -416,8 +416,14 @@ void MainWindow::on_actionCheats_triggered()
 void MainWindow::on_actionController_Configuration_triggered()
 {
     if (QtAttachCoreLib()) {
-        ControllerDialog *controller = new ControllerDialog();
-        controller->show();
+        if (qtInputPlugin.contains("input-sdl")) {
+            ControllerDialog *controller = new ControllerDialog();
+            controller->show();
+        } else {
+            QMessageBox msgBox;
+            msgBox.setText("This dialog is only compatible with the Input-SDL plugin.");
+            msgBox.exec();
+        }
     }
 }
 
