@@ -29,6 +29,7 @@
 #include "plugin.h"
 #include "core_interface.h"
 #include <SDL2/SDL_keycode.h>
+#include <QProcess>
 #include "version.h"
 #include "cheat.h"
 
@@ -77,7 +78,27 @@ m64p_error openROM(std::string filename)
     size_t romlength = 0;
     uint32_t i;
 
-    if ((filename.find(".zip") != std::string::npos) || (filename.find(".ZIP") != std::string::npos))
+    if (filename.find(".7z") != std::string::npos)
+    {
+        QProcess process;
+        QString command = "7za e -so ";
+        command += QString::fromStdString(filename);
+        command += " *64";
+        process.start(command);
+        process.waitForFinished(-1);
+        QByteArray data = process.readAllStandardOutput();
+        romlength = data.size();
+        if (romlength == 0)
+        {
+            DebugMessage(M64MSG_ERROR, "couldn't open 7z file '%s' for reading.", filename.c_str());
+            (*CoreShutdown)();
+            DetachCoreLib();
+            return M64ERR_INVALID_STATE;
+        }
+        ROM_buffer = (unsigned char *) malloc(romlength);
+        memcpy(ROM_buffer, data.constData(), romlength);
+    }
+    else if ((filename.find(".zip") != std::string::npos) || (filename.find(".ZIP") != std::string::npos))
     {
         unzFile uf = NULL;
         unz_global_info gi;
