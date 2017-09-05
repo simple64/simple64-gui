@@ -34,14 +34,14 @@ SOURCES += osal/osal_dynamiclib_win32.c \
 
 DEFINES -= UNICODE
 
-LIBS += -Wl,-Bdynamic -lSDL2
+LIBS += -Wl,-Bdynamic -lSDL2 -lminizip
 }
 
 !win32 {
 SOURCES += osal/osal_dynamiclib_unix.c \
     osal/osal_files_unix.c
 
-LIBS += -L/usr/local/lib -ldl -lSDL2
+LIBS += -L/usr/local/lib -ldl -lSDL2 -lminizip
 INCLUDEPATH += /usr/local/include
 }
 

@@ -278,7 +278,7 @@ void MainWindow::openROM(QString filename)
 void MainWindow::on_actionOpen_ROM_triggered()
 {
     QString filename = QFileDialog::getOpenFileName(this,
-        tr("Open ROM"), settings->value("ROMdir").toString(), tr("ROM Files (*.n64 *.z64 *.v64)"));
+        tr("Open ROM"), settings->value("ROMdir").toString(), tr("ROM Files (*.n64 *.N64 *.z64 *.Z64 *.v64 *.V64 *.zip *.ZIP)"));
     if (!filename.isNull()) {
         QFileInfo info(filename);
         settings->setValue("ROMdir", info.absoluteDir().absolutePath());

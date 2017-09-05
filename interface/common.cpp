@@ -21,6 +21,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.          *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+#include <minizip/unzip.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -72,39 +73,106 @@ void DebugCallback(void *Context, int level, const char *message)
 
 m64p_error openROM(std::string filename)
 {
-    /* load ROM image */
-    FILE *fPtr = fopen(filename.c_str(), "rb");
-    if (fPtr == NULL)
-    {
-        DebugMessage(M64MSG_ERROR, "couldn't open ROM file '%s' for reading.", filename.c_str());
-        (*CoreShutdown)();
-        DetachCoreLib();
-        return M64ERR_INVALID_STATE;
-    }
+    unsigned char *ROM_buffer = NULL;
+    size_t romlength = 0;
+    uint32_t i;
 
-    /* get the length of the ROM, allocate memory buffer, load it from disk */
-    fseek(fPtr, 0L, SEEK_END);
-    size_t romlength = (size_t)ftell(fPtr);
-    fseek(fPtr, 0L, SEEK_SET);
-    unsigned char *ROM_buffer = (unsigned char *) malloc(romlength);
-    if (ROM_buffer == NULL)
+    if ((filename.find(".zip") != std::string::npos) || (filename.find(".ZIP") != std::string::npos))
     {
-        DebugMessage(M64MSG_ERROR, "couldn't allocate %li-byte buffer for ROM image file '%s'.", romlength, filename.c_str());
-        fclose(fPtr);
-        (*CoreShutdown)();
-        DetachCoreLib();
-        return M64ERR_INVALID_STATE;
+        unzFile uf = NULL;
+        unz_global_info gi;
+        unz_file_info file_info;
+        uf = unzOpen(filename.c_str());
+        if (uf == NULL)
+        {
+            DebugMessage(M64MSG_ERROR, "couldn't open ZIP file '%s' for reading.", filename.c_str());
+            (*CoreShutdown)();
+            DetachCoreLib();
+            return M64ERR_INVALID_STATE;
+        }
+        int err;
+        int found = 0;
+        err = unzGetGlobalInfo(uf,&gi);
+        if (err != UNZ_OK)
+        {
+            DebugMessage(M64MSG_ERROR, "couldn't open ZIP file '%s' for reading.", filename.c_str());
+            unzClose(uf);
+            (*CoreShutdown)();
+            DetachCoreLib();
+            return M64ERR_INVALID_STATE;
+        }
+        for (i=0;i<gi.number_entry;++i)
+        {
+            char filename_inzip[256];
+            unzGetCurrentFileInfo(uf,&file_info,filename_inzip,sizeof(filename_inzip),NULL,0,NULL,0);
+            if (strstr(filename_inzip, ".n64") != NULL ||
+                strstr(filename_inzip, ".N64") != NULL ||
+                strstr(filename_inzip, ".z64") != NULL ||
+                strstr(filename_inzip, ".Z64") != NULL ||
+                strstr(filename_inzip, ".v64") != NULL ||
+                strstr(filename_inzip, ".V64") != NULL)
+            {
+                found = 1;
+                break;
+            }
+            unzGoToNextFile(uf);
+        }
+        if (found)
+        {
+            err = unzOpenCurrentFile(uf);
+            if (err != UNZ_OK)
+            {
+                DebugMessage(M64MSG_ERROR, "couldn't open ZIP file '%s' for reading.", filename.c_str());
+                unzClose(uf);
+                (*CoreShutdown)();
+                DetachCoreLib();
+                return M64ERR_INVALID_STATE;
+            }
+            romlength = file_info.uncompressed_size;
+            ROM_buffer = (unsigned char *) malloc(romlength);
+            err = unzReadCurrentFile(uf, ROM_buffer, romlength);
+            if (err < 0)
+            {
+                DebugMessage(M64MSG_ERROR, "couldn't open ZIP file '%s' for reading.", filename.c_str());
+                free(ROM_buffer);
+                unzCloseCurrentFile(uf);
+                unzClose(uf);
+                (*CoreShutdown)();
+                DetachCoreLib();
+                return M64ERR_INVALID_STATE;
+            }
+            unzCloseCurrentFile(uf);
+        }
+        unzClose(uf);
     }
-    else if (fread(ROM_buffer, 1, romlength, fPtr) != romlength)
+    else
     {
-        DebugMessage(M64MSG_ERROR, "couldn't read %li bytes from ROM image file '%s'.", romlength, filename.c_str());
-        free(ROM_buffer);
+        /* load ROM image */
+        FILE *fPtr = fopen(filename.c_str(), "rb");
+        if (fPtr == NULL)
+        {
+            DebugMessage(M64MSG_ERROR, "couldn't open ROM file '%s' for reading.", filename.c_str());
+            (*CoreShutdown)();
+            DetachCoreLib();
+            return M64ERR_INVALID_STATE;
+        }
+
+        /* get the length of the ROM, allocate memory buffer, load it from disk */
+        fseek(fPtr, 0L, SEEK_END);
+        romlength = (size_t)ftell(fPtr);
+        fseek(fPtr, 0L, SEEK_SET);
+        ROM_buffer = (unsigned char *) malloc(romlength);
+        if (fread(ROM_buffer, 1, romlength, fPtr) != romlength)
+        {
+            DebugMessage(M64MSG_ERROR, "couldn't read %li bytes from ROM image file '%s'.", romlength, filename.c_str());
+            free(ROM_buffer);
+            fclose(fPtr);
+            (*CoreShutdown)();
+            DetachCoreLib();
+            return M64ERR_INVALID_STATE;
+        }
         fclose(fPtr);
-        (*CoreShutdown)();
-        DetachCoreLib();
-        return M64ERR_INVALID_STATE;
     }
-    fclose(fPtr);
 
     /* Try to load the ROM image into the core */
     if ((*CoreDoCommand)(M64CMD_ROM_OPEN, (int) romlength, ROM_buffer) != M64ERR_SUCCESS)
@@ -126,7 +194,6 @@ m64p_error openROM(std::string filename)
         DetachCoreLib();
         return M64ERR_INVALID_STATE;
     }
-    int i;
 
     int gfx_hle = -1;
     m64p_handle rspHandle;
