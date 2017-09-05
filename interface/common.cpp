@@ -81,9 +81,9 @@ m64p_error openROM(std::string filename)
     if (filename.find(".7z") != std::string::npos)
     {
         QProcess process;
-        QString command = "7za e -so ";
+        QString command = "7za e -so \"";
         command += QString::fromStdString(filename);
-        command += " *64";
+        command += "\" *64";
         process.start(command);
         process.waitForFinished(-1);
         QByteArray data = process.readAllStandardOutput();
