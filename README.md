@@ -18,6 +18,7 @@ Enjoy and happy hacking!
 - [Qt](https://www.qt.io/) 5.4
   (this comes statically linked with the Windows binary build in m64p, so you don't need to worry about this on Windows)
 - [SDL2](https://www.libsdl.org/) ***Your copy of mupen64plus-core (libmupen64plus.so.2) also needs to be linked against SDL2***
+- minizip
 
 ## Building (tested on GNU/Linux and MinGW)
 
