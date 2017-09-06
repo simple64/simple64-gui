@@ -231,6 +231,7 @@ PluginDialog::PluginDialog()
 
     mainLayout->addWidget(tabWidget);
     QPushButton *resetButton = new QPushButton("Reset All Settings");
+    resetButton->setAutoDefault(false);
     connect(resetButton, SIGNAL (released()),this, SLOT (handleResetButton()));
     mainLayout->addWidget(resetButton);
     setLayout(mainLayout);
