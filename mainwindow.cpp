@@ -232,14 +232,14 @@ void MainWindow::pluginWarning(QString name)
     msgBox.exec();
 }
 
-void MainWindow::createOGLWindow(QSurfaceFormat format)
+void MainWindow::createOGLWindow(QSurfaceFormat* format)
 {
     my_window = new OGLWindow();
     QWidget *container = QWidget::createWindowContainer(my_window);
     container->setFocusPolicy(Qt::StrongFocus);
 
     my_window->setCursor(Qt::BlankCursor);
-    my_window->setFormat(format);
+    my_window->setFormat(*format);
 
     setCentralWidget(container);
 }
