@@ -194,7 +194,7 @@ m64p_error AttachCoreLib(const char *CoreLibFilepath)
     }
     if (rval != M64ERR_SUCCESS || CoreHandle == NULL)
     {
-        QString corePath = QCoreApplication::applicationDirPath() + QDir::separator() + OSAL_DEFAULT_DYNLIB_FILENAME;
+        QString corePath = QDir(QCoreApplication::applicationDirPath()).filePath(OSAL_DEFAULT_DYNLIB_FILENAME);
         rval = osal_dynlib_open(&CoreHandle, corePath.toLatin1().data());
     }
     /* if we haven't found a good core library by now, then we're screwed */

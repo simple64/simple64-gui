@@ -69,7 +69,7 @@ MainWindow::MainWindow(QWidget *parent) :
         if (files.size() > 0)
             settings->setValue("coreLibPath", files.at(0));
         else
-            settings->setValue("coreLibPath", QString(".") + QDir::separator() + OSAL_DEFAULT_DYNLIB_FILENAME);
+            settings->setValue("coreLibPath", QDir(QCoreApplication::applicationDirPath()).filePath(OSAL_DEFAULT_DYNLIB_FILENAME));
     }
     if (!settings->contains("pluginDirPath")) {
         QStringList files2;
@@ -82,7 +82,7 @@ MainWindow::MainWindow(QWidget *parent) :
             QFileInfo pluginPath(files2.at(0));
             settings->setValue("pluginDirPath", pluginPath.absolutePath());
         } else
-            settings->setValue("pluginDirPath", QString(".") + QDir::separator());
+            settings->setValue("pluginDirPath", QCoreApplication::applicationDirPath());
     }
     if (!settings->value("coreLibPath").isNull())
         qtCoreDirPath = settings->value("coreLibPath").toString();
