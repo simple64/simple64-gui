@@ -218,7 +218,7 @@ m64p_error openROM(std::string filename)
 
     int gfx_hle = -1;
     m64p_handle rspHandle;
-    if (g_PluginMap[3].libname == "Static Interpreter" && g_PluginMap[0].libname == "Angrylion RDP Plus GFX Plugin")
+    if (g_PluginMap[3].libname == "Static Interpreter" && g_PluginMap[0].libname.find(std::string("angrylion")) != std::string::npos)
     {
         (*ConfigOpenSection)("rsp-cxd4", &rspHandle);
         gfx_hle = (*ConfigGetParamBool)(rspHandle, "DisplayListToGraphicsPlugin");
