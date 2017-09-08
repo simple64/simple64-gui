@@ -5,6 +5,7 @@
 #include <QDesktopWidget>
 
 static int init;
+static int needs_toggle;
 QSurfaceFormat* format;
 
 m64p_error qtVidExtFuncInit(void)
@@ -43,7 +44,7 @@ m64p_error qtVidExtFuncSetMode(int Width, int Height, int, int ScreenMode, int)
         workerThread->resizeMainWindow(Width, Height);
         my_window->makeCurrent();
         init = 1;
-        workerThread->toggleFS(ScreenMode);
+        needs_toggle = ScreenMode;
     }
     return M64ERR_SUCCESS;
 }
@@ -175,6 +176,15 @@ m64p_error qtVidExtFuncGLGetAttr(m64p_GLattr Attr, int *pValue)
 
 m64p_error qtVidExtFuncGLSwapBuf(void)
 {
+    if (needs_toggle) {
+        int value;
+        (*CoreDoCommand)(M64CMD_CORE_STATE_QUERY, M64CORE_EMU_STATE, &value);
+        if (value > M64EMU_STOPPED) {
+            workerThread->toggleFS(needs_toggle);
+            needs_toggle = 0;
+        }
+    }
+
     my_window->context()->swapBuffers(my_window);
     my_window->context()->makeCurrent(my_window);
     return M64ERR_SUCCESS;
