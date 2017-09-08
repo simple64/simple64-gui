@@ -30,8 +30,8 @@ m64p_error qtVidExtFuncQuit(void)
 m64p_error qtVidExtFuncListModes(m64p_2d_size *SizeArray, int *NumSizes)
 {
     QRect size = QApplication::desktop()->screenGeometry();
-    SizeArray->uiWidth = size.width();
-    SizeArray->uiHeight = size.height();
+    SizeArray[0].uiWidth = size.width();
+    SizeArray[0].uiHeight = size.height();
     *NumSizes = 1;
     return M64ERR_SUCCESS;
 }
