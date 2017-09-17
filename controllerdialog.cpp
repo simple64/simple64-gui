@@ -305,7 +305,7 @@ ControllerDialog::ControllerDialog()
     tabWidget->addTab(p4Scroll, tr("Player 4"));
 
     mainLayout->addWidget(tabWidget);
-    QPushButton *resetButton = new QPushButton("Reset All Settings");
+    QPushButton *resetButton = new QPushButton("Reset All Controller Settings");
     connect(resetButton, SIGNAL (released()),this, SLOT (handleResetButton()));
     mainLayout->addWidget(resetButton);
     setLayout(mainLayout);
