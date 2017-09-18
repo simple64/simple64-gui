@@ -15,17 +15,23 @@
 #include "workerthread.h"
 #include "cheatdialog.h"
 #include "controllerdialog.h"
+#include "logviewer.h"
 
 #define RECENT_SIZE 10
 OGLWindow *my_window = nullptr;
 WorkerThread *workerThread = nullptr;
+LogViewer *logViewer = nullptr;
 QSettings *settings = nullptr;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    verbose = 0;
+    nogui = 0;
     ui->setupUi(this);
+
+    logViewer = new LogViewer();
 
     QString ini_path = QDir(QCoreApplication::applicationDirPath()).filePath("mupen64plus-gui.ini");
     settings = new QSettings(ini_path, QSettings::IniFormat);
@@ -158,6 +164,29 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::setVerbose()
+{
+    verbose = 1;
+}
+
+void MainWindow::setNoGUI()
+{
+    nogui = 1;
+    if (!menuBar()->isNativeMenuBar())
+        menuBar()->hide();
+    statusBar()->hide();
+}
+
+int MainWindow::getNoGUI()
+{
+    return nogui;
+}
+
+int MainWindow::getVerbose()
+{
+   return verbose;
+}
+
 void MainWindow::resizeMainWindow(int Width, int Height)
 {
     resize(Width, Height + (menuBar()->isNativeMenuBar() ? 0 : ui->menuBar->height()) + ui->statusBar->height());
@@ -174,9 +203,11 @@ void MainWindow::toggleFS(int force)
         statusBar()->hide();
         showFullScreen();
     } else if (response == M64VIDEO_FULLSCREEN || force == M64VIDEO_WINDOWED) {
-        if (!menuBar()->isNativeMenuBar())
-            menuBar()->show();
-        statusBar()->show();
+        if (!nogui) {
+            if (!menuBar()->isNativeMenuBar())
+                menuBar()->show();
+            statusBar()->show();
+        }
         showNormal();
     }
 }
@@ -259,6 +290,7 @@ void MainWindow::openROM(QString filename)
             while (workerThread->isRunning())
                 QCoreApplication::processEvents();
         }
+        logViewer->clearLog();
         workerThread = new WorkerThread();
         workerThread->setFileName(filename);
         workerThread->start();
@@ -435,4 +467,9 @@ void MainWindow::on_actionToggle_Speed_Limiter_triggered()
         value = !value;
         (*CoreDoCommand)(M64CMD_CORE_STATE_SET, M64CORE_SPEED_LIMITER, &value);
     }
+}
+
+void MainWindow::on_actionView_Log_triggered()
+{
+    logViewer->show();
 }

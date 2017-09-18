@@ -24,9 +24,10 @@ SOURCES += main.cpp\
     settingclasses.cpp \
     cheatdialog.cpp \
     interface/cheat.cpp \
-    controllerdialog.cpp \
     keyselect.cpp \
-    interface/sdl_key_converter.c
+    interface/sdl_key_converter.c \
+    controllerdialog.cpp \
+    logviewer.cpp
 
 win32 {
 SOURCES += osal/osal_dynamiclib_win32.c \
@@ -60,7 +61,8 @@ HEADERS  += mainwindow.h \
     interface/cheat.h \
     controllerdialog.h \
     keyselect.h \
-    interface/sdl_key_converter.h
+    interface/sdl_key_converter.h \
+    logviewer.h
 
 FORMS    += mainwindow.ui
 

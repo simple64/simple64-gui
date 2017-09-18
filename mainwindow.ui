@@ -63,6 +63,8 @@
     <addaction name="actionToggle_Speed_Limiter"/>
     <addaction name="separator"/>
     <addaction name="actionCheats"/>
+    <addaction name="separator"/>
+    <addaction name="actionView_Log"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEmulation"/>
@@ -167,6 +169,11 @@
   <action name="actionToggle_Speed_Limiter">
    <property name="text">
     <string>Toggle Speed Limiter</string>
+   </property>
+  </action>
+  <action name="actionView_Log">
+   <property name="text">
+    <string>View Log</string>
    </property>
   </action>
  </widget>

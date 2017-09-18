@@ -32,9 +32,8 @@
 #include <QProcess>
 #include "version.h"
 #include "cheat.h"
-
-/** global variables **/
-int    g_Verbose = 0;
+#include "mainwindow.h"
+#include "logviewer.h"
 
 /*********************************************************************************************************
  *  Callback functions from the core
@@ -55,21 +54,24 @@ void DebugMessage(int level, const char *message, ...)
 
 void DebugCallback(void *Context, int level, const char *message)
 {
+    QString output;
+
     if (level == M64MSG_ERROR)
-        printf("%s Error: %s\n", (const char *) Context, message);
+        output = QString("%1 Error: %2\n").arg((const char *) Context, message);
     else if (level == M64MSG_WARNING)
-        printf("%s Warning: %s\n", (const char *) Context, message);
+        output = QString("%1 Warning: %2\n").arg((const char *) Context, message);
     else if (level == M64MSG_INFO)
-        printf("%s: %s\n", (const char *) Context, message);
+            output = QString("%1: %2\n").arg((const char *) Context, message);
     else if (level == M64MSG_STATUS)
-        printf("%s Status: %s\n", (const char *) Context, message);
+            output = QString("%1 Status: %2\n").arg((const char *) Context, message);
     else if (level == M64MSG_VERBOSE)
     {
-        if (g_Verbose)
-            printf("%s: %s\n", (const char *) Context, message);
+        if (w->getVerbose())
+            output = QString("%1: %2\n").arg((const char *) Context, message);
     }
     else
-        printf("%s Unknown: %s\n", (const char *) Context, message);
+        output = QString("%1 Unknown: %2\n").arg((const char *) Context, message);
+    logViewer->addLog(output);
 }
 
 m64p_error openROM(std::string filename)

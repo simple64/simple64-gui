@@ -15,6 +15,10 @@ class MainWindow : public QMainWindow
 
 public:
     void openROM(QString filename);
+    void setVerbose();
+    int getVerbose();
+    void setNoGUI();
+    int getNoGUI();
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
@@ -66,11 +70,15 @@ private slots:
 
     void on_actionToggle_Speed_Limiter_triggered();
 
+    void on_actionView_Log_triggered();
+
 private:
     void updateOpenRecent();
     void findRecursion(const QString &path, const QString &pattern, QStringList *result);
     Ui::MainWindow *ui;
     QMenu * OpenRecent;
+    int verbose;
+    int nogui;
 };
 
 extern MainWindow *w;
