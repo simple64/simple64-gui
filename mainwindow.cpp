@@ -418,7 +418,7 @@ void MainWindow::on_actionToggle_Fullscreen_triggered()
 void MainWindow::on_actionSave_State_To_triggered()
 {
     QString filename = QFileDialog::getSaveFileName(this,
-        tr("Save State File"), NULL, tr("State Files (*.st*)"));
+        tr("Save State File"), NULL, NULL);
     if (!filename.isNull()) {
         if (!filename.contains(".st"))
             filename.append(".state");
