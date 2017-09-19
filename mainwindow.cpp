@@ -127,7 +127,7 @@ MainWindow::MainWindow(QWidget *parent) :
     if (!settings->contains("rspPlugin")) {
         Filter.replace(0,"mupen64plus-rsp*");
         current = PluginDir->entryList(Filter);
-        default_value = "mupen64plus-rsp-cxd4-sse2";
+        default_value = "mupen64plus-rsp-hle";
         default_value += OSAL_DLL_EXTENSION;
         if (current.isEmpty())
             settings->setValue("rspPlugin", default_value);

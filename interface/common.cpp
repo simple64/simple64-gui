@@ -208,6 +208,42 @@ m64p_error openROM(std::string filename)
     }
     free(ROM_buffer); /* the core copies the ROM image, so we can release this buffer immediately */
 
+    m64p_rom_header    l_RomHeader;
+    /* get the ROM header for the currently loaded ROM image from the core */
+    if ((*CoreDoCommand)(M64CMD_ROM_GET_HEADER, sizeof(l_RomHeader), &l_RomHeader) != M64ERR_SUCCESS)
+    {
+        DebugMessage(M64MSG_WARNING, "couldn't get ROM header information from core library");
+        return M64ERR_INVALID_STATE;
+    }
+
+    int cxd4 = 0;
+
+    if (strstr((char*)l_RomHeader.Name, (const char*)"WORLD DRIVER CHAMP") != NULL)
+        cxd4 = 1;
+    else if (strstr((char*)l_RomHeader.Name, (const char*)"Indiana Jones") != NULL)
+        cxd4 = 1;
+    else if (strstr((char*)l_RomHeader.Name, (const char*)"Battle for Naboo") != NULL)
+        cxd4 = 1;
+    else if (strstr((char*)l_RomHeader.Name, (const char*)"Stunt Racer 64") != NULL)
+        cxd4 = 1;
+    else if (strstr((char*)l_RomHeader.Name, (const char*)"GAUNTLET LEGENDS") != NULL)
+        cxd4 = 1;
+    else if (strstr((char*)l_RomHeader.Name, (const char*)"PUZZLE LEAGUE N64") != NULL)
+        cxd4 = 1;
+    else if (strstr((char*)l_RomHeader.Name, (const char*)"Resident Evil II") != NULL)
+        cxd4 = 1;
+    else if (strstr((char*)l_RomHeader.Name, (const char*)"BioHazard II") != NULL)
+        cxd4 = 1;
+    else if (qtGfxPlugin.contains("angrylion"))
+        cxd4 = 1;
+
+    QString origRspPlugin = qtRspPlugin;
+    if (cxd4)
+    {
+        qtRspPlugin = "mupen64plus-rsp-cxd4-sse2";
+        qtRspPlugin += OSAL_DLL_EXTENSION;
+    }
+
     /* search for and load plugins */
     m64p_error rval = PluginSearchLoad();
     if (rval != M64ERR_SUCCESS)
@@ -240,13 +276,6 @@ m64p_error openROM(std::string filename)
             return M64ERR_INVALID_STATE;
         }
     }
-    m64p_rom_header    l_RomHeader;
-    /* get the ROM header for the currently loaded ROM image from the core */
-    if ((*CoreDoCommand)(M64CMD_ROM_GET_HEADER, sizeof(l_RomHeader), &l_RomHeader) != M64ERR_SUCCESS)
-    {
-        DebugMessage(M64MSG_WARNING, "couldn't get ROM header information from core library");
-        return M64ERR_INVALID_STATE;
-    }
 
     /* generate section name from ROM's CRC and country code */
     char RomSection[24];
@@ -276,6 +305,9 @@ m64p_error openROM(std::string filename)
     (*CoreDoCommand)(M64CMD_ROM_CLOSE, 0, NULL);
 
     CheatFreeAll();
+
+    if (cxd4)
+        qtRspPlugin = origRspPlugin;
 
     return M64ERR_SUCCESS;
 }
