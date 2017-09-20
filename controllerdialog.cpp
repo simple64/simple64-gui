@@ -29,6 +29,16 @@ bool p2Auto;
 bool p3Auto;
 bool p4Auto;
 
+void initSDL()
+{
+    if (!SDL_WasInit(SDL_INIT_JOYSTICK)) {
+        if (SDL_InitSubSystem(SDL_INIT_JOYSTICK) == -1)
+        {
+            DebugMessage(M64MSG_ERROR, "Couldn't init SDL joystick subsystem: %s", SDL_GetError() );
+        }
+    }
+}
+
 void controllerListCallback(void * context, const char *ParamName, m64p_type ParamType)
 {
     if (strcmp(ParamName, "version") == 0 || strcmp(ParamName, "name") == 0)
@@ -236,17 +246,12 @@ ControllerDialog::ControllerDialog()
         PluginUnload();
     }
 
-    if (!SDL_WasInit(SDL_INIT_JOYSTICK)) {
-        if (SDL_InitSubSystem(SDL_INIT_JOYSTICK) == -1)
-        {
-            DebugMessage(M64MSG_ERROR, "Couldn't init SDL joystick subsystem: %s", SDL_GetError() );
-        }
-    }
+    initSDL();
     int numJoysticks = SDL_NumJoysticks();
     joyNames.clear();
     int i;
     for (i = 0; i < numJoysticks; ++i)
-        joyNames.append(SDL_JoystickName(SDL_JoystickOpen(i)));
+        joyNames.append(SDL_JoystickNameForIndex(i));
     p1Row = 0;
     p2Row = 0;
     p3Row = 0;

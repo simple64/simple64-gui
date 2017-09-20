@@ -1,9 +1,11 @@
 #ifndef KEYSELECT_H
 #define KEYSELECT_H
 
+#include <SDL2/SDL.h>
 #include <QDialog>
 #include <QKeyEvent>
 #include "m64p_types.h"
+#include "controllerdialog.h"
 #include "settingclasses.h"
 
 class KeySelect : public QDialog
@@ -13,6 +15,8 @@ public:
     KeySelect();
     void setJoystick (int joystick) {
         m_Joystick = joystick;
+        initSDL();
+        m_JoystickPointer = SDL_JoystickOpen(m_Joystick);
     }
     void setParamName(const char* ParamName) {
         m_ParamName = ParamName;
@@ -35,6 +39,7 @@ protected:
 private:
     int m_timer = 0;
     int m_Joystick;
+    SDL_Joystick* m_JoystickPointer;
     std::string m_ParamName;
     m64p_handle m_CurrentHandle;
     CustomPushButton *m_Button;

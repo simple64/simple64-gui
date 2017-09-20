@@ -33,20 +33,23 @@ void KeySelect::keyReleaseEvent(QKeyEvent *event)
 
 void KeySelect::timerEvent(QTimerEvent *te)
 {
-    SDL_Joystick* joystick = SDL_JoystickOpen(m_Joystick);
+    initSDL();
+    if (!SDL_JoystickGetAttached(m_JoystickPointer))
+        m_JoystickPointer = SDL_JoystickOpen(m_Joystick);
+
     SDL_JoystickUpdate();
     int i;
     std::string newValue = "";
     bool found = false;
-    for (i = 0; i < SDL_JoystickNumButtons(joystick); ++i) {
-        if (SDL_JoystickGetButton(joystick, i)) {
+    for (i = 0; i < SDL_JoystickNumButtons(m_JoystickPointer); ++i) {
+        if (SDL_JoystickGetButton(m_JoystickPointer, i)) {
             if (m_Number == 0)
                 m_Value = "button(";
             newValue = std::to_string(i);
         }
     }
-    for (i = 0; i < SDL_JoystickNumAxes(joystick); ++i) {
-        Sint16 axis = SDL_JoystickGetAxis(joystick, i);
+    for (i = 0; i < SDL_JoystickNumAxes(m_JoystickPointer); ++i) {
+        Sint16 axis = SDL_JoystickGetAxis(m_JoystickPointer, i);
         if (axis > 16384 || (axis < -16384 && m_joyBlacklist[i] == 0)) {
             if (m_Number == 0)
                 m_Value = "axis(";
@@ -56,9 +59,9 @@ void KeySelect::timerEvent(QTimerEvent *te)
                 newValue = std::to_string(i) + "-";
         }
     }
-    for (i = 0; i < SDL_JoystickNumHats(joystick); ++i) {
+    for (i = 0; i < SDL_JoystickNumHats(m_JoystickPointer); ++i) {
         Uint8 hat;
-        hat = SDL_JoystickGetHat(joystick, i);
+        hat = SDL_JoystickGetHat(m_JoystickPointer, i);
         if (hat & SDL_HAT_UP) {
             if (m_Number == 0)
                 m_Value = "hat(";
@@ -77,6 +80,7 @@ void KeySelect::timerEvent(QTimerEvent *te)
             newValue = std::to_string(i) + " Right";
         }
     }
+
     if (newValue != "") {
         if (newValue != m_PrevValue) {
             found = true;
@@ -108,11 +112,14 @@ void KeySelect::closeEvent(QCloseEvent *)
 
 void KeySelect::showEvent(QShowEvent *)
 {
-    SDL_Joystick* joystick = SDL_JoystickOpen(m_Joystick);
+    initSDL();
+    if (!SDL_JoystickGetAttached(m_JoystickPointer))
+        m_JoystickPointer = SDL_JoystickOpen(m_Joystick);
+
     SDL_JoystickUpdate();
     int i;
-    for (i = 0; i < SDL_JoystickNumAxes(joystick); ++i) {
-        Sint16 axis = SDL_JoystickGetAxis(joystick, i);
+    for (i = 0; i < SDL_JoystickNumAxes(m_JoystickPointer); ++i) {
+        Sint16 axis = SDL_JoystickGetAxis(m_JoystickPointer, i);
         if (axis < -32000 )
             m_joyBlacklist[i] = 1;
         else
