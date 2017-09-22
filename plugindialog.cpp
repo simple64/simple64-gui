@@ -184,8 +184,8 @@ PluginDialog::PluginDialog()
     QString name = settings->value("rspPlugin").toString();
     name.remove(OSAL_DLL_EXTENSION);
     QStringList name2 = name.split("-");
-    if (name2.size() > 2)
-        RSPName = name2.at(1) + "-" + name2.at(2);
+    name.remove(name2.at(0) + "-");
+    RSPName = name;
     res = (*ConfigOpenSection)(RSPName.toLatin1().data(), &rspConfigHandle);
     if (res == M64ERR_SUCCESS)
         (*ConfigListParameters)(rspConfigHandle, (char*)"RSP", paramListCallback);
@@ -201,8 +201,8 @@ PluginDialog::PluginDialog()
     name = settings->value("audioPlugin").toString();
     name.remove(OSAL_DLL_EXTENSION);
     name2 = name.split("-");
-    if (name2.size() > 2)
-        AudioName = name2.at(1) + "-" + name2.at(2);
+    name.remove(name2.at(0) + "-");
+    AudioName = name;
     res = (*ConfigOpenSection)(AudioName.toLatin1().data(), &audioConfigHandle);
     if (res == M64ERR_SUCCESS)
         (*ConfigListParameters)(audioConfigHandle, (char*)"Audio", paramListCallback);
@@ -218,8 +218,8 @@ PluginDialog::PluginDialog()
     name = settings->value("videoPlugin").toString();
     name.remove(OSAL_DLL_EXTENSION);
     name2 = name.split("-");
-    if (name2.size() > 2)
-        VideoName = name2.at(1) + "-" + name2.at(2);
+    name.remove(name2.at(0) + "-");
+    VideoName = name;
     res = (*ConfigOpenSection)(VideoName.toLatin1().data(), &videoConfigHandle);
     if (res == M64ERR_SUCCESS)
         (*ConfigListParameters)(videoConfigHandle, (char*)"Video", paramListCallback);
