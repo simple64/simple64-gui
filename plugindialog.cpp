@@ -185,6 +185,7 @@ PluginDialog::PluginDialog()
     name.remove(OSAL_DLL_EXTENSION);
     QStringList name2 = name.split("-");
     name.remove(name2.at(0) + "-");
+    name.remove("-sse2");
     RSPName = name;
     res = (*ConfigOpenSection)(RSPName.toLatin1().data(), &rspConfigHandle);
     if (res == M64ERR_SUCCESS)
