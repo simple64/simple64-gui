@@ -2,6 +2,7 @@
 #include "core_interface.h"
 #include "plugin.h"
 #include "settingclasses.h"
+#include "sdl_key_converter.h"
 #include "common.h"
 
 #include <QLabel>
@@ -207,7 +208,23 @@ void controllerListCallback(void * context, const char *ParamName, m64p_type Par
         ((CustomPushButton*)my_Widget)->setConfigHandle(current_handle);
         ((CustomPushButton*)my_Widget)->setParamType(ParamType);
         ((CustomPushButton*)my_Widget)->setParamName(ParamName);
-        ((CustomPushButton*)my_Widget)->setText(l_ParamString);
+        if (l_ParamString.contains("key(")) {
+            QString text;
+            if (strstr(ParamName,"Axis") != NULL) {
+                int i, j;
+                sscanf(l_ParamString.toLatin1().data(),"%*c%*c%*c%*c%d%*c%d%*c", &i, &j);
+                text = SDL_GetScancodeName((SDL_Scancode)sdl_keysym2scancode(i));
+                text += ", ";
+                text += SDL_GetScancodeName((SDL_Scancode)sdl_keysym2scancode(j));
+            } else {
+                int k;
+                sscanf(l_ParamString.toLatin1().data(),"%*c%*c%*c%*c%d%*c", &k);
+                text = SDL_GetScancodeName((SDL_Scancode)sdl_keysym2scancode(k));
+            }
+            ((CustomPushButton*)my_Widget)->setText(text);
+        }
+        else
+            ((CustomPushButton*)my_Widget)->setText(l_ParamString);
         ((CustomPushButton*)my_Widget)->setDisabled(*pAuto);
         ((CustomPushButton*)my_Widget)->setJoystick((*ConfigGetParamInt)(current_handle, "device"));
     }
