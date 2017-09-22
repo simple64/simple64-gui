@@ -15,7 +15,7 @@ public:
     KeySelect();
     void setJoystick (int joystick) {
         m_Joystick = joystick;
-        if (device >= 0) {
+        if (joystick >= 0) {
             initSDL();
             m_JoystickPointer = SDL_JoystickOpen(m_Joystick);
         }
