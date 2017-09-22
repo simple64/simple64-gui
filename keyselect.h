@@ -47,6 +47,7 @@ private:
     CustomPushButton *m_Button;
     bool m_Axis;
     int m_Number;
+    QString m_Text;
     std::string m_Value;
     std::string m_PrevValue;
     int m_joyBlacklist[256];
