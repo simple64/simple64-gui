@@ -33,6 +33,8 @@ void KeySelect::keyReleaseEvent(QKeyEvent *event)
 
 void KeySelect::timerEvent(QTimerEvent *te)
 {
+    if (m_Joystick < 0) return;
+
     initSDL();
     if (!SDL_JoystickGetAttached(m_JoystickPointer))
         m_JoystickPointer = SDL_JoystickOpen(m_Joystick);
@@ -112,6 +114,8 @@ void KeySelect::closeEvent(QCloseEvent *)
 
 void KeySelect::showEvent(QShowEvent *)
 {
+    if (m_Joystick < 0) return;
+
     initSDL();
     if (!SDL_JoystickGetAttached(m_JoystickPointer))
         m_JoystickPointer = SDL_JoystickOpen(m_Joystick);
