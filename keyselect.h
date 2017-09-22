@@ -15,8 +15,10 @@ public:
     KeySelect();
     void setJoystick (int joystick) {
         m_Joystick = joystick;
-        initSDL();
-        m_JoystickPointer = SDL_JoystickOpen(m_Joystick);
+        if (device >= 0) {
+            initSDL();
+            m_JoystickPointer = SDL_JoystickOpen(m_Joystick);
+        }
     }
     void setParamName(const char* ParamName) {
         m_ParamName = ParamName;
