@@ -9,6 +9,23 @@
 #include <QLabel>
 #include <QVBoxLayout>
 
+CustomSlider::CustomSlider()
+{
+    m_myLabel = new QLabel;
+    setOrientation(Qt::Horizontal);
+    setMinimum(0);
+    setMaximum(1024);
+    connect(this, &QSlider::valueChanged, [=](){
+        int i_value = this->value() * 32;
+        m_myLabel->setText("Current Value: " + QString::number(i_value));
+        QString output = QString::number(i_value);
+        output += ",";
+        output += QString::number(i_value);
+        (*ConfigSetParameter)(m_CurrentHandle, m_ParamName.c_str(), m_ParamType, output.toLatin1().data());
+        (*ConfigSaveFile)();
+    });
+}
+
 CustomLineEdit::CustomLineEdit()
 {
     connect(this, &QLineEdit::editingFinished, [=](){

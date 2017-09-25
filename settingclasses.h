@@ -1,11 +1,36 @@
 #ifndef CUSTOMLINEEDIT_H
 #define CUSTOMLINEEDIT_H
 
+#include <QLabel>
 #include <QCheckBox>
 #include <QLineEdit>
 #include <QComboBox>
+#include <QSlider>
 #include <QPushButton>
 #include "m64p_types.h"
+
+class CustomSlider : public QSlider
+{
+public:
+    CustomSlider();
+    void setParamName(const char* ParamName) {
+        m_ParamName = ParamName;
+    }
+    void setParamType(m64p_type ParamType) {
+        m_ParamType = ParamType;
+    }
+    void setConfigHandle(m64p_handle CurrentHandle) {
+        m_CurrentHandle = CurrentHandle;
+    }
+    QLabel* getLabel() {
+        return m_myLabel;
+    }
+private:
+    QLabel *m_myLabel;
+    m64p_type m_ParamType;
+    std::string m_ParamName;
+    m64p_handle m_CurrentHandle;
+};
 
 class CustomLineEdit : public QLineEdit
 {

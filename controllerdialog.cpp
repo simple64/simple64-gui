@@ -178,20 +178,24 @@ void controllerListCallback(void * context, const char *ParamName, m64p_type Par
         //mouse not supported
     }
     else if (strcmp(ParamName, "AnalogDeadzone") == 0) {
-        my_Widget = new CustomLineEdit;
-        ((CustomLineEdit*)my_Widget)->setConfigHandle(current_handle);
-        ((CustomLineEdit*)my_Widget)->setParamType(ParamType);
-        ((CustomLineEdit*)my_Widget)->setParamName(ParamName);
-        ((CustomLineEdit*)my_Widget)->setStyleSheet("border: 1px solid; padding: 10px");
-        ((CustomLineEdit*)my_Widget)->setText(l_ParamString);
+        my_Widget = new CustomSlider;
+        ((CustomSlider*)my_Widget)->setConfigHandle(current_handle);
+        ((CustomSlider*)my_Widget)->setParamType(ParamType);
+        ((CustomSlider*)my_Widget)->setParamName(ParamName);
+        ((CustomSlider*)my_Widget)->setStyleSheet("border: 1px solid; padding: 10px");
+        ((CustomSlider*)my_Widget)->setValue(l_ParamString.split(",").at(0).toInt() / 32);
+        QLabel *myLabel = ((CustomSlider*)my_Widget)->getLabel();
+        my_layout->addWidget(myLabel, *myRow, 2);
     }
     else if (strcmp(ParamName, "AnalogPeak") == 0) {
-        my_Widget = new CustomLineEdit;
-        ((CustomLineEdit*)my_Widget)->setConfigHandle(current_handle);
-        ((CustomLineEdit*)my_Widget)->setParamType(ParamType);
-        ((CustomLineEdit*)my_Widget)->setParamName(ParamName);
-        ((CustomLineEdit*)my_Widget)->setStyleSheet("border: 1px solid; padding: 10px");
-        ((CustomLineEdit*)my_Widget)->setText(l_ParamString);
+        my_Widget = new CustomSlider;
+        ((CustomSlider*)my_Widget)->setConfigHandle(current_handle);
+        ((CustomSlider*)my_Widget)->setParamType(ParamType);
+        ((CustomSlider*)my_Widget)->setParamName(ParamName);
+        ((CustomSlider*)my_Widget)->setStyleSheet("border: 1px solid; padding: 10px");
+        ((CustomSlider*)my_Widget)->setValue(l_ParamString.split(",").at(0).toInt() / 32);
+        QLabel *myLabel = ((CustomSlider*)my_Widget)->getLabel();
+        my_layout->addWidget(myLabel, *myRow, 2);
     }
     else {
         my_Widget = new CustomPushButton;
