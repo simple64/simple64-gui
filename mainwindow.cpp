@@ -23,6 +23,60 @@ WorkerThread *workerThread = nullptr;
 LogViewer *logViewer = nullptr;
 QSettings *settings = nullptr;
 
+void updatePlugins()
+{
+    QDir *PluginDir = new QDir(qtPluginDir);
+    PluginDir->setFilter(QDir::Files);
+    QStringList Filter;
+    Filter.append("");
+    QStringList current;
+    QString default_value;
+    if (!settings->contains("videoPlugin")) {
+        Filter.replace(0,"mupen64plus-video*");
+        current = PluginDir->entryList(Filter);
+        default_value = "mupen64plus-video-GLideN64";
+        default_value += OSAL_DLL_EXTENSION;
+        if (current.isEmpty())
+            settings->setValue("videoPlugin", "dummy");
+        else if (current.indexOf(default_value) != -1)
+            settings->setValue("videoPlugin", default_value);
+        else
+            settings->setValue("videoPlugin", current.at(0));
+    }
+    if (!settings->contains("audioPlugin")) {
+        Filter.replace(0,"mupen64plus-audio*");
+        current = PluginDir->entryList(Filter);
+        if (current.isEmpty())
+            settings->setValue("audioPlugin", "dummy");
+        else
+            settings->setValue("audioPlugin", current.at(0));
+    }
+    if (!settings->contains("rspPlugin")) {
+        Filter.replace(0,"mupen64plus-rsp*");
+        current = PluginDir->entryList(Filter);
+        default_value = "mupen64plus-rsp-hle";
+        default_value += OSAL_DLL_EXTENSION;
+        if (current.isEmpty())
+            settings->setValue("rspPlugin", "dummy");
+        else if (current.indexOf(default_value) != -1)
+            settings->setValue("rspPlugin", default_value);
+        else
+            settings->setValue("rspPlugin", current.at(0));
+    }
+    if (!settings->contains("inputPlugin")) {
+        Filter.replace(0,"mupen64plus-input*");
+        current = PluginDir->entryList(Filter);
+        if (current.isEmpty())
+            settings->setValue("inputPlugin", "dummy");
+        else
+            settings->setValue("inputPlugin", current.at(0));
+    }
+    qtGfxPlugin = settings->value("videoPlugin").toString();
+    qtAudioPlugin = settings->value("audioPlugin").toString();
+    qtRspPlugin = settings->value("rspPlugin").toString();
+    qtInputPlugin = settings->value("inputPlugin").toString();
+}
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -97,63 +151,7 @@ MainWindow::MainWindow(QWidget *parent) :
     if (!settings->value("configDirPath").isNull())
         qtConfigDir = settings->value("configDirPath").toString();
 
-    QDir *PluginDir = new QDir(qtPluginDir);
-    QStringList Filter;
-    Filter.append("");
-    QStringList current;
-    QString default_value;
-    if (!settings->contains("videoPlugin")) {
-        Filter.replace(0,"mupen64plus-video*");
-        current = PluginDir->entryList(Filter);
-        default_value = "mupen64plus-video-GLideN64";
-        default_value += OSAL_DLL_EXTENSION;
-        if (current.isEmpty())
-            settings->setValue("videoPlugin", default_value);
-        else if (current.indexOf(default_value) != -1)
-            settings->setValue("videoPlugin", default_value);
-        else
-            settings->setValue("videoPlugin", current.at(0));
-    }
-    if (!settings->contains("audioPlugin")) {
-        Filter.replace(0,"mupen64plus-audio*");
-        current = PluginDir->entryList(Filter);
-        default_value = "mupen64plus-audio-sdl2";
-        default_value += OSAL_DLL_EXTENSION;
-        if (current.isEmpty())
-            settings->setValue("audioPlugin", default_value);
-        else
-            settings->setValue("audioPlugin", current.at(0));
-    }
-    if (!settings->contains("rspPlugin")) {
-        Filter.replace(0,"mupen64plus-rsp*");
-        current = PluginDir->entryList(Filter);
-        default_value = "mupen64plus-rsp-hle";
-        default_value += OSAL_DLL_EXTENSION;
-        if (current.isEmpty())
-            settings->setValue("rspPlugin", default_value);
-        else if (current.indexOf(default_value) != -1)
-            settings->setValue("rspPlugin", default_value);
-        else
-            settings->setValue("rspPlugin", current.at(0));
-    }
-    if (!settings->contains("inputPlugin")) {
-        Filter.replace(0,"mupen64plus-input*");
-        current = PluginDir->entryList(Filter);
-        default_value = "mupen64plus-input-sdl";
-        default_value += OSAL_DLL_EXTENSION;
-        if (current.isEmpty())
-            settings->setValue("inputPlugin", default_value);
-        else
-            settings->setValue("inputPlugin", current.at(0));
-    }
-    if (!settings->value("videoPlugin").isNull())
-        qtGfxPlugin = settings->value("videoPlugin").toString();
-    if (!settings->value("audioPlugin").isNull())
-        qtAudioPlugin = settings->value("audioPlugin").toString();
-    if (!settings->value("rspPlugin").isNull())
-        qtRspPlugin = settings->value("rspPlugin").toString();
-    if (!settings->value("inputPlugin").isNull())
-        qtInputPlugin = settings->value("inputPlugin").toString();
+    updatePlugins();
 }
 
 MainWindow::~MainWindow()

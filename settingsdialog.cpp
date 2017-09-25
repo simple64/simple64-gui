@@ -5,9 +5,7 @@
 
 #include <QPushButton>
 #include <QSettings>
-#include <QGridLayout>
 #include <QFileDialog>
-#include <QComboBox>
 #include <QMessageBox>
 
 void SettingsDialog::handleCoreButton()
@@ -31,6 +29,13 @@ void SettingsDialog::handlePluginButton()
         pluginPath->setText(fileName);
         settings->setValue("pluginDirPath", fileName);
         qtPluginDir = settings->value("pluginDirPath").toString();
+
+        settings->remove("inputPlugin");
+        settings->remove("videoPlugin");
+        settings->remove("audioPlugin");
+        settings->remove("rspPlugin");
+        updatePlugins();
+        initStuff();
     }
 }
 
@@ -64,6 +69,13 @@ void SettingsDialog::handlePluginEdit()
 {
     settings->setValue("pluginDirPath", pluginPath->text());
     qtPluginDir = settings->value("pluginDirPath").toString();
+
+    settings->remove("inputPlugin");
+    settings->remove("videoPlugin");
+    settings->remove("audioPlugin");
+    settings->remove("rspPlugin");
+    updatePlugins();
+    initStuff();
 }
 
 void SettingsDialog::handleConfigEdit()
@@ -72,9 +84,11 @@ void SettingsDialog::handleConfigEdit()
     qtConfigDir = settings->value("configDirPath").toString();
 }
 
-SettingsDialog::SettingsDialog()
+void SettingsDialog::initStuff()
 {
-    QGridLayout *layout = new QGridLayout;
+    if (layout != nullptr)
+        delete layout;
+    layout = new QGridLayout;
 
     QLabel *coreLabel = new QLabel("Core Library Path");
     corePath = new QLineEdit;
@@ -125,14 +139,12 @@ SettingsDialog::SettingsDialog()
     Filter.replace(0,"mupen64plus-video*");
     current = PluginDir->entryList(Filter);
     videoChoice->addItems(current);
-    videoChoice->addItem("dummy");
     int my_index = videoChoice->findText(qtGfxPlugin);
-    if (my_index != -1) {
-        videoChoice->setCurrentIndex(my_index);
-    } else {
-        settings->setValue("videoPlugin", videoChoice->currentText());
-        qtGfxPlugin = settings->value("videoPlugin").toString();
+    if (my_index == -1) {
+        videoChoice->addItem(qtGfxPlugin);
+        my_index = videoChoice->findText(qtGfxPlugin);
     }
+    videoChoice->setCurrentIndex(my_index);
     connect(videoChoice, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::activated),
         [=](const QString &text) {
             settings->setValue("videoPlugin", text);
@@ -147,14 +159,12 @@ SettingsDialog::SettingsDialog()
     Filter.replace(0,"mupen64plus-audio*");
     current = PluginDir->entryList(Filter);
     audioChoice->addItems(current);
-    audioChoice->addItem("dummy");
     my_index = audioChoice->findText(qtAudioPlugin);
-    if (my_index != -1) {
-        audioChoice->setCurrentIndex(my_index);
-    } else {
-        settings->setValue("audioPlugin", audioChoice->currentText());
-        qtAudioPlugin = settings->value("audioPlugin").toString();
+    if (my_index == -1) {
+        audioChoice->addItem(qtAudioPlugin);
+        my_index = audioChoice->findText(qtAudioPlugin);
     }
+    audioChoice->setCurrentIndex(my_index);
     connect(audioChoice, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::activated),
         [=](const QString &text) {
             settings->setValue("audioPlugin", text);
@@ -168,14 +178,12 @@ SettingsDialog::SettingsDialog()
     Filter.replace(0,"mupen64plus-rsp*");
     current = PluginDir->entryList(Filter);
     rspChoice->addItems(current);
-    rspChoice->addItem("dummy");
     my_index = rspChoice->findText(qtRspPlugin);
-    if (my_index != -1) {
-        rspChoice->setCurrentIndex(my_index);
-    } else {
-        settings->setValue("rspPlugin", rspChoice->currentText());
-        qtRspPlugin = settings->value("rspPlugin").toString();
+    if (my_index == -1) {
+        rspChoice->addItem(qtRspPlugin);
+        my_index = rspChoice->findText(qtRspPlugin);
     }
+    rspChoice->setCurrentIndex(my_index);
     connect(rspChoice, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::activated),
         [=](const QString &text) {
             settings->setValue("rspPlugin", text);
@@ -189,14 +197,12 @@ SettingsDialog::SettingsDialog()
     Filter.replace(0,"mupen64plus-input*");
     current = PluginDir->entryList(Filter);
     inputChoice->addItems(current);
-    inputChoice->addItem("dummy");
     my_index = inputChoice->findText(qtInputPlugin);
-    if (my_index != -1) {
-        inputChoice->setCurrentIndex(my_index);
-    } else {
-        settings->setValue("inputPlugin", inputChoice->currentText());
-        qtInputPlugin = settings->value("inputPlugin").toString();
+    if (my_index == -1) {
+        inputChoice->addItem(qtInputPlugin);
+        my_index = inputChoice->findText(qtInputPlugin);
     }
+    inputChoice->setCurrentIndex(my_index);
     connect(inputChoice, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::activated),
         [=](const QString &text) {
             settings->setValue("inputPlugin", text);
@@ -205,4 +211,9 @@ SettingsDialog::SettingsDialog()
     layout->addWidget(inputChoice,7,1);
 
     setLayout(layout);
+}
+
+SettingsDialog::SettingsDialog()
+{
+    initStuff();
 }

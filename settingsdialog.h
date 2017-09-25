@@ -4,6 +4,8 @@
 #include <QDialog>
 #include <QLineEdit>
 #include <QLabel>
+#include <QComboBox>
+#include <QGridLayout>
 
 class SettingsDialog : public QDialog
 {
@@ -20,9 +22,11 @@ private slots:
     void handlePluginEdit();
     void handleConfigEdit();
 private:
+    void initStuff();
     QLineEdit *corePath;
     QLineEdit *pluginPath;
     QLineEdit *configPath;
+    QGridLayout *layout = nullptr;
 };
 
 #endif // SETTINGSDIALOG_H
