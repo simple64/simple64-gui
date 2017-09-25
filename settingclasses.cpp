@@ -1,5 +1,6 @@
 #include "settingclasses.h"
 #include "core_interface.h"
+#include "plugin.h"
 #include "controllerdialog.h"
 #include "keyselect.h"
 #include "cheat.h"
@@ -113,6 +114,15 @@ CustomComboBox::CustomComboBox()
         }
         (*ConfigSetParameter)(m_CurrentHandle, m_ParamName.c_str(), m_ParamType, &temp);
         if (m_ParamName == "mode" || m_ParamName == "device") {
+            (*ConfigSaveFile)();
+            int value;
+            (*CoreDoCommand)(M64CMD_CORE_STATE_QUERY, M64CORE_EMU_STATE, &value);
+            if (value == M64EMU_STOPPED) {
+                PluginUnload();
+                PluginSearchLoad();
+                PluginUnload();
+            }
+
             p1Row = 0;
             p2Row = 0;
             p3Row = 0;
