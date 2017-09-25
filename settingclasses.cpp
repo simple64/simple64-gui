@@ -18,7 +18,7 @@ CustomSlider::CustomSlider()
     connect(this, &QSlider::valueChanged, [=](){
         int i_value = this->value() * 32;
         m_myLabel->setStyleSheet("font-weight: bold");
-        m_myLabel->setText("  " + QString::number(i_value));
+        m_myLabel->setText("  " + QString::number(i_value / 32768.0 * 100.0, 'f', 2) + "%");
         QString output = QString::number(i_value);
         output += ",";
         output += QString::number(i_value);
