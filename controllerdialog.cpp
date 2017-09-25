@@ -89,7 +89,7 @@ void controllerListCallback(void * context, const char *ParamName, m64p_type Par
         desc->setToolTip(helper);
     }
     desc->setStyleSheet("border: 1px solid; padding: 10px");
-    my_layout->addWidget(desc, *myRow, 0);
+
     switch (ParamType) {
     case M64TYPE_INT:
         l_ParamInt = (*ConfigGetParamInt)(current_handle, ParamName);
@@ -103,7 +103,7 @@ void controllerListCallback(void * context, const char *ParamName, m64p_type Par
         l_ParamString = (*ConfigGetParamString)(current_handle, ParamName);
         break;
     }
-    void *my_Widget;
+    void *my_Widget = nullptr;
     if (strcmp(ParamName, "mode") == 0) {
         my_Widget = new CustomComboBox;
         ((CustomComboBox*)my_Widget)->setConfigHandle(current_handle);
@@ -172,21 +172,10 @@ void controllerListCallback(void * context, const char *ParamName, m64p_type Par
         }
     }
     else if (strcmp(ParamName, "mouse") == 0) {
-        my_Widget = new CustomCheckBox;
-        ((CustomCheckBox*)my_Widget)->setConfigHandle(current_handle);
-        ((CustomCheckBox*)my_Widget)->setParamType(ParamType);
-        ((CustomCheckBox*)my_Widget)->setParamName(ParamName);
-        ((CustomCheckBox*)my_Widget)->setCheckState(l_ParamBool ? Qt::Checked : Qt::Unchecked);
-        ((CustomCheckBox*)my_Widget)->setDisabled(*pAuto);
+        //mouse not supported
     }
     else if (strcmp(ParamName, "MouseSensitivity") == 0) {
-        my_Widget = new CustomLineEdit;
-        ((CustomLineEdit*)my_Widget)->setConfigHandle(current_handle);
-        ((CustomLineEdit*)my_Widget)->setParamType(ParamType);
-        ((CustomLineEdit*)my_Widget)->setParamName(ParamName);
-        ((CustomLineEdit*)my_Widget)->setStyleSheet("border: 1px solid; padding: 10px");
-        ((CustomLineEdit*)my_Widget)->setText(l_ParamString);
-        ((CustomLineEdit*)my_Widget)->setDisabled(*pAuto);
+        //mouse not supported
     }
     else if (strcmp(ParamName, "AnalogDeadzone") == 0) {
         my_Widget = new CustomLineEdit;
@@ -231,8 +220,11 @@ void controllerListCallback(void * context, const char *ParamName, m64p_type Par
         ((CustomPushButton*)my_Widget)->setDisabled(*pAuto);
         ((CustomPushButton*)my_Widget)->setJoystick((*ConfigGetParamInt)(current_handle, "device"));
     }
-    my_layout->addWidget((QWidget*)my_Widget, *myRow, 1);
-    ++*myRow;
+    if (my_Widget != nullptr) {
+        my_layout->addWidget(desc, *myRow, 0);
+        my_layout->addWidget((QWidget*)my_Widget, *myRow, 1);
+        ++*myRow;
+    }
 }
 
 void ControllerDialog::handleResetButton()
