@@ -277,6 +277,7 @@ ControllerDialog::ControllerDialog()
 
     QWidget *p1Settings = new QWidget;
     p1Layout = new QGridLayout;
+    p1Layout->setColumnMinimumWidth(1,200);
     p1Settings->setLayout(p1Layout);
     res = (*ConfigOpenSection)("Input-SDL-Control1", &p1Handle);
     if (res == M64ERR_SUCCESS)
@@ -289,6 +290,7 @@ ControllerDialog::ControllerDialog()
 
     QWidget *p2Settings = new QWidget;
     p2Layout = new QGridLayout;
+    p2Layout->setColumnMinimumWidth(1,200);
     p2Settings->setLayout(p2Layout);
     res = (*ConfigOpenSection)("Input-SDL-Control2", &p2Handle);
     if (res == M64ERR_SUCCESS)
@@ -301,6 +303,7 @@ ControllerDialog::ControllerDialog()
 
     QWidget *p3Settings = new QWidget;
     p3Layout = new QGridLayout;
+    p3Layout->setColumnMinimumWidth(1,200);
     p3Settings->setLayout(p3Layout);
     res = (*ConfigOpenSection)("Input-SDL-Control3", &p3Handle);
     if (res == M64ERR_SUCCESS)
@@ -313,6 +316,7 @@ ControllerDialog::ControllerDialog()
 
     QWidget *p4Settings = new QWidget;
     p4Layout = new QGridLayout;
+    p4Layout->setColumnMinimumWidth(1,200);
     p4Settings->setLayout(p4Layout);
     res = (*ConfigOpenSection)("Input-SDL-Control4", &p4Handle);
     if (res == M64ERR_SUCCESS)

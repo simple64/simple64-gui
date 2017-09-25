@@ -17,7 +17,8 @@ CustomSlider::CustomSlider()
     setMaximum(1024);
     connect(this, &QSlider::valueChanged, [=](){
         int i_value = this->value() * 32;
-        m_myLabel->setText("Current Value: " + QString::number(i_value));
+        m_myLabel->setStyleSheet("font-weight: bold");
+        m_myLabel->setText("  " + QString::number(i_value));
         QString output = QString::number(i_value);
         output += ",";
         output += QString::number(i_value);
