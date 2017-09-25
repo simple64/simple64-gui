@@ -184,7 +184,6 @@ void controllerListCallback(void * context, const char *ParamName, m64p_type Par
         ((CustomLineEdit*)my_Widget)->setParamName(ParamName);
         ((CustomLineEdit*)my_Widget)->setStyleSheet("border: 1px solid; padding: 10px");
         ((CustomLineEdit*)my_Widget)->setText(l_ParamString);
-        ((CustomLineEdit*)my_Widget)->setDisabled(*pAuto);
     }
     else if (strcmp(ParamName, "AnalogPeak") == 0) {
         my_Widget = new CustomLineEdit;
@@ -193,7 +192,6 @@ void controllerListCallback(void * context, const char *ParamName, m64p_type Par
         ((CustomLineEdit*)my_Widget)->setParamName(ParamName);
         ((CustomLineEdit*)my_Widget)->setStyleSheet("border: 1px solid; padding: 10px");
         ((CustomLineEdit*)my_Widget)->setText(l_ParamString);
-        ((CustomLineEdit*)my_Widget)->setDisabled(*pAuto);
     }
     else {
         my_Widget = new CustomPushButton;
