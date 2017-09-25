@@ -230,6 +230,9 @@ PluginDialog::PluginDialog()
     videoScroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     tabWidget->addTab(videoScroll, tr("Video Plugin"));
 
+    QLabel *myLabel = new QLabel("Hover your mouse over the configuration item name for a description.\n");
+    myLabel->setStyleSheet("font-weight: bold");
+    mainLayout->addWidget(myLabel);
     mainLayout->addWidget(tabWidget);
     QPushButton *resetButton = new QPushButton("Reset All Settings");
     resetButton->setAutoDefault(false);
