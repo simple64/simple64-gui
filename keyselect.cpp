@@ -6,6 +6,7 @@
 KeySelect::KeySelect()
 {
     m_Number = 0;
+    m_Next = nullptr;
 }
 
 void KeySelect::keyReleaseEvent(QKeyEvent *event)
@@ -114,6 +115,8 @@ void KeySelect::closeEvent(QCloseEvent *)
     if (m_timer)
         killTimer(m_timer);
     m_timer = 0;
+    if (m_Next != nullptr)
+        m_Next->fromBindAll();
 }
 
 void KeySelect::showEvent(QShowEvent *)

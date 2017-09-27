@@ -133,8 +133,16 @@ public:
     void setAuto(bool* pAuto) {
         m_Auto = pAuto;
     }
-    void setJoystick (int joystick) {
+    void setJoystick(int joystick) {
         m_Joystick = joystick;
+    }
+    void setNext(CustomPushButton *next) {
+        m_Next = next;
+    }
+    void fromBindAll() {
+        m_bindAll = true;
+        this->click();
+        m_bindAll = false;
     }
 
 private:
@@ -142,7 +150,20 @@ private:
     std::string m_ParamName;
     m64p_handle m_CurrentHandle;
     bool* m_Auto;
+    bool m_bindAll;
     int m_Joystick;
+    CustomPushButton *m_Next;
+};
+
+class BindAllButton : public QPushButton
+{
+public:
+    BindAllButton();
+    void setFirst(CustomPushButton* first) {
+        m_First = first;
+    }
+private:
+    CustomPushButton *m_First;
 };
 
 #endif // CUSTOMLINEEDIT_H

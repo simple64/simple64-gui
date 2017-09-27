@@ -1,7 +1,6 @@
 #include "controllerdialog.h"
 #include "core_interface.h"
 #include "plugin.h"
-#include "settingclasses.h"
 #include "sdl_key_converter.h"
 #include "common.h"
 
@@ -25,6 +24,8 @@ int p1Row;
 int p2Row;
 int p3Row;
 int p4Row;
+bool needBindAllButton;
+CustomPushButton *last;
 bool p1Auto;
 bool p2Auto;
 bool p3Auto;
@@ -199,6 +200,21 @@ void controllerListCallback(void * context, const char *ParamName, m64p_type Par
     }
     else {
         my_Widget = new CustomPushButton;
+        if (needBindAllButton) {
+            BindAllButton *button = new BindAllButton;
+            button->setText("Bind All");
+            button->setDisabled(*pAuto);
+            button->setFirst((CustomPushButton*)my_Widget);
+            my_layout->addWidget(button, *myRow, 0, 1, 2);
+            ++*myRow;
+            needBindAllButton = false;
+        }
+        if (strstr(ParamName, "switch") == NULL) {
+            if (last != nullptr)
+                last->setNext((CustomPushButton*)my_Widget);
+            last = (CustomPushButton*)my_Widget;
+        }
+
         ((CustomPushButton*)my_Widget)->setConfigHandle(current_handle);
         ((CustomPushButton*)my_Widget)->setParamType(ParamType);
         ((CustomPushButton*)my_Widget)->setParamName(ParamName);
@@ -270,6 +286,8 @@ ControllerDialog::ControllerDialog()
     p2Row = 0;
     p3Row = 0;
     p4Row = 0;
+    needBindAllButton = true;
+    last = nullptr;
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     QTabWidget *tabWidget = new QTabWidget;

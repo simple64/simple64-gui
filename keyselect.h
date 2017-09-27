@@ -32,6 +32,9 @@ public:
     void setAxis (bool axis) {
         m_Axis = axis;
     }
+    void setBindAll(CustomPushButton* next) {
+        m_Next = next;
+    }
 
 protected:
     void keyReleaseEvent(QKeyEvent *event);
@@ -45,6 +48,7 @@ private:
     std::string m_ParamName;
     m64p_handle m_CurrentHandle;
     CustomPushButton *m_Button;
+    CustomPushButton *m_Next;
     bool m_Axis;
     int m_Number;
     QString m_Text;

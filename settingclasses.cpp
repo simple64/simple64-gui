@@ -145,6 +145,8 @@ CustomComboBox::CustomComboBox()
             p2Row = 0;
             p3Row = 0;
             p4Row = 0;
+            needBindAllButton = true;
+            last = nullptr;
             (*ConfigListParameters)(p1Handle, (char*)"Input-SDL-Control1", controllerListCallback);
             (*ConfigListParameters)(p2Handle, (char*)"Input-SDL-Control2", controllerListCallback);
             (*ConfigListParameters)(p3Handle, (char*)"Input-SDL-Control3", controllerListCallback);
@@ -154,10 +156,21 @@ CustomComboBox::CustomComboBox()
     });
 }
 
-CustomPushButton::CustomPushButton()
+BindAllButton::BindAllButton()
 {
     connect(this, &QAbstractButton::clicked, [=](){
+        m_First->fromBindAll();
+    });
+}
+
+CustomPushButton::CustomPushButton()
+{
+    m_Next = nullptr;
+
+    connect(this, &QAbstractButton::clicked, [=](){
         KeySelect* keyselect = new KeySelect;
+        if (m_bindAll)
+            keyselect->setBindAll(m_Next);
         keyselect->setJoystick(m_Joystick);
         keyselect->setParamName(m_ParamName.c_str());
         keyselect->setConfigHandle(m_CurrentHandle);
