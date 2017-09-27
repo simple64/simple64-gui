@@ -5,20 +5,23 @@
 #include <QScrollArea>
 #include <QLabel>
 #include <QVBoxLayout>
+#include <QTemporaryFile>
+#include <QTextStream>
 
 class LogViewer : public QDialog
 {
     Q_OBJECT
 public:
     LogViewer();
+    ~LogViewer();
     void addLog(QString text);
     void clearLog();
 protected:
     void showEvent(QShowEvent *event);
 private:
-    QString data;
-    QScrollArea *area;
-    QLabel *label;
+    QTemporaryFile *file = nullptr;
+    QScrollArea *area = nullptr;
+    QLabel *label = nullptr;
 };
 
 extern LogViewer *logViewer;

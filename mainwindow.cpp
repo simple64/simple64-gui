@@ -85,8 +85,6 @@ MainWindow::MainWindow(QWidget *parent) :
     nogui = 0;
     ui->setupUi(this);
 
-    logViewer = new LogViewer();
-
     QString ini_path = QDir(QCoreApplication::applicationDirPath()).filePath("mupen64plus-gui.ini");
     settings = new QSettings(ini_path, QSettings::IniFormat);
 
@@ -152,6 +150,8 @@ MainWindow::MainWindow(QWidget *parent) :
         qtConfigDir = settings->value("configDirPath").toString();
 
     updatePlugins();
+
+    logViewer = new LogViewer();
 }
 
 MainWindow::~MainWindow()
