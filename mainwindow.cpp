@@ -282,27 +282,27 @@ void MainWindow::deleteOGLWindow()
 
 void MainWindow::openROM(QString filename)
 {
-    if (QtAttachCoreLib()) {
+    if (QtAttachCoreLib())
         (*CoreDoCommand)(M64CMD_STOP, 0, NULL);
-        if (workerThread != nullptr) {
-            while (workerThread->isRunning())
-                QCoreApplication::processEvents();
-        }
-        logViewer->clearLog();
-        workerThread = new WorkerThread();
-        workerThread->setFileName(filename);
-        workerThread->start();
 
-        QStringList list;
-        if (settings->contains("RecentROMs"))
-            list = settings->value("RecentROMs").toString().split(";");
-        list.removeAll(filename);
-        list.prepend(filename);
-        if (list.size() > RECENT_SIZE)
-            list.removeLast();
-        settings->setValue("RecentROMs",list.join(";"));
-        updateOpenRecent();
+    if (workerThread != nullptr) {
+        while (workerThread->isRunning())
+            QCoreApplication::processEvents();
     }
+    logViewer->clearLog();
+    workerThread = new WorkerThread();
+    workerThread->setFileName(filename);
+    workerThread->start();
+
+    QStringList list;
+    if (settings->contains("RecentROMs"))
+        list = settings->value("RecentROMs").toString().split(";");
+    list.removeAll(filename);
+    list.prepend(filename);
+    if (list.size() > RECENT_SIZE)
+        list.removeLast();
+    settings->setValue("RecentROMs",list.join(";"));
+    updateOpenRecent();
 }
 
 void MainWindow::on_actionOpen_ROM_triggered()

@@ -76,6 +76,9 @@ void DebugCallback(void *Context, int level, const char *message)
 
 m64p_error openROM(std::string filename)
 {
+    if (!QtAttachCoreLib())
+        return M64ERR_INVALID_STATE;
+
     unsigned char *ROM_buffer = NULL;
     size_t romlength = 0;
     uint32_t i;
@@ -213,6 +216,8 @@ m64p_error openROM(std::string filename)
     if ((*CoreDoCommand)(M64CMD_ROM_GET_HEADER, sizeof(l_RomHeader), &l_RomHeader) != M64ERR_SUCCESS)
     {
         DebugMessage(M64MSG_WARNING, "couldn't get ROM header information from core library");
+        (*CoreShutdown)();
+        DetachCoreLib();
         return M64ERR_INVALID_STATE;
     }
 

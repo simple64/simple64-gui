@@ -19,6 +19,7 @@ void WorkerThread::run()
             my_window->context()->moveToThread(QApplication::instance()->thread());
             deleteOGLWindow();
         }
+
         if (w->getNoGUI())
             QApplication::quit();
     }
