@@ -235,10 +235,6 @@ m64p_error openROM(std::string filename)
         cxd4 = 1;
     else if (strstr((char*)l_RomHeader.Name, (const char*)"PUZZLE LEAGUE N64") != NULL)
         cxd4 = 1;
-    else if (strstr((char*)l_RomHeader.Name, (const char*)"Resident Evil II") != NULL)
-        cxd4 = 1;
-    else if (strstr((char*)l_RomHeader.Name, (const char*)"BioHazard II") != NULL)
-        cxd4 = 1;
     else if (qtGfxPlugin.contains("angrylion"))
         cxd4 = 1;
 
