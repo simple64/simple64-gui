@@ -35,9 +35,14 @@ win32 {
 SOURCES += osal/osal_dynamiclib_win32.c \
     osal/osal_files_win32.c
 
-DEFINES -= UNICODE
+    !contains(QMAKE_TARGET.arch, x86_64) {
+        message("x86 build")
+        LIBS += ../mupen64plus-win32-deps/SDL2-2.0.6/lib/x86/SDL2.lib ../mupen64plus-win32-deps/zlib-1.2.8/lib/x86/zlib.lib
+    } else {
+        message("x86_64 build")
+        LIBS += ../mupen64plus-win32-deps/SDL2-2.0.6/lib/x64/SDL2.lib ../mupen64plus-win32-deps/zlib-1.2.8/lib/x64/zlib.lib
+    }
 
-LIBS += -Wl,-Bdynamic -lSDL2 -lz
 INCLUDEPATH += ../mupen64plus-win32-deps/SDL2-2.0.6/include ../mupen64plus-win32-deps/zlib-1.2.8/include
 }
 
