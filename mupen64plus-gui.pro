@@ -27,7 +27,9 @@ SOURCES += main.cpp\
     keyselect.cpp \
     interface/sdl_key_converter.c \
     controllerdialog.cpp \
-    logviewer.cpp
+    logviewer.cpp \
+    minizip/unzip.c \
+    minizip/ioapi.c
 
 win32 {
 SOURCES += osal/osal_dynamiclib_win32.c \
@@ -35,15 +37,16 @@ SOURCES += osal/osal_dynamiclib_win32.c \
 
 DEFINES -= UNICODE
 
-LIBS += -Wl,-Bdynamic -lSDL2 -lminizip
+LIBS += -Wl,-Bdynamic -lSDL2 -lz
+INCLUDEPATH += ../mupen64plus-win32-deps/SDL2-2.0.6/include ../mupen64plus-win32-deps/zlib-1.2.8/include
 }
 
 !win32 {
 SOURCES += osal/osal_dynamiclib_unix.c \
     osal/osal_files_unix.c
 
-LIBS += -L/usr/local/lib -ldl -lSDL2 -lminizip
-INCLUDEPATH += /usr/local/include
+LIBS += -L/usr/local/lib -ldl -lSDL2 -lz
+INCLUDEPATH += /usr/local/include /usr/include/SDL2 /usr/local/include/SDL2
 }
 
 HEADERS  += mainwindow.h \

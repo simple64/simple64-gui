@@ -21,7 +21,7 @@
 #ifndef __SDL_KEY_CONVH__
 #define __SDL_KEY_CONVH__
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include <stdint.h>
 
 #ifdef __cplusplus

@@ -5,7 +5,7 @@
 #include "keyselect.h"
 #include "cheat.h"
 #include "common.h"
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include <QLabel>
 #include <QVBoxLayout>
 

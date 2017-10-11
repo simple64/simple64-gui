@@ -28,7 +28,7 @@
 #include "common.h"
 #include "plugin.h"
 #include "core_interface.h"
-#include <SDL2/SDL_keycode.h>
+#include <SDL_keycode.h>
 #include <QProcess>
 #include "version.h"
 #include "cheat.h"

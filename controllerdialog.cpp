@@ -9,7 +9,7 @@
 #include <QScrollArea>
 #include <QTabWidget>
 #include <QVBoxLayout>
-#include <SDL2/SDL.h>
+#include <SDL.h>
 
 m64p_handle p1Handle;
 m64p_handle p2Handle;

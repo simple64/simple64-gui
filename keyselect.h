@@ -1,7 +1,7 @@
 #ifndef KEYSELECT_H
 #define KEYSELECT_H
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include <QDialog>
 #include <QKeyEvent>
 #include "m64p_types.h"
