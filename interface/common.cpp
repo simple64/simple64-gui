@@ -74,6 +74,23 @@ void DebugCallback(void *Context, int level, const char *message)
     logViewer->addLog(output);
 }
 
+static char* media_loader_get_gb_cart_rom(void*, int control_id)
+{
+    return NULL;
+}
+
+static char* media_loader_get_gb_cart_ram(void*, int control_id)
+{
+    return NULL;
+}
+
+static m64p_media_loader media_loader =
+{
+    NULL,
+    media_loader_get_gb_cart_rom,
+    media_loader_get_gb_cart_ram
+};
+
 m64p_error openROM(std::string filename)
 {
     if (!QtAttachCoreLib())
@@ -287,6 +304,11 @@ m64p_error openROM(std::string filename)
     if (!l_RomFound || l_CheatCodesFound == 0)
     {
         DebugMessage(M64MSG_WARNING, "no cheat codes found for ROM image '%.20s'", l_RomHeader.Name);
+    }
+
+    if ((*CoreDoCommand)(M64CMD_SET_MEDIA_LOADER, sizeof(media_loader), &media_loader) != M64ERR_SUCCESS)
+    {
+        DebugMessage(M64MSG_WARNING, "Couldn't set media loader, transferpak and GB carts will not work.");
     }
 
     /* run the game */
