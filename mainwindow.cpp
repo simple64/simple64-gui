@@ -23,7 +23,7 @@ WorkerThread *workerThread = nullptr;
 LogViewer *logViewer = nullptr;
 QSettings *settings = nullptr;
 
-void updatePlugins()
+void MainWindow::updatePlugins()
 {
     QDir *PluginDir = new QDir(qtPluginDir);
     PluginDir->setFilter(QDir::Files);
@@ -77,6 +77,168 @@ void updatePlugins()
     qtInputPlugin = settings->value("inputPlugin").toString();
 }
 
+void MainWindow::updateGB(Ui::MainWindow *ui)
+{
+    QMenu *GB = new QMenu;
+    GB->setTitle("Game Boy Cartridges");
+    ui->menuFile->insertMenu(ui->actionTake_Screenshot, GB);
+
+    QAction *fileSelect = new QAction(this);
+    QString current = settings->value("Player1GBROM").toString();
+    fileSelect->setText("Player 1 ROM: " + current);
+    GB->addAction(fileSelect);
+    connect(fileSelect, &QAction::triggered,[=](){
+        QString filename = QFileDialog::getOpenFileName(this,
+            tr("GB ROM File"), NULL, tr("GB ROM Files (*.gb)"));
+        if (!filename.isNull()) {
+            settings->setValue("Player1GBROM", filename);
+            QString current = filename;
+            fileSelect->setText("Player 1 ROM: " + current);
+        }
+    });
+
+    QAction *fileSelect2 = new QAction(this);
+    current = settings->value("Player1GBRAM").toString();
+    fileSelect2->setText("Player 1 RAM: " + current);
+    GB->addAction(fileSelect2);
+    connect(fileSelect2, &QAction::triggered,[=](){
+        QString filename = QFileDialog::getOpenFileName(this,
+            tr("GB RAM File"), NULL, tr("GB RAM Files (*.sav)"));
+        if (!filename.isNull()) {
+            settings->setValue("Player1GBRAM", filename);
+            QString current = filename;
+            fileSelect2->setText("Player 1 RAM: " + current);
+        }
+    });
+
+    QAction *clearSelect = new QAction(this);
+    clearSelect->setText("Clear Player 1 Selections");
+    GB->addAction(clearSelect);
+    connect(clearSelect, &QAction::triggered,[=](){
+        settings->remove("Player1GBROM");
+        settings->remove("Player1GBRAM");
+        fileSelect->setText("Player 1 ROM: ");
+        fileSelect2->setText("Player 1 RAM: ");
+    });
+    GB->addSeparator();
+
+    fileSelect = new QAction(this);
+    current = settings->value("Player2GBROM").toString();
+    fileSelect->setText("Player 2 ROM: " + current);
+    GB->addAction(fileSelect);
+    connect(fileSelect, &QAction::triggered,[=](){
+        QString filename = QFileDialog::getOpenFileName(this,
+            tr("GB ROM File"), NULL, tr("GB ROM Files (*.gb)"));
+        if (!filename.isNull()) {
+            settings->setValue("Player2GBROM", filename);
+            QString current = filename;
+            fileSelect->setText("Player 2 ROM: " + current);
+        }
+    });
+
+    fileSelect2 = new QAction(this);
+    current = settings->value("Player2GBRAM").toString();
+    fileSelect2->setText("Player 2 RAM: " + current);
+    GB->addAction(fileSelect2);
+    connect(fileSelect2, &QAction::triggered,[=](){
+        QString filename = QFileDialog::getOpenFileName(this,
+            tr("GB RAM File"), NULL, tr("GB RAM Files (*.sav)"));
+        if (!filename.isNull()) {
+            settings->setValue("Player2GBRAM", filename);
+            QString current = filename;
+            fileSelect2->setText("Player 2 RAM: " + current);
+        }
+    });
+
+    clearSelect = new QAction(this);
+    clearSelect->setText("Clear Player 2 Selections");
+    GB->addAction(clearSelect);
+    connect(clearSelect, &QAction::triggered,[=](){
+        settings->remove("Player2GBROM");
+        settings->remove("Player2GBRAM");
+        fileSelect->setText("Player 2 ROM: ");
+        fileSelect2->setText("Player 2 RAM: ");
+    });
+    GB->addSeparator();
+
+    fileSelect = new QAction(this);
+    current = settings->value("Player3GBROM").toString();
+    fileSelect->setText("Player 3 ROM: " + current);
+    GB->addAction(fileSelect);
+    connect(fileSelect, &QAction::triggered,[=](){
+        QString filename = QFileDialog::getOpenFileName(this,
+            tr("GB ROM File"), NULL, tr("GB ROM Files (*.gb)"));
+        if (!filename.isNull()) {
+            settings->setValue("Player3GBROM", filename);
+            QString current = filename;
+            fileSelect->setText("Player 3 ROM: " + current);
+        }
+    });
+
+    fileSelect2 = new QAction(this);
+    current = settings->value("Player3GBRAM").toString();
+    fileSelect2->setText("Player 3 RAM: " + current);
+    GB->addAction(fileSelect2);
+    connect(fileSelect2, &QAction::triggered,[=](){
+        QString filename = QFileDialog::getOpenFileName(this,
+            tr("GB RAM File"), NULL, tr("GB RAM Files (*.sav)"));
+        if (!filename.isNull()) {
+            settings->setValue("Player3GBRAM", filename);
+            QString current = filename;
+            fileSelect2->setText("Player 3 RAM: " + current);
+        }
+    });
+
+    clearSelect = new QAction(this);
+    clearSelect->setText("Clear Player 3 Selections");
+    GB->addAction(clearSelect);
+    connect(clearSelect, &QAction::triggered,[=](){
+        settings->remove("Player3GBROM");
+        settings->remove("Player3GBRAM");
+        fileSelect->setText("Player 3 ROM: ");
+        fileSelect2->setText("Player 3 RAM: ");
+    });
+    GB->addSeparator();
+
+    fileSelect = new QAction(this);
+    current = settings->value("Player4GBROM").toString();
+    fileSelect->setText("Player 4 ROM: " + current);
+    GB->addAction(fileSelect);
+    connect(fileSelect, &QAction::triggered,[=](){
+        QString filename = QFileDialog::getOpenFileName(this,
+            tr("GB ROM File"), NULL, tr("GB ROM Files (*.gb)"));
+        if (!filename.isNull()) {
+            settings->setValue("Player4GBROM", filename);
+            QString current = filename;
+            fileSelect->setText("Player 4 ROM: " + current);
+        }
+    });
+
+    fileSelect2 = new QAction(this);
+    current = settings->value("Player4GBRAM").toString();
+    fileSelect2->setText("Player 4 RAM: " + current);
+    GB->addAction(fileSelect2);
+    connect(fileSelect2, &QAction::triggered,[=](){
+        QString filename = QFileDialog::getOpenFileName(this,
+            tr("GB RAM File"), NULL, tr("GB RAM Files (*.sav)"));
+        if (!filename.isNull()) {
+            settings->setValue("Player4GBRAM", filename);
+            QString current = filename;
+            fileSelect2->setText("Player 4 RAM: " + current);
+        }
+    });
+
+    clearSelect = new QAction(this);
+    clearSelect->setText("Clear Player 4 Selections");
+    GB->addAction(clearSelect);
+    connect(clearSelect, &QAction::triggered,[=](){
+        settings->remove("Player4GBROM");
+        settings->remove("Player4GBRAM");
+        fileSelect->setText("Player 4 ROM: ");
+        fileSelect2->setText("Player 4 RAM: ");
+    });
+}
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -119,6 +281,7 @@ MainWindow::MainWindow(QWidget *parent) :
     my_slots[0]->setChecked(true);
 
     updateOpenRecent();
+    updateGB(ui);
 
     if (!settings->contains("coreLibPath")) {
         QStringList files;

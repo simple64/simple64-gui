@@ -34,7 +34,7 @@ void SettingsDialog::handlePluginButton()
         settings->remove("videoPlugin");
         settings->remove("audioPlugin");
         settings->remove("rspPlugin");
-        updatePlugins();
+        w->updatePlugins();
         initStuff();
     }
 }
@@ -74,7 +74,7 @@ void SettingsDialog::handlePluginEdit()
     settings->remove("videoPlugin");
     settings->remove("audioPlugin");
     settings->remove("rspPlugin");
-    updatePlugins();
+    w->updatePlugins();
     initStuff();
 }
 

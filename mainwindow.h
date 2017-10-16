@@ -21,6 +21,7 @@ public:
     int getVerbose();
     void setNoGUI();
     int getNoGUI();
+    void updatePlugins();
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
@@ -76,6 +77,7 @@ private slots:
 
 private:
     void updateOpenRecent();
+    void updateGB(Ui::MainWindow *ui);
     void findRecursion(const QString &path, const QString &pattern, QStringList *result);
     Ui::MainWindow *ui;
     QMenu * OpenRecent;

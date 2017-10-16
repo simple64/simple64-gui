@@ -76,12 +76,42 @@ void DebugCallback(void *Context, int level, const char *message)
 
 static char* media_loader_get_gb_cart_rom(void*, int control_id)
 {
-    return NULL;
+    QString pathname;
+    if (control_id == 0)
+        pathname = settings->value("Player1GBROM").toString();
+    else if (control_id == 1)
+        pathname = settings->value("Player2GBROM").toString();
+    else if (control_id == 2)
+        pathname = settings->value("Player3GBROM").toString();
+    else if (control_id == 3)
+        pathname = settings->value("Player4GBROM").toString();
+
+    if (pathname.isEmpty())
+        return NULL;
+    else {
+        char *path = strdup(pathname.toLatin1().data());
+        return path;
+    }
 }
 
 static char* media_loader_get_gb_cart_ram(void*, int control_id)
 {
-    return NULL;
+    QString pathname;
+    if (control_id == 0)
+        pathname = settings->value("Player1GBRAM").toString();
+    else if (control_id == 1)
+        pathname = settings->value("Player2GBRAM").toString();
+    else if (control_id == 2)
+        pathname = settings->value("Player3GBRAM").toString();
+    else if (control_id == 3)
+        pathname = settings->value("Player4GBRAM").toString();
+
+    if (pathname.isEmpty())
+        return NULL;
+    else {
+        char *path = strdup(pathname.toLatin1().data());
+        return path;
+    }
 }
 
 static m64p_media_loader media_loader =
