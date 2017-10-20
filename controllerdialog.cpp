@@ -41,6 +41,16 @@ void initSDL()
     }
 }
 
+void deleteItem(QGridLayout* my_layout, int row, int column)
+{
+    QLayoutItem *deleteItem = my_layout->itemAtPosition(row, column);
+    if (deleteItem != 0) {
+        QWidget *deleteWidget = deleteItem->widget();
+        if (deleteWidget != 0)
+            delete deleteWidget;
+    }
+}
+
 void controllerListCallback(void * context, const char *ParamName, m64p_type ParamType)
 {
     if (strcmp(ParamName, "version") == 0 || strcmp(ParamName, "name") == 0)
@@ -186,6 +196,8 @@ void controllerListCallback(void * context, const char *ParamName, m64p_type Par
         ((CustomSlider*)my_Widget)->setStyleSheet("border: 1px solid; padding: 10px");
         ((CustomSlider*)my_Widget)->setValue(l_ParamString.split(",").at(0).toInt() / 32);
         QLabel *myLabel = ((CustomSlider*)my_Widget)->getLabel();
+        deleteItem(my_layout, *myRow, 1);
+        deleteItem(my_layout, *myRow, 2);
         my_layout->addWidget(myLabel, *myRow, 2);
     }
     else if (strcmp(ParamName, "AnalogPeak") == 0) {
@@ -196,6 +208,8 @@ void controllerListCallback(void * context, const char *ParamName, m64p_type Par
         ((CustomSlider*)my_Widget)->setStyleSheet("border: 1px solid; padding: 10px");
         ((CustomSlider*)my_Widget)->setValue(l_ParamString.split(",").at(0).toInt() / 32);
         QLabel *myLabel = ((CustomSlider*)my_Widget)->getLabel();
+        deleteItem(my_layout, *myRow, 1);
+        deleteItem(my_layout, *myRow, 2);
         my_layout->addWidget(myLabel, *myRow, 2);
     }
     else {
