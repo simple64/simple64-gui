@@ -221,6 +221,15 @@ void controllerListCallback(void * context, const char *ParamName, m64p_type Par
             button->setFirst((CustomPushButton*)my_Widget);
             my_layout->addWidget(button, *myRow, 0, 1, 2);
             ++*myRow;
+            QLabel *primaryLabel = new QLabel("Primary");
+            primaryLabel->setAlignment(Qt::AlignCenter);
+            primaryLabel->setStyleSheet("font-weight: bold");
+            my_layout->addWidget(primaryLabel, *myRow, 1);
+            QLabel *secondaryLabel = new QLabel("Secondary");
+            secondaryLabel->setAlignment(Qt::AlignCenter);
+            secondaryLabel->setStyleSheet("font-weight: bold");
+            my_layout->addWidget(secondaryLabel, *myRow, 2);
+            ++*myRow;
             needBindAllButton = false;
         }
         if (strstr(ParamName, "switch") == NULL) {
