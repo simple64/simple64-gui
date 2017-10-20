@@ -36,9 +36,6 @@ public:
     void setIndex(int index) {
         m_index = index;
     }
-    void setString(QString string) {
-        m_string = string;
-    }
 
     void setBindAll(CustomPushButton* next) {
         m_Next = next;
@@ -61,7 +58,6 @@ private:
     bool m_Axis;
     int m_Number;
     QString m_Text;
-    QString m_string;
     std::string m_Value;
     std::string m_PrevValue;
     int m_joyBlacklist[256];

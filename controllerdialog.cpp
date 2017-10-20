@@ -51,6 +51,23 @@ void deleteItem(QGridLayout* my_layout, int row, int column)
     }
 }
 
+QString convertName(const char *ParamName, QString l_ParamString)
+{
+    QString text;
+    if (strstr(ParamName,"Axis") != NULL) {
+        int i, j;
+        sscanf(l_ParamString.toLatin1().data(),"%*c%*c%*c%*c%d%*c%d%*c", &i, &j);
+        text = SDL_GetScancodeName((SDL_Scancode)sdl_keysym2scancode(i));
+        text += ", ";
+        text += SDL_GetScancodeName((SDL_Scancode)sdl_keysym2scancode(j));
+    } else {
+        int k;
+        sscanf(l_ParamString.toLatin1().data(),"%*c%*c%*c%*c%d%*c", &k);
+        text = SDL_GetScancodeName((SDL_Scancode)sdl_keysym2scancode(k));
+    }
+    return text;
+}
+
 void controllerListCallback(void * context, const char *ParamName, m64p_type ParamType)
 {
     if (strcmp(ParamName, "version") == 0 || strcmp(ParamName, "name") == 0)
@@ -239,45 +256,32 @@ void controllerListCallback(void * context, const char *ParamName, m64p_type Par
         }
 
         CustomPushButton *secondButton = new CustomPushButton;
-        QStringList multiple = l_ParamString.split(") ");
-        if (multiple.size() > 1) {
-            QString first = multiple.at(0);
-            first.append(")");
-            l_ParamString = first;
-            QString second = multiple.at(1);
-            secondButton->setText(second);
-        }
         secondButton->setConfigHandle(current_handle);
         secondButton->setParamType(ParamType);
         secondButton->setParamName(ParamName);
-        secondButton->setString(l_ParamString);
         secondButton->setDisabled(*pAuto);
         secondButton->setIndex(1);
         secondButton->setJoystick((*ConfigGetParamInt)(current_handle, "device"));
+        QStringList multiple = l_ParamString.split(") ");
+        QString firstString = multiple.at(0);
+        if (multiple.size() > 1) {
+            firstString += ")";
+            QString secondString = multiple.at(1);
+            if (secondString.contains("key("))
+                secondButton->setText(convertName(ParamName, secondString));
+            else
+                secondButton->setText(secondString);
+        }
         my_layout->addWidget(secondButton, *myRow, 2);
 
         ((CustomPushButton*)my_Widget)->setConfigHandle(current_handle);
         ((CustomPushButton*)my_Widget)->setParamType(ParamType);
         ((CustomPushButton*)my_Widget)->setParamName(ParamName);
-        ((CustomPushButton*)my_Widget)->setString(l_ParamString);
         ((CustomPushButton*)my_Widget)->setIndex(0);
-        if (l_ParamString.contains("key(")) {
-            QString text;
-            if (strstr(ParamName,"Axis") != NULL) {
-                int i, j;
-                sscanf(l_ParamString.toLatin1().data(),"%*c%*c%*c%*c%d%*c%d%*c", &i, &j);
-                text = SDL_GetScancodeName((SDL_Scancode)sdl_keysym2scancode(i));
-                text += ", ";
-                text += SDL_GetScancodeName((SDL_Scancode)sdl_keysym2scancode(j));
-            } else {
-                int k;
-                sscanf(l_ParamString.toLatin1().data(),"%*c%*c%*c%*c%d%*c", &k);
-                text = SDL_GetScancodeName((SDL_Scancode)sdl_keysym2scancode(k));
-            }
-            ((CustomPushButton*)my_Widget)->setText(text);
-        }
+        if (firstString.contains("key("))
+            ((CustomPushButton*)my_Widget)->setText(convertName(ParamName, firstString));
         else
-            ((CustomPushButton*)my_Widget)->setText(l_ParamString);
+            ((CustomPushButton*)my_Widget)->setText(firstString);
         ((CustomPushButton*)my_Widget)->setDisabled(*pAuto);
         ((CustomPushButton*)my_Widget)->setJoystick((*ConfigGetParamInt)(current_handle, "device"));
     }
