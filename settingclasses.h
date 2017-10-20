@@ -139,6 +139,10 @@ public:
     void setNext(CustomPushButton *next) {
         m_Next = next;
     }
+    void setIndex(int index) {
+        m_index = index;
+    }
+
     void fromBindAll() {
         m_bindAll = true;
         this->click();
@@ -152,6 +156,7 @@ private:
     bool* m_Auto;
     bool m_bindAll;
     int m_Joystick;
+    int m_index;
     CustomPushButton *m_Next;
 };
 

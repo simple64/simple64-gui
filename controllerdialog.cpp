@@ -238,9 +238,27 @@ void controllerListCallback(void * context, const char *ParamName, m64p_type Par
             last = (CustomPushButton*)my_Widget;
         }
 
+        CustomPushButton *secondButton = new CustomPushButton;
+        QStringList multiple = l_ParamString.split(") ");
+        if (multiple.size() > 1) {
+            QString first = multiple.at(0);
+            first.append(")");
+            l_ParamString = first;
+            QString second = multiple.at(1);
+            secondButton->setText(second);
+        }
+        secondButton->setConfigHandle(current_handle);
+        secondButton->setParamType(ParamType);
+        secondButton->setParamName(ParamName);
+        secondButton->setDisabled(*pAuto);
+        secondButton->setIndex(1);
+        secondButton->setJoystick((*ConfigGetParamInt)(current_handle, "device"));
+        my_layout->addWidget(secondButton, *myRow, 2);
+
         ((CustomPushButton*)my_Widget)->setConfigHandle(current_handle);
         ((CustomPushButton*)my_Widget)->setParamType(ParamType);
         ((CustomPushButton*)my_Widget)->setParamName(ParamName);
+        ((CustomPushButton*)my_Widget)->setIndex(0);
         if (l_ParamString.contains("key(")) {
             QString text;
             if (strstr(ParamName,"Axis") != NULL) {
@@ -319,6 +337,7 @@ ControllerDialog::ControllerDialog()
     QWidget *p1Settings = new QWidget;
     p1Layout = new QGridLayout;
     p1Layout->setColumnMinimumWidth(1,200);
+    p1Layout->setColumnMinimumWidth(2,200);
     p1Settings->setLayout(p1Layout);
     res = (*ConfigOpenSection)("Input-SDL-Control1", &p1Handle);
     if (res == M64ERR_SUCCESS)
@@ -332,6 +351,7 @@ ControllerDialog::ControllerDialog()
     QWidget *p2Settings = new QWidget;
     p2Layout = new QGridLayout;
     p2Layout->setColumnMinimumWidth(1,200);
+    p2Layout->setColumnMinimumWidth(2,200);
     p2Settings->setLayout(p2Layout);
     res = (*ConfigOpenSection)("Input-SDL-Control2", &p2Handle);
     if (res == M64ERR_SUCCESS)
@@ -345,6 +365,7 @@ ControllerDialog::ControllerDialog()
     QWidget *p3Settings = new QWidget;
     p3Layout = new QGridLayout;
     p3Layout->setColumnMinimumWidth(1,200);
+    p3Layout->setColumnMinimumWidth(2,200);
     p3Settings->setLayout(p3Layout);
     res = (*ConfigOpenSection)("Input-SDL-Control3", &p3Handle);
     if (res == M64ERR_SUCCESS)
@@ -358,6 +379,7 @@ ControllerDialog::ControllerDialog()
     QWidget *p4Settings = new QWidget;
     p4Layout = new QGridLayout;
     p4Layout->setColumnMinimumWidth(1,200);
+    p4Layout->setColumnMinimumWidth(2,200);
     p4Settings->setLayout(p4Layout);
     res = (*ConfigOpenSection)("Input-SDL-Control4", &p4Handle);
     if (res == M64ERR_SUCCESS)

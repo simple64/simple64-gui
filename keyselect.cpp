@@ -11,27 +11,25 @@ KeySelect::KeySelect()
 
 void KeySelect::keyReleaseEvent(QKeyEvent *event)
 {
-    if (m_Joystick == -1) {
-        int keyValue = QT2SDL2(event->key());
-        if (keyValue != 0) {
-            if (m_Number == 0) {
-                m_Value = "key(";
-                m_Text = "";
-            }
-            m_Value += std::to_string(sdl_scancode2keysym(keyValue));
-            m_Text += SDL_GetScancodeName((SDL_Scancode)keyValue);
-            if (m_Axis) {
-                m_Value += ",";
-                m_Text += ", ";
-                m_Axis = false;
-                ++m_Number;
-            } else {
-                m_Value += ")";
-                (*ConfigSetParameter)(m_CurrentHandle, m_ParamName.c_str(), M64TYPE_STRING, m_Value.c_str());
-                m_Button->setText(m_Text);
-                (*ConfigSaveFile)();
-                this->close();
-            }
+    int keyValue = QT2SDL2(event->key());
+    if (keyValue != 0) {
+        if (m_Number == 0) {
+            m_Value = "key(";
+            m_Text = "";
+        }
+        m_Value += std::to_string(sdl_scancode2keysym(keyValue));
+        m_Text += SDL_GetScancodeName((SDL_Scancode)keyValue);
+        if (m_Axis) {
+            m_Value += ",";
+            m_Text += ", ";
+            m_Axis = false;
+            ++m_Number;
+        } else {
+            m_Value += ")";
+            (*ConfigSetParameter)(m_CurrentHandle, m_ParamName.c_str(), M64TYPE_STRING, m_Value.c_str());
+            m_Button->setText(m_Text);
+            (*ConfigSaveFile)();
+            this->close();
         }
     }
 }

@@ -33,6 +33,10 @@ public:
     void setAxis (bool axis) {
         m_Axis = axis;
     }
+    void setIndex(int index) {
+        m_index = index;
+    }
+
     void setBindAll(CustomPushButton* next) {
         m_Next = next;
     }
@@ -45,6 +49,7 @@ protected:
 private:
     int m_timer = 0;
     int m_Joystick;
+    int m_index;
     SDL_Joystick* m_JoystickPointer;
     std::string m_ParamName;
     m64p_handle m_CurrentHandle;
