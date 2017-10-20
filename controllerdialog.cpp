@@ -250,6 +250,7 @@ void controllerListCallback(void * context, const char *ParamName, m64p_type Par
         secondButton->setConfigHandle(current_handle);
         secondButton->setParamType(ParamType);
         secondButton->setParamName(ParamName);
+        secondButton->setString(l_ParamString);
         secondButton->setDisabled(*pAuto);
         secondButton->setIndex(1);
         secondButton->setJoystick((*ConfigGetParamInt)(current_handle, "device"));
@@ -258,6 +259,7 @@ void controllerListCallback(void * context, const char *ParamName, m64p_type Par
         ((CustomPushButton*)my_Widget)->setConfigHandle(current_handle);
         ((CustomPushButton*)my_Widget)->setParamType(ParamType);
         ((CustomPushButton*)my_Widget)->setParamName(ParamName);
+        ((CustomPushButton*)my_Widget)->setString(l_ParamString);
         ((CustomPushButton*)my_Widget)->setIndex(0);
         if (l_ParamString.contains("key(")) {
             QString text;

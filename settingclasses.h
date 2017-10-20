@@ -142,6 +142,9 @@ public:
     void setIndex(int index) {
         m_index = index;
     }
+    void setString(QString string) {
+        m_string = string;
+    }
 
     void fromBindAll() {
         m_bindAll = true;
@@ -158,6 +161,7 @@ private:
     int m_Joystick;
     int m_index;
     CustomPushButton *m_Next;
+    QString m_string;
 };
 
 class BindAllButton : public QPushButton

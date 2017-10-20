@@ -176,6 +176,7 @@ CustomPushButton::CustomPushButton()
         keyselect->setConfigHandle(m_CurrentHandle);
         keyselect->setButton(this);
         keyselect->setIndex(m_index);
+        keyselect->setString(m_string);
         QHBoxLayout* layout = new QHBoxLayout;
         QString myString;
         if (m_ParamName == "X Axis") {
