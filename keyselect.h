@@ -4,6 +4,7 @@
 #include <SDL.h>
 #include <QDialog>
 #include <QKeyEvent>
+#include <QTimer>
 #include "m64p_types.h"
 #include "controllerdialog.h"
 #include "settingclasses.h"

@@ -115,8 +115,11 @@ void KeySelect::closeEvent(QCloseEvent *)
     if (m_timer)
         killTimer(m_timer);
     m_timer = 0;
-    if (m_Next != nullptr)
-        m_Next->fromBindAll();
+    if (m_Next != nullptr) {
+        QTimer::singleShot(500, [=](){
+            m_Next->fromBindAll();
+        });
+    }
 }
 
 void KeySelect::showEvent(QShowEvent *)
