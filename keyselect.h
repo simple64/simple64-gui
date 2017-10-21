@@ -47,6 +47,7 @@ protected:
     void showEvent(QShowEvent *);
     void closeEvent(QCloseEvent *);
 private:
+    void updateValue();
     int m_timer = 0;
     int m_Joystick;
     int m_index;
