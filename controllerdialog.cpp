@@ -267,6 +267,8 @@ void controllerListCallback(void * context, const char *ParamName, m64p_type Par
         if (multiple.size() > 1) {
             firstString += ")";
             QString secondString = multiple.at(1);
+            if (!secondString.endsWith(")"))
+                secondString.append(")");
             if (secondString.contains("key("))
                 secondButton->setText(convertName(ParamName, secondString));
             else

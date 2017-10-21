@@ -11,10 +11,15 @@ KeySelect::KeySelect()
 
 void KeySelect::updateValue()
 {
+    int i;
+    QString temp;
     QString my_string = QString::fromLatin1((*ConfigGetParamString)(m_CurrentHandle, m_ParamName.c_str()));
     QStringList items = my_string.split(") ");
-    if (items.size() > 1)
-        items.replace(0, items.at(0) + ")");
+    for (i = 0; i < items.size(); ++i) {
+        temp = items.at(i);
+        if (!temp.endsWith(")"))
+            items.replace(i, items.at(i) + ")");
+    }
     if (m_index < items.size())
         items.replace(m_index, QString::fromStdString(m_Value));
     else
