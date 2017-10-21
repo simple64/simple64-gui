@@ -18,6 +18,7 @@ extern bool needBindAllButton;
 extern CustomPushButton* last;
 void initSDL();
 void controllerListCallback(void * context, const char *ParamName, m64p_type ParamType);
+QString convertName(const char *ParamName, QString l_ParamString);
 
 class ControllerDialog : public QDialog
 {

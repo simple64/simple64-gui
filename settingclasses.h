@@ -142,6 +142,9 @@ public:
     void setIndex(int index) {
         m_index = index;
     }
+    void setSecondButton(CustomPushButton *secondButton) {
+        m_secondButton = secondButton;
+    }
 
     void fromBindAll() {
         m_bindAll = true;
@@ -158,6 +161,7 @@ private:
     int m_Joystick;
     int m_index;
     CustomPushButton *m_Next;
+    CustomPushButton *m_secondButton;
 };
 
 class BindAllButton : public QPushButton

@@ -4,6 +4,7 @@
 #include <SDL.h>
 #include <QDialog>
 #include <QKeyEvent>
+#include <QPushButton>
 #include <QTimer>
 #include "m64p_types.h"
 #include "controllerdialog.h"
@@ -14,6 +15,7 @@ class KeySelect : public QDialog
     Q_OBJECT
 public:
     KeySelect();
+    void setClearButton(QPushButton *button);
     void setJoystick (int joystick) {
         m_Joystick = joystick;
         if (joystick >= 0) {
@@ -36,6 +38,9 @@ public:
     void setIndex(int index) {
         m_index = index;
     }
+    void setSecondButton(CustomPushButton *secondButton) {
+        m_secondButton = secondButton;
+    }
 
     void setBindAll(CustomPushButton* next) {
         m_Next = next;
@@ -47,7 +52,7 @@ protected:
     void showEvent(QShowEvent *);
     void closeEvent(QCloseEvent *);
 private:
-    void updateValue();
+    int updateValue();
     int m_timer = 0;
     int m_Joystick;
     int m_index;
@@ -56,6 +61,8 @@ private:
     m64p_handle m_CurrentHandle;
     CustomPushButton *m_Button;
     CustomPushButton *m_Next;
+    QPushButton *m_clearButton;
+    CustomPushButton *m_secondButton;
     bool m_Axis;
     int m_Number;
     QString m_Text;
