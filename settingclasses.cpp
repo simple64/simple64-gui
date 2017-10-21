@@ -166,6 +166,7 @@ BindAllButton::BindAllButton()
 CustomPushButton::CustomPushButton()
 {
     m_Next = nullptr;
+    m_bindAll = false;
 
     connect(this, &QAbstractButton::clicked, [=](){
         KeySelect* keyselect = new KeySelect;
