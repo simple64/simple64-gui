@@ -166,6 +166,7 @@ BindAllButton::BindAllButton()
 CustomPushButton::CustomPushButton()
 {
     m_Next = nullptr;
+    m_bindAll = false;
 
     connect(this, &QAbstractButton::clicked, [=](){
         KeySelect* keyselect = new KeySelect;
@@ -175,7 +176,9 @@ CustomPushButton::CustomPushButton()
         keyselect->setParamName(m_ParamName.c_str());
         keyselect->setConfigHandle(m_CurrentHandle);
         keyselect->setButton(this);
-        QHBoxLayout* layout = new QHBoxLayout;
+        keyselect->setIndex(m_index);
+        keyselect->setSecondButton(m_secondButton);
+        QVBoxLayout* layout = new QVBoxLayout;
         QString myString;
         if (m_ParamName == "X Axis") {
             keyselect->setAxis(true);
@@ -199,6 +202,10 @@ CustomPushButton::CustomPushButton()
         myString.append("</b>");
         QLabel* label = new QLabel(myString);
         layout->addWidget(label);
+        QPushButton *button = new QPushButton;
+        button->setText("Clear Binding");
+        keyselect->setClearButton(button);
+        layout->addWidget(button);
         keyselect->setLayout(layout);
         keyselect->show();
     });

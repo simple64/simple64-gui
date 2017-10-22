@@ -51,6 +51,23 @@ void deleteItem(QGridLayout* my_layout, int row, int column)
     }
 }
 
+QString convertName(const char *ParamName, QString l_ParamString)
+{
+    QString text;
+    if (strstr(ParamName,"Axis") != NULL) {
+        int i, j;
+        sscanf(l_ParamString.toLatin1().data(),"%*c%*c%*c%*c%d%*c%d%*c", &i, &j);
+        text = SDL_GetScancodeName((SDL_Scancode)sdl_keysym2scancode(i));
+        text += ", ";
+        text += SDL_GetScancodeName((SDL_Scancode)sdl_keysym2scancode(j));
+    } else {
+        int k;
+        sscanf(l_ParamString.toLatin1().data(),"%*c%*c%*c%*c%d%*c", &k);
+        text = SDL_GetScancodeName((SDL_Scancode)sdl_keysym2scancode(k));
+    }
+    return text;
+}
+
 void controllerListCallback(void * context, const char *ParamName, m64p_type ParamType)
 {
     if (strcmp(ParamName, "version") == 0 || strcmp(ParamName, "name") == 0)
@@ -221,6 +238,15 @@ void controllerListCallback(void * context, const char *ParamName, m64p_type Par
             button->setFirst((CustomPushButton*)my_Widget);
             my_layout->addWidget(button, *myRow, 0, 1, 2);
             ++*myRow;
+            QLabel *primaryLabel = new QLabel("Primary");
+            primaryLabel->setAlignment(Qt::AlignCenter);
+            primaryLabel->setStyleSheet("font-weight: bold");
+            my_layout->addWidget(primaryLabel, *myRow, 1);
+            QLabel *secondaryLabel = new QLabel("Secondary");
+            secondaryLabel->setAlignment(Qt::AlignCenter);
+            secondaryLabel->setStyleSheet("font-weight: bold");
+            my_layout->addWidget(secondaryLabel, *myRow, 2);
+            ++*myRow;
             needBindAllButton = false;
         }
         if (strstr(ParamName, "switch") == NULL) {
@@ -229,26 +255,37 @@ void controllerListCallback(void * context, const char *ParamName, m64p_type Par
             last = (CustomPushButton*)my_Widget;
         }
 
+        CustomPushButton *secondButton = new CustomPushButton;
+        secondButton->setConfigHandle(current_handle);
+        secondButton->setParamType(ParamType);
+        secondButton->setParamName(ParamName);
+        secondButton->setDisabled(*pAuto);
+        secondButton->setIndex(1);
+        secondButton->setSecondButton((CustomPushButton*)my_Widget);
+        secondButton->setJoystick((*ConfigGetParamInt)(current_handle, "device"));
+        QStringList multiple = l_ParamString.split(") ");
+        QString firstString = multiple.at(0);
+        if (multiple.size() > 1) {
+            firstString += ")";
+            QString secondString = multiple.at(1);
+            if (!secondString.endsWith(")"))
+                secondString.append(")");
+            if (secondString.contains("key("))
+                secondButton->setText(convertName(ParamName, secondString));
+            else
+                secondButton->setText(secondString);
+        }
+        my_layout->addWidget(secondButton, *myRow, 2);
+
         ((CustomPushButton*)my_Widget)->setConfigHandle(current_handle);
         ((CustomPushButton*)my_Widget)->setParamType(ParamType);
         ((CustomPushButton*)my_Widget)->setParamName(ParamName);
-        if (l_ParamString.contains("key(")) {
-            QString text;
-            if (strstr(ParamName,"Axis") != NULL) {
-                int i, j;
-                sscanf(l_ParamString.toLatin1().data(),"%*c%*c%*c%*c%d%*c%d%*c", &i, &j);
-                text = SDL_GetScancodeName((SDL_Scancode)sdl_keysym2scancode(i));
-                text += ", ";
-                text += SDL_GetScancodeName((SDL_Scancode)sdl_keysym2scancode(j));
-            } else {
-                int k;
-                sscanf(l_ParamString.toLatin1().data(),"%*c%*c%*c%*c%d%*c", &k);
-                text = SDL_GetScancodeName((SDL_Scancode)sdl_keysym2scancode(k));
-            }
-            ((CustomPushButton*)my_Widget)->setText(text);
-        }
+        ((CustomPushButton*)my_Widget)->setIndex(0);
+        ((CustomPushButton*)my_Widget)->setSecondButton(secondButton);
+        if (firstString.contains("key("))
+            ((CustomPushButton*)my_Widget)->setText(convertName(ParamName, firstString));
         else
-            ((CustomPushButton*)my_Widget)->setText(l_ParamString);
+            ((CustomPushButton*)my_Widget)->setText(firstString);
         ((CustomPushButton*)my_Widget)->setDisabled(*pAuto);
         ((CustomPushButton*)my_Widget)->setJoystick((*ConfigGetParamInt)(current_handle, "device"));
     }
@@ -310,6 +347,7 @@ ControllerDialog::ControllerDialog()
     QWidget *p1Settings = new QWidget;
     p1Layout = new QGridLayout;
     p1Layout->setColumnMinimumWidth(1,200);
+    p1Layout->setColumnMinimumWidth(2,200);
     p1Settings->setLayout(p1Layout);
     res = (*ConfigOpenSection)("Input-SDL-Control1", &p1Handle);
     if (res == M64ERR_SUCCESS)
@@ -323,6 +361,7 @@ ControllerDialog::ControllerDialog()
     QWidget *p2Settings = new QWidget;
     p2Layout = new QGridLayout;
     p2Layout->setColumnMinimumWidth(1,200);
+    p2Layout->setColumnMinimumWidth(2,200);
     p2Settings->setLayout(p2Layout);
     res = (*ConfigOpenSection)("Input-SDL-Control2", &p2Handle);
     if (res == M64ERR_SUCCESS)
@@ -336,6 +375,7 @@ ControllerDialog::ControllerDialog()
     QWidget *p3Settings = new QWidget;
     p3Layout = new QGridLayout;
     p3Layout->setColumnMinimumWidth(1,200);
+    p3Layout->setColumnMinimumWidth(2,200);
     p3Settings->setLayout(p3Layout);
     res = (*ConfigOpenSection)("Input-SDL-Control3", &p3Handle);
     if (res == M64ERR_SUCCESS)
@@ -349,6 +389,7 @@ ControllerDialog::ControllerDialog()
     QWidget *p4Settings = new QWidget;
     p4Layout = new QGridLayout;
     p4Layout->setColumnMinimumWidth(1,200);
+    p4Layout->setColumnMinimumWidth(2,200);
     p4Settings->setLayout(p4Layout);
     res = (*ConfigOpenSection)("Input-SDL-Control4", &p4Handle);
     if (res == M64ERR_SUCCESS)

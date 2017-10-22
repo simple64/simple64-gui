@@ -9,29 +9,78 @@ KeySelect::KeySelect()
     m_Next = nullptr;
 }
 
+void KeySelect::setClearButton(QPushButton* button) {
+    m_clearButton = button;
+    connect(m_clearButton, &QAbstractButton::clicked, [=](){
+        m_Value = "";
+        int size = updateValue();
+        (*ConfigSetParameter)(m_CurrentHandle, m_ParamName.c_str(), M64TYPE_STRING, m_Value.c_str());
+        if (m_index == 0 && size == 1) {
+            QString temp = QString::fromStdString(m_Value);
+            if (temp.contains("key("))
+                temp = convertName(m_ParamName.c_str(), temp);
+            m_Button->setText(temp);
+            m_secondButton->setText("");
+        } else
+            m_Button->setText("");
+        (*ConfigSaveFile)();
+        this->close();
+    });
+}
+
+int KeySelect::updateValue()
+{
+    int i;
+    int temp_index = m_index;
+    QString temp;
+    QString my_string = QString::fromLatin1((*ConfigGetParamString)(m_CurrentHandle, m_ParamName.c_str()));
+    QStringList items = my_string.split(") ");
+    for (i = 0; i < items.size(); ++i) {
+        temp = items.at(i);
+        if (temp == "") {
+            items.removeAt(i);
+            --m_index;
+        }
+        else if (!temp.endsWith(")"))
+            items.replace(i, items.at(i) + ")");
+    }
+    if (m_Value == "")
+        items.removeAt(m_index);
+    else if (m_index < items.size())
+        items.replace(m_index, QString::fromStdString(m_Value));
+    else
+        items.insert(m_index, QString::fromStdString(m_Value));
+    m_Value = items.join(" ").toStdString();
+    m_index = temp_index;
+    return items.size();
+}
+
 void KeySelect::keyReleaseEvent(QKeyEvent *event)
 {
-    if (m_Joystick == -1) {
-        int keyValue = QT2SDL2(event->key());
-        if (keyValue != 0) {
-            if (m_Number == 0) {
-                m_Value = "key(";
+    int keyValue = QT2SDL2(event->key());
+    if (keyValue != 0) {
+        if (m_Number == 0) {
+            m_Value = "key(";
+            m_Text = "";
+        }
+        m_Value += std::to_string(sdl_scancode2keysym(keyValue));
+        m_Text += SDL_GetScancodeName((SDL_Scancode)keyValue);
+        if (m_Axis) {
+            m_Value += ",";
+            m_Text += ", ";
+            m_Axis = false;
+            ++m_Number;
+        } else {
+            m_Value += ")";
+            int size = updateValue();
+            (*ConfigSetParameter)(m_CurrentHandle, m_ParamName.c_str(), M64TYPE_STRING, m_Value.c_str());
+            if (size == 1 && m_index == 1) {
+                m_secondButton->setText(m_Text);
                 m_Text = "";
             }
-            m_Value += std::to_string(sdl_scancode2keysym(keyValue));
-            m_Text += SDL_GetScancodeName((SDL_Scancode)keyValue);
-            if (m_Axis) {
-                m_Value += ",";
-                m_Text += ", ";
-                m_Axis = false;
-                ++m_Number;
-            } else {
-                m_Value += ")";
-                (*ConfigSetParameter)(m_CurrentHandle, m_ParamName.c_str(), M64TYPE_STRING, m_Value.c_str());
-                m_Button->setText(m_Text);
-                (*ConfigSaveFile)();
-                this->close();
-            }
+            m_Button->setText(m_Text);
+            (*ConfigSaveFile)();
+            this->close();
         }
     }
 }
@@ -101,8 +150,14 @@ void KeySelect::timerEvent(QTimerEvent *te)
         ++m_Number;
     } else if (!m_Axis && found) {
         m_Value += ")";
+        m_Text = QString::fromStdString(m_Value);
+        int size = updateValue();
         (*ConfigSetParameter)(m_CurrentHandle, m_ParamName.c_str(), M64TYPE_STRING, m_Value.c_str());
-        m_Button->setText(QString::fromStdString(m_Value));
+        if (size == 1 && m_index == 1) {
+             m_secondButton->setText(m_Text);
+             m_Text = "";
+        }
+        m_Button->setText(m_Text);
         (*ConfigSaveFile)();
         killTimer(te->timerId());
         m_timer = 0;
