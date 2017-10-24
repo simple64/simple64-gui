@@ -39,7 +39,7 @@ int KeySelect::updateValue()
         temp = items.at(i);
         if (temp == "") {
             items.removeAt(i);
-            --m_index;
+            m_index = 0;
         }
         else if (!temp.endsWith(")"))
             items.replace(i, items.at(i) + ")");
