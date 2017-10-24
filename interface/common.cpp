@@ -278,8 +278,6 @@ m64p_error openROM(std::string filename)
         cxd4 = 1;
     else if (strstr((char*)l_RomHeader.Name, (const char*)"Stunt Racer 64") != NULL)
         cxd4 = 1;
-    else if (strstr((char*)l_RomHeader.Name, (const char*)"GAUNTLET LEGENDS") != NULL)
-        cxd4 = 1;
     else if (strstr((char*)l_RomHeader.Name, (const char*)"PUZZLE LEAGUE N64") != NULL)
         cxd4 = 1;
     else if (qtGfxPlugin.contains("angrylion"))
