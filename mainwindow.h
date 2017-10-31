@@ -17,6 +17,7 @@ class MainWindow : public QMainWindow
 
 public:
     void openROM(QString filename);
+    void resetTitle();
     void setVerbose();
     int getVerbose();
     void setNoGUI();
@@ -83,6 +84,7 @@ private:
     QMenu * OpenRecent;
     int verbose;
     int nogui;
+    QString m_title;
 };
 
 extern MainWindow *w;

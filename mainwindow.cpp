@@ -23,6 +23,11 @@ WorkerThread *workerThread = nullptr;
 LogViewer *logViewer = nullptr;
 QSettings *settings = nullptr;
 
+void MainWindow::resetTitle()
+{
+    this->setWindowTitle(m_title);
+}
+
 void MainWindow::updatePlugins()
 {
     QDir *PluginDir = new QDir(qtPluginDir);
@@ -246,6 +251,10 @@ MainWindow::MainWindow(QWidget *parent) :
     verbose = 0;
     nogui = 0;
     ui->setupUi(this);
+
+    m_title = "mupen64plus-gui    Build Date: ";
+    m_title += __DATE__;
+    resetTitle();
 
     QString ini_path = QDir(QCoreApplication::applicationDirPath()).filePath("mupen64plus-gui.ini");
     settings = new QSettings(ini_path, QSettings::IniFormat);

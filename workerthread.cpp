@@ -23,6 +23,7 @@ void WorkerThread::run()
         if (w->getNoGUI())
             QApplication::quit();
     }
+    w->resetTitle();
 }
 
 void WorkerThread::setFileName(QString filename)
