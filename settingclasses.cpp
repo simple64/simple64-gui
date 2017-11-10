@@ -148,8 +148,14 @@ CustomComboBox::CustomComboBox()
             needBindAllButton = true;
             last = nullptr;
             (*ConfigListParameters)(p1Handle, (char*)"Input-SDL-Control1", controllerListCallback);
+            needBindAllButton = true;
+            last = nullptr;
             (*ConfigListParameters)(p2Handle, (char*)"Input-SDL-Control2", controllerListCallback);
+            needBindAllButton = true;
+            last = nullptr;
             (*ConfigListParameters)(p3Handle, (char*)"Input-SDL-Control3", controllerListCallback);
+            needBindAllButton = true;
+            last = nullptr;
             (*ConfigListParameters)(p4Handle, (char*)"Input-SDL-Control4", controllerListCallback);
         }
         (*ConfigSaveFile)();

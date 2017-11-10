@@ -337,13 +337,13 @@ ControllerDialog::ControllerDialog()
     p2Row = 0;
     p3Row = 0;
     p4Row = 0;
-    needBindAllButton = true;
-    last = nullptr;
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     QTabWidget *tabWidget = new QTabWidget;
     tabWidget->setUsesScrollButtons(false);
 
+    needBindAllButton = true;
+    last = nullptr;
     QWidget *p1Settings = new QWidget;
     p1Layout = new QGridLayout;
     p1Layout->setColumnMinimumWidth(1,200);
@@ -358,6 +358,8 @@ ControllerDialog::ControllerDialog()
     p1Scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     tabWidget->addTab(p1Scroll, tr("Player 1"));
 
+    needBindAllButton = true;
+    last = nullptr;
     QWidget *p2Settings = new QWidget;
     p2Layout = new QGridLayout;
     p2Layout->setColumnMinimumWidth(1,200);
@@ -372,6 +374,8 @@ ControllerDialog::ControllerDialog()
     p2Scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     tabWidget->addTab(p2Scroll, tr("Player 2"));
 
+    needBindAllButton = true;
+    last = nullptr;
     QWidget *p3Settings = new QWidget;
     p3Layout = new QGridLayout;
     p3Layout->setColumnMinimumWidth(1,200);
@@ -386,6 +390,8 @@ ControllerDialog::ControllerDialog()
     p3Scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     tabWidget->addTab(p3Scroll, tr("Player 3"));
 
+    needBindAllButton = true;
+    last = nullptr;
     QWidget *p4Settings = new QWidget;
     p4Layout = new QGridLayout;
     p4Layout->setColumnMinimumWidth(1,200);
