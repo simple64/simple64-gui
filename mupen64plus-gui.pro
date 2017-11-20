@@ -11,6 +11,8 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = mupen64plus-gui
 TEMPLATE = app
 
+ICON = m64p-gui.icns
+
 SOURCES += main.cpp\
     mainwindow.cpp \
     vidext.cpp \
