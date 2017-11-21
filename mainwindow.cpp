@@ -359,7 +359,10 @@ int MainWindow::getVerbose()
 
 void MainWindow::resizeMainWindow(int Width, int Height)
 {
-    resize(Width, Height + (menuBar()->isNativeMenuBar() ? 0 : ui->menuBar->height()) + ui->statusBar->height());
+    QSize size = this->size();
+    Height += (menuBar()->isNativeMenuBar() ? 0 : ui->menuBar->height()) + ui->statusBar->height();
+    if (size.width() != Width || size.height() != Height)
+        resize(Width, Height);
 }
 
 void MainWindow::toggleFS(int force)
