@@ -14,13 +14,13 @@ protected:
 
     void initializeGL() Q_DECL_OVERRIDE;
 
-    void resizeEvent(QResizeEvent *event);
+    void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
 
-    void keyPressEvent(QKeyEvent *event);
+    void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
 
-    void keyReleaseEvent(QKeyEvent *event);
+    void keyReleaseEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
 
-    void timerEvent(QTimerEvent *te);
+    void timerEvent(QTimerEvent *te) Q_DECL_OVERRIDE;
 private:
     int m_width;
     int m_height;
