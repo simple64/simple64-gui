@@ -262,6 +262,9 @@ MainWindow::MainWindow(QWidget *parent) :
     if (!settings->isWritable())
         settings = new QSettings("mupen64plus", "gui");
 
+    restoreGeometry(settings->value("geometry").toByteArray());
+    restoreState(settings->value("windowState").toByteArray());
+
     QActionGroup *my_slots_group = new QActionGroup(this);
     QAction *my_slots[10];
     OpenRecent = new QMenu;
@@ -403,6 +406,10 @@ void MainWindow::closeEvent (QCloseEvent *event)
         while (workerThread->isRunning())
             QCoreApplication::processEvents();
     }
+
+    settings->setValue("geometry", saveGeometry());
+    settings->setValue("windowState", saveState());
+
     event->accept();
 }
 
