@@ -22,6 +22,8 @@ public:
     int getVerbose();
     void setNoGUI();
     int getNoGUI();
+    void setGLES();
+    int getGLES();
     void updatePlugins();
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
@@ -84,6 +86,7 @@ private:
     QMenu * OpenRecent;
     int verbose;
     int nogui;
+    int gles;
     QString m_title;
 };
 

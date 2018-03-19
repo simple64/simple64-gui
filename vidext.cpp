@@ -1,6 +1,7 @@
 #include "vidext.h"
 #include "common.h"
 #include "workerthread.h"
+#include "mainwindow.h"
 #include <stdio.h>
 #include <QDesktopWidget>
 
@@ -17,6 +18,8 @@ m64p_error qtVidExtFuncInit(void)
     format->setProfile(QSurfaceFormat::CompatibilityProfile);
     format->setMajorVersion(2);
     format->setMinorVersion(1);
+    if (w->getGLES())
+        format->setRenderableType(QSurfaceFormat::OpenGLES);
     return M64ERR_SUCCESS;
 }
 

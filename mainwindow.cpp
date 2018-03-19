@@ -250,6 +250,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     verbose = 0;
     nogui = 0;
+    gles = 0;
     ui->setupUi(this);
 
     m_title = "mupen64plus-gui    Build Date: ";
@@ -350,6 +351,11 @@ void MainWindow::setNoGUI()
     statusBar()->hide();
 }
 
+void MainWindow::setGLES()
+{
+    gles = 1;
+}
+
 int MainWindow::getNoGUI()
 {
     return nogui;
@@ -357,7 +363,12 @@ int MainWindow::getNoGUI()
 
 int MainWindow::getVerbose()
 {
-   return verbose;
+    return verbose;
+}
+
+int MainWindow::getGLES()
+{
+    return gles;
 }
 
 void MainWindow::resizeMainWindow(int Width, int Height)
