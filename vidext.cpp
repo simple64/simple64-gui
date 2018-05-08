@@ -210,3 +210,8 @@ m64p_error qtVidExtFuncResizeWindow(int, int)
 {
     return M64ERR_SUCCESS;
 }
+
+uint32_t qtVidExtFuncGLGetDefaultFramebuffer(void)
+{
+    return 0;
+}

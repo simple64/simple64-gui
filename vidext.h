@@ -21,6 +21,7 @@ m64p_error qtVidExtFuncGLSwapBuf(void);
 m64p_error qtVidExtFuncSetCaption(const char *_title);
 m64p_error qtVidExtFuncToggleFS(void);
 m64p_error qtVidExtFuncResizeWindow(int, int);
+uint32_t   qtVidExtFuncGLGetDefaultFramebuffer(void);
 #ifdef __cplusplus
 }
 #endif

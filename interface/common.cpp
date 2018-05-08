@@ -114,11 +114,23 @@ static char* media_loader_get_gb_cart_ram(void*, int control_id)
     }
 }
 
+static char* media_loader_get_dd_rom(void*)
+{
+    return NULL;
+}
+
+static char* media_loader_get_dd_disk(void*)
+{
+    return NULL;
+}
+
 static m64p_media_loader media_loader =
 {
     NULL,
     media_loader_get_gb_cart_rom,
-    media_loader_get_gb_cart_ram
+    media_loader_get_gb_cart_ram,
+    media_loader_get_dd_rom,
+    media_loader_get_dd_disk
 };
 
 m64p_error openROM(std::string filename)

@@ -114,7 +114,7 @@ ptr_DebugBreakpointCommand DebugBreakpointCommand = NULL;
 
 /* global variables */
 m64p_dynlib_handle CoreHandle = NULL;
-m64p_video_extension_functions vidExtFunctions = {11,
+m64p_video_extension_functions vidExtFunctions = {12,
                                                  qtVidExtFuncInit,
                                                  qtVidExtFuncQuit,
                                                  qtVidExtFuncListModes,
@@ -125,7 +125,8 @@ m64p_video_extension_functions vidExtFunctions = {11,
                                                  qtVidExtFuncGLSwapBuf,
                                                  qtVidExtFuncSetCaption,
                                                  qtVidExtFuncToggleFS,
-                                                 qtVidExtFuncResizeWindow};
+                                                 qtVidExtFuncResizeWindow,
+                                                 qtVidExtFuncGLGetDefaultFramebuffer};
 
 bool QtAttachCoreLib()
 {
