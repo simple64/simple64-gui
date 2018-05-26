@@ -282,11 +282,7 @@ m64p_error openROM(std::string filename)
 
     int cxd4 = 0;
 
-    if (strstr((char*)l_RomHeader.Name, (const char*)"Indiana Jones") != NULL)
-        cxd4 = 1;
-    else if (strstr((char*)l_RomHeader.Name, (const char*)"Battle for Naboo") != NULL)
-        cxd4 = 1;
-    else if (strstr((char*)l_RomHeader.Name, (const char*)"PUZZLE LEAGUE N64") != NULL)
+    if (strstr((char*)l_RomHeader.Name, (const char*)"PUZZLE LEAGUE N64") != NULL)
         cxd4 = 1;
     else if (qtGfxPlugin.contains("angrylion"))
         cxd4 = 1;
