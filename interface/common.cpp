@@ -138,7 +138,7 @@ m64p_error openROM(std::string filename)
     if (!QtAttachCoreLib())
         return M64ERR_INVALID_STATE;
 
-    unsigned char *ROM_buffer = NULL;
+    char *ROM_buffer = NULL;
     size_t romlength = 0;
     uint32_t i;
 
@@ -159,7 +159,7 @@ m64p_error openROM(std::string filename)
             DetachCoreLib();
             return M64ERR_INVALID_STATE;
         }
-        ROM_buffer = (unsigned char *) malloc(romlength);
+        ROM_buffer = (char *) malloc(romlength);
         memcpy(ROM_buffer, data.constData(), romlength);
     }
     else if ((filename.find(".zip") != std::string::npos) || (filename.find(".ZIP") != std::string::npos))
@@ -214,7 +214,7 @@ m64p_error openROM(std::string filename)
                 return M64ERR_INVALID_STATE;
             }
             romlength = file_info.uncompressed_size;
-            ROM_buffer = (unsigned char *) malloc(romlength);
+            ROM_buffer = (char *) malloc(romlength);
             err = unzReadCurrentFile(uf, ROM_buffer, romlength);
             if (err < 0)
             {
@@ -233,8 +233,8 @@ m64p_error openROM(std::string filename)
     else
     {
         /* load ROM image */
-        FILE *fPtr = fopen(filename.c_str(), "rb");
-        if (fPtr == NULL)
+        QFile file(filename.c_str());
+        if (!file.open(QIODevice::ReadOnly))
         {
             DebugMessage(M64MSG_ERROR, "couldn't open ROM file '%s' for reading.", filename.c_str());
             (*CoreShutdown)();
@@ -242,21 +242,19 @@ m64p_error openROM(std::string filename)
             return M64ERR_INVALID_STATE;
         }
 
-        /* get the length of the ROM, allocate memory buffer, load it from disk */
-        fseek(fPtr, 0L, SEEK_END);
-        romlength = (size_t)ftell(fPtr);
-        fseek(fPtr, 0L, SEEK_SET);
-        ROM_buffer = (unsigned char *) malloc(romlength);
-        if (fread(ROM_buffer, 1, romlength, fPtr) != romlength)
+        romlength = file.size();
+        QDataStream in(&file);
+        ROM_buffer = (char *) malloc(romlength);
+        if (in.readRawData(ROM_buffer, romlength) == -1)
         {
             DebugMessage(M64MSG_ERROR, "couldn't read %li bytes from ROM image file '%s'.", romlength, filename.c_str());
             free(ROM_buffer);
-            fclose(fPtr);
+            file.close();
             (*CoreShutdown)();
             DetachCoreLib();
             return M64ERR_INVALID_STATE;
         }
-        fclose(fPtr);
+        file.close();
     }
 
     /* Try to load the ROM image into the core */
