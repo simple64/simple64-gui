@@ -21,7 +21,6 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.          *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#include <minizip/unzip.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -142,7 +141,7 @@ m64p_error openROM(std::string filename)
     size_t romlength = 0;
     uint32_t i;
 
-    if (filename.find(".7z") != std::string::npos)
+    if (filename.find(".7z") != std::string::npos || (filename.find(".zip") != std::string::npos) || (filename.find(".ZIP") != std::string::npos))
     {
         QProcess process;
         QString command = "7za e -so \"";
@@ -154,81 +153,13 @@ m64p_error openROM(std::string filename)
         romlength = data.size();
         if (romlength == 0)
         {
-            DebugMessage(M64MSG_ERROR, "couldn't open 7z file '%s' for reading.", filename.c_str());
+            DebugMessage(M64MSG_ERROR, "couldn't open file '%s' for reading.", filename.c_str());
             (*CoreShutdown)();
             DetachCoreLib();
             return M64ERR_INVALID_STATE;
         }
         ROM_buffer = (char *) malloc(romlength);
         memcpy(ROM_buffer, data.constData(), romlength);
-    }
-    else if ((filename.find(".zip") != std::string::npos) || (filename.find(".ZIP") != std::string::npos))
-    {
-        unzFile uf = NULL;
-        unz_global_info gi;
-        unz_file_info file_info;
-        uf = unzOpen(filename.c_str());
-        if (uf == NULL)
-        {
-            DebugMessage(M64MSG_ERROR, "couldn't open ZIP file '%s' for reading.", filename.c_str());
-            (*CoreShutdown)();
-            DetachCoreLib();
-            return M64ERR_INVALID_STATE;
-        }
-        int err;
-        int found = 0;
-        err = unzGetGlobalInfo(uf,&gi);
-        if (err != UNZ_OK)
-        {
-            DebugMessage(M64MSG_ERROR, "couldn't open ZIP file '%s' for reading.", filename.c_str());
-            unzClose(uf);
-            (*CoreShutdown)();
-            DetachCoreLib();
-            return M64ERR_INVALID_STATE;
-        }
-        for (i=0;i<gi.number_entry;++i)
-        {
-            char filename_inzip[256];
-            unzGetCurrentFileInfo(uf,&file_info,filename_inzip,sizeof(filename_inzip),NULL,0,NULL,0);
-            if (strstr(filename_inzip, ".n64") != NULL ||
-                strstr(filename_inzip, ".N64") != NULL ||
-                strstr(filename_inzip, ".z64") != NULL ||
-                strstr(filename_inzip, ".Z64") != NULL ||
-                strstr(filename_inzip, ".v64") != NULL ||
-                strstr(filename_inzip, ".V64") != NULL)
-            {
-                found = 1;
-                break;
-            }
-            unzGoToNextFile(uf);
-        }
-        if (found)
-        {
-            err = unzOpenCurrentFile(uf);
-            if (err != UNZ_OK)
-            {
-                DebugMessage(M64MSG_ERROR, "couldn't open ZIP file '%s' for reading.", filename.c_str());
-                unzClose(uf);
-                (*CoreShutdown)();
-                DetachCoreLib();
-                return M64ERR_INVALID_STATE;
-            }
-            romlength = file_info.uncompressed_size;
-            ROM_buffer = (char *) malloc(romlength);
-            err = unzReadCurrentFile(uf, ROM_buffer, romlength);
-            if (err < 0)
-            {
-                DebugMessage(M64MSG_ERROR, "couldn't open ZIP file '%s' for reading.", filename.c_str());
-                free(ROM_buffer);
-                unzCloseCurrentFile(uf);
-                unzClose(uf);
-                (*CoreShutdown)();
-                DetachCoreLib();
-                return M64ERR_INVALID_STATE;
-            }
-            unzCloseCurrentFile(uf);
-        }
-        unzClose(uf);
     }
     else
     {

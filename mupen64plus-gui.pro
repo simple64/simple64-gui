@@ -30,9 +30,7 @@ SOURCES += main.cpp\
     keyselect.cpp \
     interface/sdl_key_converter.c \
     controllerdialog.cpp \
-    logviewer.cpp \
-    minizip/unzip.c \
-    minizip/ioapi.c
+    logviewer.cpp
 
 win32 {
 SOURCES += osal/osal_dynamiclib_win32.c \
@@ -41,15 +39,15 @@ SOURCES += osal/osal_dynamiclib_win32.c \
     win32-msvc* {
         !contains(QMAKE_TARGET.arch, x86_64) {
             message("x86 build")
-            LIBS += ../mupen64plus-win32-deps/SDL2-2.0.6/lib/x86/SDL2.lib ../mupen64plus-win32-deps/zlib-1.2.8/lib/x86/zlib.lib
+            LIBS += ../mupen64plus-win32-deps/SDL2-2.0.6/lib/x86/SDL2.lib
         } else {
             message("x86_64 build")
-            LIBS += ../mupen64plus-win32-deps/SDL2-2.0.6/lib/x64/SDL2.lib ../mupen64plus-win32-deps/zlib-1.2.8/lib/x64/zlib.lib
+            LIBS += ../mupen64plus-win32-deps/SDL2-2.0.6/lib/x64/SDL2.lib
         }
-        INCLUDEPATH += ../mupen64plus-win32-deps/SDL2-2.0.6/include ../mupen64plus-win32-deps/zlib-1.2.8/include
+        INCLUDEPATH += ../mupen64plus-win32-deps/SDL2-2.0.6/include
     } else {
         DEFINES -= UNICODE
-        LIBS += -Wl,-Bdynamic -lSDL2 -lz
+        LIBS += -Wl,-Bdynamic -lSDL2
         INCLUDEPATH += /mingw64/include/SDL2 /mingw32/include/SDL2
     }
 }
