@@ -272,6 +272,11 @@ m64p_error openROM(std::string filename)
         DebugMessage(M64MSG_WARNING, "Couldn't set media loader, transferpak and GB carts will not work.");
     }
 
+    /* Save the configuration file again, just in case a plugin has altered it.
+       This is the last opportunity to save changes before the relatively
+       long-running game. */
+    (*ConfigSaveFile)();
+
     /* run the game */
     (*CoreDoCommand)(M64CMD_EXECUTE, 0, NULL);
 
