@@ -429,6 +429,12 @@ void MainWindow::updateOpenRecent()
     OpenRecent->clear();
     QAction *recent[RECENT_SIZE];
     QStringList list = settings->value("RecentROMs").toString().split(";");
+    if (list.first() == "") {
+        OpenRecent->setEnabled(false);
+        return;
+    }
+
+    OpenRecent->setEnabled(true);
     for (int i = 0; i < list.size() && i < RECENT_SIZE; ++i) {
         recent[i] = new QAction(this);
         recent[i]->setText(list.at(i));
