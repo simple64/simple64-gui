@@ -444,6 +444,15 @@ void MainWindow::updateOpenRecent()
                     openROM(temp_recent->text());
                 });
     }
+    OpenRecent->addSeparator();
+
+    QAction *clearRecent = new QAction(this);
+    clearRecent->setText("Clear List");
+    OpenRecent->addAction(clearRecent);
+    connect(clearRecent, &QAction::triggered,[=](){
+        settings->remove("RecentROMs");
+        updateOpenRecent();
+    });
 }
 
 void MainWindow::setTitle(std::string title)
