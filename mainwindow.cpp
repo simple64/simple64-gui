@@ -1,4 +1,5 @@
 #include <QString>
+#include <QLibrary>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QCloseEvent>
@@ -678,4 +679,19 @@ void MainWindow::on_actionToggle_Speed_Limiter_triggered()
 void MainWindow::on_actionView_Log_triggered()
 {
     logViewer->show();
+}
+
+void MainWindow::on_actionVideo_Settings_triggered()
+{
+    if (QtAttachCoreLib()) {
+        PluginSearchLoad();
+        QString lib_location = qtPluginDir + "/" + qtGfxPlugin;
+        QLibrary myLib(lib_location);
+        typedef void (*Config_Func)();
+        Config_Func Config_DoConfig = (Config_Func) myLib.resolve("Config_DoConfig");
+        if (Config_DoConfig)
+            Config_DoConfig();
+        else
+            printf("%s", lib_location.toStdString().c_str());
+    }
 }

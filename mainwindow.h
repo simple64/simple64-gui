@@ -78,6 +78,8 @@ private slots:
 
     void on_actionView_Log_triggered();
 
+    void on_actionVideo_Settings_triggered();
+
 private:
     void updateOpenRecent();
     void updateGB(Ui::MainWindow *ui);

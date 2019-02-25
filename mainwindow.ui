@@ -47,6 +47,7 @@
     <addaction name="actionPlugin_Paths"/>
     <addaction name="actionPlugin_Settings"/>
     <addaction name="actionController_Configuration"/>
+    <addaction name="actionVideo_Settings"/>
    </widget>
    <widget class="QMenu" name="menuEmulation">
     <property name="title">
@@ -174,6 +175,11 @@
   <action name="actionView_Log">
    <property name="text">
     <string>View Log</string>
+   </property>
+  </action>
+  <action name="actionVideo_Settings">
+   <property name="text">
+    <string>Video Settings</string>
    </property>
   </action>
  </widget>
