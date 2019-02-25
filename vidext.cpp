@@ -206,8 +206,9 @@ m64p_error qtVidExtFuncToggleFS(void)
     return M64ERR_SUCCESS;
 }
 
-m64p_error qtVidExtFuncResizeWindow(int, int)
+m64p_error qtVidExtFuncResizeWindow(int width, int height)
 {
+    workerThread->resizeMainWindow(width, height);
     return M64ERR_SUCCESS;
 }
 
