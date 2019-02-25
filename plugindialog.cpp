@@ -14,12 +14,9 @@
 #include "settingclasses.h"
 
 m64p_handle coreConfigHandle;
-m64p_handle videoGenConfigHandle;
 m64p_handle audioConfigHandle;
 QGridLayout *coreLayout;
 int coreLayoutRow;
-QGridLayout *videoGenLayout;
-int videoGenRow;
 QGridLayout *audioLayout;
 int audioRow;
 
@@ -32,10 +29,6 @@ void paramListCallback(void * context, const char *ParamName, m64p_type ParamTyp
         my_layout = coreLayout;
         my_row = &coreLayoutRow;
         current_handle = coreConfigHandle;
-    } else if (strcmp((char*)context, "Video-General") == 0) {
-        my_layout = videoGenLayout;
-        my_row = &videoGenRow;
-        current_handle = videoGenConfigHandle;
     } else if (strcmp((char*)context, "Audio") == 0) {
         my_layout = audioLayout;
         my_row = &audioRow;
@@ -131,7 +124,6 @@ PluginDialog::PluginDialog()
     }
 
     coreLayoutRow = 0;
-    videoGenRow = 0;
     audioRow = 0;
     QVBoxLayout *mainLayout = new QVBoxLayout;
     QTabWidget *tabWidget = new QTabWidget;
@@ -148,18 +140,6 @@ PluginDialog::PluginDialog()
     coreScroll->setMinimumWidth(coreSettings->sizeHint().width() + 20);
     coreScroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     tabWidget->addTab(coreScroll, tr("Core"));
-
-    QWidget *videoGenSettings = new QWidget;
-    videoGenLayout = new QGridLayout;
-    videoGenSettings->setLayout(videoGenLayout);
-    res = (*ConfigOpenSection)("Video-General", &videoGenConfigHandle);
-    if (res == M64ERR_SUCCESS)
-        (*ConfigListParameters)(videoGenConfigHandle, (char*)"Video-General", paramListCallback);
-    QScrollArea *videoGenScroll = new QScrollArea;
-    videoGenScroll->setWidget(videoGenSettings);
-    videoGenScroll->setMinimumWidth(videoGenSettings->sizeHint().width() + 20);
-    videoGenScroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    tabWidget->addTab(videoGenScroll, tr("Video-General"));
 
     QWidget *audioSettings = new QWidget;
     audioLayout = new QGridLayout;
