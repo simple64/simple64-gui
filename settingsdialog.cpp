@@ -133,33 +133,13 @@ void SettingsDialog::initStuff()
     Filter.append("");
     QStringList current;
 
-    QLabel *videoLabel = new QLabel("Video Plugin");
-    layout->addWidget(videoLabel,4,0);
-    QComboBox *videoChoice = new QComboBox();
-    Filter.replace(0,"mupen64plus-video*");
-    current = PluginDir->entryList(Filter);
-    videoChoice->addItems(current);
-    int my_index = videoChoice->findText(qtGfxPlugin);
-    if (my_index == -1) {
-        videoChoice->addItem(qtGfxPlugin);
-        my_index = videoChoice->findText(qtGfxPlugin);
-    }
-    videoChoice->setCurrentIndex(my_index);
-    connect(videoChoice, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::activated),
-        [=](const QString &text) {
-            settings->setValue("videoPlugin", text);
-            qtGfxPlugin = settings->value("videoPlugin").toString();
-
-    });
-    layout->addWidget(videoChoice,4,1);
-
     QLabel *audioLabel = new QLabel("Audio Plugin");
     layout->addWidget(audioLabel,5,0);
     QComboBox *audioChoice = new QComboBox();
     Filter.replace(0,"mupen64plus-audio*");
     current = PluginDir->entryList(Filter);
     audioChoice->addItems(current);
-    my_index = audioChoice->findText(qtAudioPlugin);
+    int my_index = audioChoice->findText(qtAudioPlugin);
     if (my_index == -1) {
         audioChoice->addItem(qtAudioPlugin);
         my_index = audioChoice->findText(qtAudioPlugin);
@@ -171,25 +151,6 @@ void SettingsDialog::initStuff()
             qtAudioPlugin = settings->value("audioPlugin").toString();
     });
     layout->addWidget(audioChoice,5,1);
-
-    QLabel *rspLabel = new QLabel("RSP Plugin");
-    layout->addWidget(rspLabel,6,0);
-    QComboBox *rspChoice = new QComboBox();
-    Filter.replace(0,"mupen64plus-rsp*");
-    current = PluginDir->entryList(Filter);
-    rspChoice->addItems(current);
-    my_index = rspChoice->findText(qtRspPlugin);
-    if (my_index == -1) {
-        rspChoice->addItem(qtRspPlugin);
-        my_index = rspChoice->findText(qtRspPlugin);
-    }
-    rspChoice->setCurrentIndex(my_index);
-    connect(rspChoice, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::activated),
-        [=](const QString &text) {
-            settings->setValue("rspPlugin", text);
-            qtRspPlugin = settings->value("rspPlugin").toString();
-    });
-    layout->addWidget(rspChoice,6,1);
 
     QLabel *inputLabel = new QLabel("Input Plugin");
     layout->addWidget(inputLabel,7,0);

@@ -209,20 +209,6 @@ m64p_error openROM(std::string filename)
         return M64ERR_INVALID_STATE;
     }
 
-    int cxd4 = 0;
-
-    if (strstr((char*)l_RomHeader.Name, (const char*)"PUZZLE LEAGUE N64") != NULL)
-        cxd4 = 1;
-    else if (qtGfxPlugin.contains("angrylion"))
-        cxd4 = 1;
-
-    QString origRspPlugin = qtRspPlugin;
-    if (cxd4)
-    {
-        qtRspPlugin = "mupen64plus-rsp-cxd4-sse2";
-        qtRspPlugin += OSAL_DLL_EXTENSION;
-    }
-
     /* search for and load plugins */
     m64p_error rval = PluginSearchLoad();
     if (rval != M64ERR_SUCCESS)
@@ -294,9 +280,6 @@ m64p_error openROM(std::string filename)
     (*CoreDoCommand)(M64CMD_ROM_CLOSE, 0, NULL);
 
     CheatFreeAll();
-
-    if (cxd4)
-        qtRspPlugin = origRspPlugin;
 
     return M64ERR_SUCCESS;
 }

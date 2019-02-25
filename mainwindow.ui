@@ -94,7 +94,7 @@
   </action>
   <action name="actionPlugin_Settings">
    <property name="text">
-    <string>Core and Plugin Settings</string>
+    <string>Advanced Settings</string>
    </property>
   </action>
   <action name="actionOpen_Recent">
