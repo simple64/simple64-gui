@@ -1,11 +1,10 @@
 
 #include "oglwindow.h"
-#include "workerthread.h"
-extern WorkerThread* workerThread;
+extern QThread* rendering_thread;
 
 void OGLWindow::initializeGL() {
     doneCurrent();
-    context()->moveToThread(workerThread);
+    context()->moveToThread(rendering_thread);
 }
 
 void OGLWindow::keyPressEvent(QKeyEvent *event)

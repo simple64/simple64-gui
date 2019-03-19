@@ -8,6 +8,7 @@
 static int init;
 static int needs_toggle;
 QSurfaceFormat* format;
+QThread* rendering_thread;
 
 m64p_error qtVidExtFuncInit(void)
 {
@@ -20,6 +21,8 @@ m64p_error qtVidExtFuncInit(void)
     format->setMinorVersion(1);
     if (w->getGLES())
         format->setRenderableType(QSurfaceFormat::OpenGLES);
+
+    rendering_thread = QThread::currentThread();
     return M64ERR_SUCCESS;
 }
 
@@ -27,6 +30,11 @@ m64p_error qtVidExtFuncQuit(void)
 {
     init = 0;
     workerThread->toggleFS(M64VIDEO_WINDOWED);
+    if (my_window != nullptr) {
+        my_window->doneCurrent();
+        my_window->context()->moveToThread(QApplication::instance()->thread());
+        workerThread->deleteOGLWindow();
+    }
     return M64ERR_SUCCESS;
 }
 
