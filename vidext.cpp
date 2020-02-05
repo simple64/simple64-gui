@@ -196,8 +196,10 @@ m64p_error qtVidExtFuncGLSwapBuf(void)
         }
     }
 
-    my_window->context()->swapBuffers(my_window);
-    my_window->context()->makeCurrent(my_window);
+    if (QThread::currentThread() == rendering_thread) {
+        my_window->context()->swapBuffers(my_window);
+        my_window->context()->makeCurrent(my_window);
+    }
     return M64ERR_SUCCESS;
 }
 
