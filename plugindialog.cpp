@@ -14,11 +14,8 @@
 #include "settingclasses.h"
 
 m64p_handle coreConfigHandle;
-m64p_handle audioConfigHandle;
 QGridLayout *coreLayout;
 int coreLayoutRow;
-QGridLayout *audioLayout;
-int audioRow;
 
 void paramListCallback(void * context, const char *ParamName, m64p_type ParamType)
 {
@@ -29,10 +26,6 @@ void paramListCallback(void * context, const char *ParamName, m64p_type ParamTyp
         my_layout = coreLayout;
         my_row = &coreLayoutRow;
         current_handle = coreConfigHandle;
-    } else if (strcmp((char*)context, "Audio") == 0) {
-        my_layout = audioLayout;
-        my_row = &audioRow;
-        current_handle = audioConfigHandle;
     }
     int l_ParamInt;
     bool l_ParamBool;
@@ -100,7 +93,6 @@ void PluginDialog::handleResetButton()
     if (value == M64EMU_STOPPED) {
         (*ConfigDeleteSection)("Core");
         (*ConfigDeleteSection)("Video-General");
-        (*ConfigDeleteSection)(AudioName.toLatin1().data());
         (*ConfigSaveFile)();
         (*CoreShutdown)();
         (*DetachCoreLib)();
@@ -124,7 +116,6 @@ PluginDialog::PluginDialog()
     }
 
     coreLayoutRow = 0;
-    audioRow = 0;
     QVBoxLayout *mainLayout = new QVBoxLayout;
     QTabWidget *tabWidget = new QTabWidget;
     tabWidget->setUsesScrollButtons(false);
@@ -140,23 +131,6 @@ PluginDialog::PluginDialog()
     coreScroll->setMinimumWidth(coreSettings->sizeHint().width() + 20);
     coreScroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     tabWidget->addTab(coreScroll, tr("Core"));
-
-    QWidget *audioSettings = new QWidget;
-    audioLayout = new QGridLayout;
-    audioSettings->setLayout(audioLayout);
-    QString name = settings->value("audioPlugin").toString();
-    name.remove(OSAL_DLL_EXTENSION);
-    QStringList name2 = name.split("-");
-    name.remove(name2.at(0) + "-");
-    AudioName = name;
-    res = (*ConfigOpenSection)(AudioName.toLatin1().data(), &audioConfigHandle);
-    if (res == M64ERR_SUCCESS)
-        (*ConfigListParameters)(audioConfigHandle, (char*)"Audio", paramListCallback);
-    QScrollArea *audioScroll = new QScrollArea;
-    audioScroll->setWidget(audioSettings);
-    audioScroll->setMinimumWidth(audioSettings->sizeHint().width() + 20);
-    audioScroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    tabWidget->addTab(audioScroll, tr("Audio Plugin"));
 
     QLabel *myLabel = new QLabel("Hover your mouse over the configuration item name for a description.\n");
     myLabel->setStyleSheet("font-weight: bold");
