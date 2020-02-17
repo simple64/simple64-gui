@@ -501,7 +501,7 @@ void MainWindow::openROM(QString filename)
 
     if (coreStarted)
         (*CoreShutdown)();
-    DetachCoreLib()
+    DetachCoreLib();
 
     logViewer->clearLog();
     workerThread = new WorkerThread();
