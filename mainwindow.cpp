@@ -498,6 +498,11 @@ void MainWindow::openROM(QString filename)
         while (workerThread->isRunning())
             QCoreApplication::processEvents();
     }
+
+    if (coreStarted)
+        (*CoreShutdown)();
+    DetachCoreLib()
+
     logViewer->clearLog();
     workerThread = new WorkerThread();
     workerThread->setFileName(filename);
