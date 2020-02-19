@@ -15,6 +15,8 @@ void WorkerThread::run()
     if (res == M64ERR_SUCCESS) {
         (*ConfigSaveFile)();
 
+        DetachCoreLib();
+
         if (w->getNoGUI())
             QApplication::quit();
     }

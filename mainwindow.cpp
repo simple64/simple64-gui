@@ -486,10 +486,9 @@ void MainWindow::stopGame()
 {
     if (workerThread != nullptr) {
         (*CoreDoCommand)(M64CMD_STOP, 0, NULL);
+
         while (workerThread->isRunning())
             QCoreApplication::processEvents();
-
-        DetachCoreLib();
         workerThread = nullptr;
     }
 }
