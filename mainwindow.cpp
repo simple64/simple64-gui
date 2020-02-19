@@ -688,9 +688,6 @@ void MainWindow::on_actionVideo_Settings_triggered()
         QLibrary myLib(lib_location);
         typedef void (*Config_Func)();
         Config_Func Config_DoConfig = (Config_Func) myLib.resolve("Config_DoConfig");
-        if (Config_DoConfig)
-            Config_DoConfig();
-        else
-            printf("%s", lib_location.toStdString().c_str());
+        Config_DoConfig();
     }
 }
