@@ -81,6 +81,7 @@ private slots:
     void on_actionVideo_Settings_triggered();
 
 private:
+    void stopGame();
     void updateOpenRecent();
     void updateGB(Ui::MainWindow *ui);
     void findRecursion(const QString &path, const QString &pattern, QStringList *result);

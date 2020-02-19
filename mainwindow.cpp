@@ -412,12 +412,7 @@ void MainWindow::findRecursion(const QString &path, const QString &pattern, QStr
 
 void MainWindow::closeEvent (QCloseEvent *event)
 {
-    if (QtAttachCoreLib())
-        (*CoreDoCommand)(M64CMD_STOP, 0, NULL);
-    if (workerThread != nullptr) {
-        while (workerThread->isRunning())
-            QCoreApplication::processEvents();
-    }
+    stopGame();
 
     settings->setValue("geometry", saveGeometry());
     settings->setValue("windowState", saveState());
@@ -489,19 +484,22 @@ void MainWindow::deleteOGLWindow()
     my_window = nullptr;
 }
 
-void MainWindow::openROM(QString filename)
+void MainWindow::stopGame()
 {
-    if (QtAttachCoreLib())
-        (*CoreDoCommand)(M64CMD_STOP, 0, NULL);
-
     if (workerThread != nullptr) {
+        (*CoreDoCommand)(M64CMD_STOP, 0, NULL);
         while (workerThread->isRunning())
             QCoreApplication::processEvents();
-    }
 
-    if (coreStarted)
         (*CoreShutdown)();
-    DetachCoreLib();
+        DetachCoreLib();
+        workerThread = nullptr;
+    }
+}
+
+void MainWindow::openROM(QString filename)
+{
+    stopGame();
 
     logViewer->clearLog();
     workerThread = new WorkerThread();
@@ -538,8 +536,7 @@ void MainWindow::on_actionPlugin_Paths_triggered()
 
 void MainWindow::on_actionStop_Game_triggered()
 {
-    if (QtAttachCoreLib())
-        (*CoreDoCommand)(M64CMD_STOP, 0, NULL);
+    stopGame();
 }
 
 void MainWindow::on_actionExit_triggered()
