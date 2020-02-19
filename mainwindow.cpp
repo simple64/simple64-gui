@@ -551,7 +551,7 @@ void MainWindow::on_actionPlugin_Settings_triggered()
 
 void MainWindow::on_actionPause_Game_triggered()
 {
-    if (QtAttachCoreLib()) {
+    if (coreStarted) {
         int response;
         (*CoreDoCommand)(M64CMD_CORE_STATE_QUERY, M64CORE_EMU_STATE, &response);
         if (response == M64EMU_RUNNING)
@@ -563,7 +563,7 @@ void MainWindow::on_actionPause_Game_triggered()
 
 void MainWindow::on_actionMute_triggered()
 {
-    if (QtAttachCoreLib()) {
+    if (coreStarted) {
         int response;
         (*CoreDoCommand)(M64CMD_CORE_STATE_QUERY, M64CORE_AUDIO_MUTE, &response);
         if (response == 0) {
@@ -578,37 +578,37 @@ void MainWindow::on_actionMute_triggered()
 
 void MainWindow::on_actionHard_Reset_triggered()
 {
-    if (QtAttachCoreLib())
+    if (coreStarted)
         (*CoreDoCommand)(M64CMD_RESET, 1, NULL);
 }
 
 void MainWindow::on_actionSoft_Reset_triggered()
 {
-    if (QtAttachCoreLib())
+    if (coreStarted)
         (*CoreDoCommand)(M64CMD_RESET, 0, NULL);
 }
 
 void MainWindow::on_actionTake_Screenshot_triggered()
 {
-    if (QtAttachCoreLib())
+    if (coreStarted)
         (*CoreDoCommand)(M64CMD_TAKE_NEXT_SCREENSHOT, 0, NULL);
 }
 
 void MainWindow::on_actionSave_State_triggered()
 {
-    if (QtAttachCoreLib())
+    if (coreStarted)
         (*CoreDoCommand)(M64CMD_STATE_SAVE, 1, NULL);
 }
 
 void MainWindow::on_actionLoad_State_triggered()
 {
-    if (QtAttachCoreLib())
+    if (coreStarted)
         (*CoreDoCommand)(M64CMD_STATE_LOAD, 1, NULL);
 }
 
 void MainWindow::on_actionToggle_Fullscreen_triggered()
 {
-    if (QtAttachCoreLib()) {
+    if (coreStarted) {
         int response;
         (*CoreDoCommand)(M64CMD_CORE_STATE_QUERY, M64CORE_VIDEO_MODE, &response);
         if (response == M64VIDEO_WINDOWED) {
@@ -628,7 +628,7 @@ void MainWindow::on_actionSave_State_To_triggered()
     if (!filename.isNull()) {
         if (!filename.contains(".st"))
             filename.append(".state");
-        if (QtAttachCoreLib()) {
+        if (coreStarted) {
             (*CoreDoCommand)(M64CMD_STATE_SAVE, 1, filename.toLatin1().data());
         }
     }
@@ -639,7 +639,7 @@ void MainWindow::on_actionLoad_State_From_triggered()
     QString filename = QFileDialog::getOpenFileName(this,
         tr("Open Save State"), NULL, tr("State Files (*.st* *.pj*)"));
     if (!filename.isNull()) {
-        if (QtAttachCoreLib()) {
+        if (coreStarted) {
             (*CoreDoCommand)(M64CMD_STATE_LOAD, 1, filename.toLatin1().data());
         }
     }
@@ -667,7 +667,7 @@ void MainWindow::on_actionController_Configuration_triggered()
 
 void MainWindow::on_actionToggle_Speed_Limiter_triggered()
 {
-    if (QtAttachCoreLib()) {
+    if (coreStarted) {
         int value;
         (*CoreDoCommand)(M64CMD_CORE_STATE_QUERY, M64CORE_SPEED_LIMITER, &value);
         value = !value;
