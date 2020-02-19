@@ -94,8 +94,7 @@ void PluginDialog::handleResetButton()
         (*ConfigDeleteSection)("Core");
         (*ConfigDeleteSection)("Video-General");
         (*ConfigSaveFile)();
-        (*CoreShutdown)();
-        (*DetachCoreLib)();
+        DetachCoreLib();
         this->close();
     }
     else {

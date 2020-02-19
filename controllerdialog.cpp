@@ -306,8 +306,7 @@ void ControllerDialog::handleResetButton()
         (*ConfigDeleteSection)("Input-SDL-Control3");
         (*ConfigDeleteSection)("Input-SDL-Control4");
         (*ConfigSaveFile)();
-        (*CoreShutdown)();
-        (*DetachCoreLib)();
+        DetachCoreLib();
         this->close();
     }
     else {

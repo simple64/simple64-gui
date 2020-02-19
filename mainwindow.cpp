@@ -333,8 +333,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    if (coreStarted)
-        (*CoreShutdown)();
     DetachCoreLib();
     delete ui;
 }
@@ -491,7 +489,6 @@ void MainWindow::stopGame()
         while (workerThread->isRunning())
             QCoreApplication::processEvents();
 
-        (*CoreShutdown)();
         DetachCoreLib();
         workerThread = nullptr;
     }

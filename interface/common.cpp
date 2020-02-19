@@ -154,7 +154,6 @@ m64p_error openROM(std::string filename)
         if (romlength == 0)
         {
             DebugMessage(M64MSG_ERROR, "couldn't open file '%s' for reading.", filename.c_str());
-            (*CoreShutdown)();
             DetachCoreLib();
             return M64ERR_INVALID_STATE;
         }
@@ -168,7 +167,6 @@ m64p_error openROM(std::string filename)
         if (!file.open(QIODevice::ReadOnly))
         {
             DebugMessage(M64MSG_ERROR, "couldn't open ROM file '%s' for reading.", filename.c_str());
-            (*CoreShutdown)();
             DetachCoreLib();
             return M64ERR_INVALID_STATE;
         }
@@ -181,7 +179,6 @@ m64p_error openROM(std::string filename)
             DebugMessage(M64MSG_ERROR, "couldn't read %li bytes from ROM image file '%s'.", romlength, filename.c_str());
             free(ROM_buffer);
             file.close();
-            (*CoreShutdown)();
             DetachCoreLib();
             return M64ERR_INVALID_STATE;
         }
@@ -193,7 +190,6 @@ m64p_error openROM(std::string filename)
     {
         DebugMessage(M64MSG_ERROR, "core failed to open ROM image file '%s'.", filename.c_str());
         free(ROM_buffer);
-        (*CoreShutdown)();
         DetachCoreLib();
         return M64ERR_INVALID_STATE;
     }
@@ -204,7 +200,6 @@ m64p_error openROM(std::string filename)
     if ((*CoreDoCommand)(M64CMD_ROM_GET_HEADER, sizeof(l_RomHeader), &l_RomHeader) != M64ERR_SUCCESS)
     {
         DebugMessage(M64MSG_WARNING, "couldn't get ROM header information from core library");
-        (*CoreShutdown)();
         DetachCoreLib();
         return M64ERR_INVALID_STATE;
     }
@@ -214,7 +209,6 @@ m64p_error openROM(std::string filename)
     if (rval != M64ERR_SUCCESS)
     {
         (*CoreDoCommand)(M64CMD_ROM_CLOSE, 0, NULL);
-        (*CoreShutdown)();
         DetachCoreLib();
         return M64ERR_INVALID_STATE;
     }
@@ -236,7 +230,6 @@ m64p_error openROM(std::string filename)
         {
             DebugMessage(M64MSG_ERROR, "core error while attaching %s plugin.", g_PluginMap[i].name);
             (*CoreDoCommand)(M64CMD_ROM_CLOSE, 0, NULL);
-            (*CoreShutdown)();
             DetachCoreLib();
             return M64ERR_INVALID_STATE;
         }

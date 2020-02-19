@@ -338,6 +338,8 @@ m64p_error DetachCoreLib(void)
     if (CoreHandle == NULL)
         return M64ERR_INVALID_STATE;
 
+    (*CoreShutdown)();
+
     /* set the core function pointers to NULL */
     CoreErrorMessage = NULL;
     CoreStartup = NULL;
