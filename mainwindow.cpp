@@ -1,5 +1,4 @@
 #include <QString>
-#include <QLibrary>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QCloseEvent>
@@ -7,6 +6,10 @@
 #include "oglwindow.h"
 #include "settingsdialog.h"
 #include "plugindialog.h"
+
+extern "C" {
+#include "osal_dynamiclib.h"
+}
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -491,6 +494,10 @@ void MainWindow::stopGame()
             QCoreApplication::processEvents();
         workerThread = nullptr;
     }
+    else {
+        PluginUnload();
+        DetachCoreLib();
+    }
 }
 
 void MainWindow::openROM(QString filename)
@@ -683,10 +690,8 @@ void MainWindow::on_actionVideo_Settings_triggered()
 {
     if (QtAttachCoreLib()) {
         PluginSearchLoad();
-        QString lib_location = qtPluginDir + "/" + qtGfxPlugin;
-        QLibrary myLib(lib_location);
         typedef void (*Config_Func)();
-        Config_Func Config_DoConfig = (Config_Func) myLib.resolve("Config_DoConfig");
+        Config_Func Config_DoConfig = (Config_Func) osal_dynlib_getproc(g_PluginMap[0].handle, "Config_DoConfig");
         Config_DoConfig();
     }
 }
