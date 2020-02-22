@@ -488,16 +488,16 @@ void MainWindow::deleteOGLWindow()
 void MainWindow::stopGame()
 {
     if (workerThread != nullptr) {
-        (*CoreDoCommand)(M64CMD_STOP, 0, NULL);
-
-        while (workerThread->isRunning())
-            QCoreApplication::processEvents();
+        if (workerThread->isRunning()) {
+            (*CoreDoCommand)(M64CMD_STOP, 0, NULL);
+            while (workerThread->isRunning())
+                QCoreApplication::processEvents();
+        }
         workerThread = nullptr;
     }
-    else {
-        PluginUnload();
-        DetachCoreLib();
-    }
+
+    PluginUnload();
+    DetachCoreLib();
 }
 
 void MainWindow::openROM(QString filename)
