@@ -130,14 +130,14 @@ void MainWindow::updateDD(Ui::MainWindow *ui)
         fileSelect2->setText("64DD Disk: ");
     });
 
-    DD->addSeparator();
+    //DD->addSeparator();
 
-    QAction *startGame = new QAction(this);
-    startGame->setText("Start 64DD");
-    DD->addAction(startGame);
-    connect(startGame, &QAction::triggered,[=](){
-        openROM("");
-    });
+    //QAction *startGame = new QAction(this);
+    //startGame->setText("Start 64DD");
+    //DD->addAction(startGame);
+    //connect(startGame, &QAction::triggered,[=](){
+    //    openROM("");
+    //});
 }
 
 void MainWindow::updateGB(Ui::MainWindow *ui)
