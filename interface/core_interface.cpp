@@ -176,18 +176,6 @@ m64p_error AttachCoreLib(const char *CoreLibFilepath)
     {
         rval = osal_dynlib_open(&CoreHandle, CoreLibFilepath);
     }
-    /* then try a library path that was given at compile time */
-#if defined(COREDIR)
-    if (rval != M64ERR_SUCCESS || CoreHandle == NULL)
-    {
-        rval = osal_dynlib_open(&CoreHandle, COREDIR OSAL_DEFAULT_DYNLIB_FILENAME);
-    }
-#endif
-    /* then try just the filename of the shared library, to let dlopen() look through the system lib dirs */
-    if (rval != M64ERR_SUCCESS || CoreHandle == NULL)
-    {
-        rval = osal_dynlib_open(&CoreHandle, OSAL_DEFAULT_DYNLIB_FILENAME);
-    }
     /* as a last-ditch effort, try loading library in current directory */
     if (rval != M64ERR_SUCCESS || CoreHandle == NULL)
     {
