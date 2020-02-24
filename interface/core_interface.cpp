@@ -171,15 +171,9 @@ m64p_error AttachCoreLib(const char *CoreLibFilepath)
 
     /* load the DLL */
     m64p_error rval = M64ERR_INTERNAL;
-    /* first, try a library path+name that was given on the command-line */
     if (CoreLibFilepath != NULL)
     {
         rval = osal_dynlib_open(&CoreHandle, CoreLibFilepath);
-    }
-    /* as a last-ditch effort, try loading library in current directory */
-    if (rval != M64ERR_SUCCESS || CoreHandle == NULL)
-    {
-        rval = osal_dynlib_open(&CoreHandle, OSAL_CURRENT_DIR OSAL_DEFAULT_DYNLIB_FILENAME);
     }
     if (rval != M64ERR_SUCCESS || CoreHandle == NULL)
     {
