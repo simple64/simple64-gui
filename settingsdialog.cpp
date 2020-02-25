@@ -133,32 +133,13 @@ void SettingsDialog::initStuff()
     Filter.append("");
     QStringList current;
 
-    QLabel *audioLabel = new QLabel("Audio Plugin");
-    layout->addWidget(audioLabel,5,0);
-    QComboBox *audioChoice = new QComboBox();
-    Filter.replace(0,"mupen64plus-audio*");
-    current = PluginDir->entryList(Filter);
-    audioChoice->addItems(current);
-    int my_index = audioChoice->findText(qtAudioPlugin);
-    if (my_index == -1) {
-        audioChoice->addItem(qtAudioPlugin);
-        my_index = audioChoice->findText(qtAudioPlugin);
-    }
-    audioChoice->setCurrentIndex(my_index);
-    connect(audioChoice, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::activated),
-        [=](const QString &text) {
-            settings->setValue("audioPlugin", text);
-            qtAudioPlugin = settings->value("audioPlugin").toString();
-    });
-    layout->addWidget(audioChoice,5,1);
-
     QLabel *inputLabel = new QLabel("Input Plugin");
-    layout->addWidget(inputLabel,7,0);
+    layout->addWidget(inputLabel,5,0);
     QComboBox *inputChoice = new QComboBox();
     Filter.replace(0,"mupen64plus-input*");
     current = PluginDir->entryList(Filter);
     inputChoice->addItems(current);
-    my_index = inputChoice->findText(qtInputPlugin);
+    int my_index = inputChoice->findText(qtInputPlugin);
     if (my_index == -1) {
         inputChoice->addItem(qtInputPlugin);
         my_index = inputChoice->findText(qtInputPlugin);
@@ -169,7 +150,7 @@ void SettingsDialog::initStuff()
             settings->setValue("inputPlugin", text);
             qtInputPlugin = settings->value("inputPlugin").toString();
     });
-    layout->addWidget(inputChoice,7,1);
+    layout->addWidget(inputChoice,5,1);
 
     setLayout(layout);
 }
