@@ -70,7 +70,9 @@ void DebugCallback(void *Context, int level, const char *message)
     }
     else
         output = QString("%1 Unknown: %2\n").arg((const char *) Context, message);
-    logViewer->addLog(output);
+
+    if (!output.isEmpty())
+        logViewer->addLog(output);
 }
 
 static char* media_loader_get_gb_cart_rom(void*, int control_id)
