@@ -27,9 +27,7 @@ SOURCES += main.cpp\
     settingclasses.cpp \
     cheatdialog.cpp \
     interface/cheat.cpp \
-    keyselect.cpp \
     interface/sdl_key_converter.c \
-    controllerdialog.cpp \
     logviewer.cpp
 
 win32 {
@@ -73,8 +71,6 @@ HEADERS  += mainwindow.h \
     settingclasses.h \
     cheatdialog.h \
     interface/cheat.h \
-    controllerdialog.h \
-    keyselect.h \
     interface/sdl_key_converter.h \
     logviewer.h
 

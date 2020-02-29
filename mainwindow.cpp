@@ -18,7 +18,6 @@ extern "C" {
 #include "plugin.h"
 #include "workerthread.h"
 #include "cheatdialog.h"
-#include "controllerdialog.h"
 #include "logviewer.h"
 
 #define RECENT_SIZE 10
@@ -715,15 +714,12 @@ void MainWindow::on_actionCheats_triggered()
 void MainWindow::on_actionController_Configuration_triggered()
 {
     if (QtAttachCoreLib()) {
-        if (qtInputPlugin.contains("input-sdl")) {
-            ControllerDialog *controller = new ControllerDialog();
-            controller->show();
-        } else {
-            QMessageBox msgBox;
-            msgBox.setText("This dialog is only compatible with the Input-SDL plugin.");
-            msgBox.exec();
-        }
+        PluginSearchLoad();
+        typedef void (*Config_Func)();
+        Config_Func Config_DoConfig = (Config_Func) osal_dynlib_getproc(g_PluginMap[2].handle, "Config_DoConfig");
+        Config_DoConfig();
     }
+
 }
 
 void MainWindow::on_actionToggle_Speed_Limiter_triggered()
