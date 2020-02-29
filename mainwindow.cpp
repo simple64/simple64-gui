@@ -717,9 +717,9 @@ void MainWindow::on_actionController_Configuration_triggered()
         PluginSearchLoad();
         typedef void (*Config_Func)();
         Config_Func Config_DoConfig = (Config_Func) osal_dynlib_getproc(g_PluginMap[2].handle, "Config_DoConfig");
-        Config_DoConfig();
+        if (Config_DoConfig)
+            Config_DoConfig();
     }
-
 }
 
 void MainWindow::on_actionToggle_Speed_Limiter_triggered()
@@ -743,6 +743,7 @@ void MainWindow::on_actionVideo_Settings_triggered()
         PluginSearchLoad();
         typedef void (*Config_Func)();
         Config_Func Config_DoConfig = (Config_Func) osal_dynlib_getproc(g_PluginMap[0].handle, "Config_DoConfig");
-        Config_DoConfig();
+        if (Config_DoConfig)
+            Config_DoConfig();
     }
 }
