@@ -12,6 +12,9 @@ TEMPLATE = app
 RC_ICONS = mupen64plus.ico
 ICON = mupen64plus.icns
 
+INCLUDEPATH += \
+        "../../mupen64plus-core/src/api"
+
 SOURCES += main.cpp\
     mainwindow.cpp \
     vidext.cpp \
