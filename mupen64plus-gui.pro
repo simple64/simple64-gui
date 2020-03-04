@@ -4,9 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
-
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+QT       += widgets
 
 TARGET = mupen64plus-gui
 TEMPLATE = app
@@ -51,6 +49,8 @@ SOURCES += osal/osal_dynamiclib_win32.c \
 }
 
 !win32 {
+QT += dbus
+
 SOURCES += osal/osal_dynamiclib_unix.c \
     osal/osal_files_unix.c
 
