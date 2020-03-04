@@ -60,10 +60,10 @@ m64p_error qtVidExtFuncSetMode(int Width, int Height, int, int ScreenMode, int)
     return M64ERR_SUCCESS;
 }
 
-void *qtVidExtFuncGLGetProc(const char* Proc)
+m64p_function qtVidExtFuncGLGetProc(const char* Proc)
 {
     if (!init) return NULL;
-    return (void*)my_window->context()->getProcAddress(Proc);
+    return my_window->context()->getProcAddress(Proc);
 }
 
 m64p_error qtVidExtFuncGLSetAttr(m64p_GLattr Attr, int Value)
