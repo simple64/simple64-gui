@@ -115,7 +115,11 @@ void SettingsDialog::initStuff()
     QLabel *note = new QLabel("Note: If you change the Config Path, you need to close and re-open mupen64plus-gui before it will take effect.");
     QLabel *configLabel = new QLabel("Config Dir Path");
     configPath = new QLineEdit;
-    configPath->setText(settings->value("configDirPath").toString());
+    QString configDirPath = settings->value("configDirPath").toString();
+    if (!configDirPath.isEmpty())
+        configPath->setText(configDirPath);
+    else if (QtAttachCoreLib())
+        configPath->setText(ConfigGetUserConfigPath());
     QPushButton *configButton = new QPushButton("Set Path");
     connect(configButton, SIGNAL (released()),this, SLOT (handleConfigButton()));
     connect(configPath, SIGNAL (editingFinished()),this, SLOT (handleConfigEdit()));
