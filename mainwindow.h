@@ -95,6 +95,7 @@ private:
     void updateOpenRecent();
     void updateGB(Ui::MainWindow *ui);
     void updateDD(Ui::MainWindow *ui);
+    void updatePIF(Ui::MainWindow *ui);
     void findRecursion(const QString &path, const QString &pattern, QStringList *result);
     Ui::MainWindow *ui;
     QMenu * OpenRecent;

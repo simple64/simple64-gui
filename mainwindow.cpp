@@ -86,6 +86,35 @@ void MainWindow::updatePlugins()
     qtInputPlugin = settings->value("inputPlugin").toString();
 }
 
+void MainWindow::updatePIF(Ui::MainWindow *ui)
+{
+    QMenu *PIF = new QMenu;
+    PIF->setTitle("PIF ROM");
+    ui->menuFile->insertMenu(ui->actionTake_Screenshot, PIF);
+
+    QAction *fileSelect = new QAction(this);
+    QString current = settings->value("PIF_ROM").toString();
+    fileSelect->setText("PIF ROM: " + current);
+    PIF->addAction(fileSelect);
+    connect(fileSelect, &QAction::triggered, [=](){
+        QString filename = QFileDialog::getOpenFileName(this,
+            tr("PIF ROM"), NULL, tr("PIF ROM File (*.bin)"));
+        if (!filename.isNull()) {
+            settings->setValue("PIF_ROM", filename);
+            QString current = filename;
+            fileSelect->setText("PIF ROM: " + current);
+        }
+    });
+
+    QAction *clearSelect = new QAction(this);
+    clearSelect->setText("Clear PIF ROM Selection");
+    PIF->addAction(clearSelect);
+    connect(clearSelect, &QAction::triggered,[=](){
+        settings->remove("PIF_ROM");
+        fileSelect->setText("PIF ROM: ");
+    });
+}
+
 void MainWindow::updateDD(Ui::MainWindow *ui)
 {
     QMenu *DD = new QMenu(this);
@@ -356,6 +385,7 @@ MainWindow::MainWindow(QWidget *parent) :
     updateOpenRecent();
     updateGB(ui);
     updateDD(ui);
+    updatePIF(ui);
 
     if (!settings->contains("coreLibPath")) {
         QStringList files;

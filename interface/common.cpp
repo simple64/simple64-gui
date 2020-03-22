@@ -202,6 +202,27 @@ m64p_error openROM(std::string filename)
         file.close();
     }
 
+    /* Try to load the PIF image into the core */
+    if (!settings->value("PIF_ROM").toString().isEmpty()) {
+        QFile pifFile(settings->value("PIF_ROM").toString());
+        if (pifFile.open(QIODevice::ReadOnly)) {
+            QDataStream inPif(&pifFile);
+            char *PIF_buffer = (char *) malloc(2048);
+            if (inPif.readRawData(PIF_buffer, 2048) == 2048) {
+                if ((*CoreDoCommand)(M64CMD_PIF_OPEN, 2048, PIF_buffer) != M64ERR_SUCCESS)
+                {
+                    DebugMessage(M64MSG_ERROR, "core failed to open PIF image file.");
+                }
+            }
+            else
+            {
+                DebugMessage(M64MSG_ERROR, "core failed to open PIF image file.");
+            }
+            free(PIF_buffer);
+            pifFile.close();
+        }
+    }
+
     /* Try to load the ROM image into the core */
     if ((*CoreDoCommand)(M64CMD_ROM_OPEN, (int) romlength, ROM_buffer) != M64ERR_SUCCESS)
     {
