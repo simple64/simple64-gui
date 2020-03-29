@@ -54,8 +54,12 @@ void MainWindow::updatePlugins()
     if (!settings->contains("audioPlugin")) {
         Filter.replace(0,"mupen64plus-audio*");
         current = PluginDir->entryList(Filter);
+        default_value = "mupen64plus-audio-sdl2";
+        default_value += OSAL_DLL_EXTENSION;
         if (current.isEmpty())
             settings->setValue("audioPlugin", "dummy");
+        else if (current.indexOf(default_value) != -1)
+            settings->setValue("audioPlugin", default_value);
         else
             settings->setValue("audioPlugin", current.at(0));
     }
@@ -74,8 +78,12 @@ void MainWindow::updatePlugins()
     if (!settings->contains("inputPlugin")) {
         Filter.replace(0,"mupen64plus-input*");
         current = PluginDir->entryList(Filter);
+        default_value = "mupen64plus-input-qt";
+        default_value += OSAL_DLL_EXTENSION;
         if (current.isEmpty())
             settings->setValue("inputPlugin", "dummy");
+        else if (current.indexOf(default_value) != -1)
+            settings->setValue("inputPlugin", default_value);
         else
             settings->setValue("inputPlugin", current.at(0));
     }
