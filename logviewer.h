@@ -2,8 +2,7 @@
 #define LOGVIEWER_H
 
 #include <QDialog>
-#include <QScrollArea>
-#include <QLabel>
+#include <QPlainTextEdit>
 #include <QVBoxLayout>
 #include <QTemporaryFile>
 #include <QTextStream>
@@ -20,8 +19,7 @@ protected:
     void showEvent(QShowEvent *event);
 private:
     QTemporaryFile *file = nullptr;
-    QScrollArea *area = nullptr;
-    QLabel *label = nullptr;
+    QPlainTextEdit *textArea = nullptr;
 };
 
 extern LogViewer *logViewer;

@@ -10,8 +10,8 @@ LogViewer::LogViewer()
 
     this->resize(640,480);
     QVBoxLayout *mainLayout = new QVBoxLayout;
-    area = new QScrollArea;
-    mainLayout->addWidget(area);
+    textArea = new QPlainTextEdit;
+    mainLayout->addWidget(textArea);
     setLayout(mainLayout);
 }
 
@@ -28,8 +28,6 @@ void LogViewer::showEvent(QShowEvent *event)
     if (file != nullptr) file->flush();
     else return;
 
-    label = new QLabel;
-    label->setTextInteractionFlags(Qt::TextSelectableByMouse);
     qint64 pos = file->pos();
     file->seek(0);
     QTextStream in(file);
@@ -39,8 +37,7 @@ void LogViewer::showEvent(QShowEvent *event)
         data += "\n";
     }
     file->seek(pos);
-    label->setText(data);
-    area->setWidget(label);
+    textArea->setPlainText(data);
     QWidget::showEvent( event );
 }
 
