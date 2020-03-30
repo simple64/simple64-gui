@@ -11,6 +11,7 @@ LogViewer::LogViewer()
     this->resize(640,480);
     QVBoxLayout *mainLayout = new QVBoxLayout;
     textArea = new QPlainTextEdit;
+    textArea->setReadOnly(1);
     mainLayout->addWidget(textArea);
     setLayout(mainLayout);
 }
