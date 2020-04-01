@@ -29,7 +29,8 @@ SOURCES += main.cpp\
     cheatdialog.cpp \
     interface/cheat.cpp \
     interface/sdl_key_converter.c \
-    logviewer.cpp
+    logviewer.cpp \
+    keypressfilter.cpp
 
 win32 {
 SOURCES += osal/osal_dynamiclib_win32.c \
@@ -75,7 +76,8 @@ HEADERS  += mainwindow.h \
     cheatdialog.h \
     interface/cheat.h \
     interface/sdl_key_converter.h \
-    logviewer.h
+    logviewer.h \
+    keypressfilter.h
 
 FORMS    += mainwindow.ui
 

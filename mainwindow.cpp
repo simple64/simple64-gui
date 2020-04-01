@@ -6,6 +6,7 @@
 #include "oglwindow.h"
 #include "settingsdialog.h"
 #include "plugindialog.h"
+#include "keypressfilter.h"
 
 extern "C" {
 #include "osal_dynamiclib.h"
@@ -25,6 +26,7 @@ OGLWindow *my_window = nullptr;
 WorkerThread *workerThread = nullptr;
 LogViewer *logViewer = nullptr;
 QSettings *settings = nullptr;
+KeyPressFilter *keyPressFilter = nullptr;
 
 void MainWindow::resetTitle()
 {
@@ -532,12 +534,15 @@ void MainWindow::createOGLWindow(QSurfaceFormat* format)
 {
     my_window = new OGLWindow();
     QWidget *container = QWidget::createWindowContainer(my_window);
-    container->setFocusPolicy(Qt::StrongFocus);
 
     my_window->setCursor(Qt::BlankCursor);
     my_window->setFormat(*format);
 
     setCentralWidget(container);
+
+    keyPressFilter = new KeyPressFilter;
+    my_window->installEventFilter(keyPressFilter);
+    this->installEventFilter(keyPressFilter);
 }
 
 void MainWindow::deleteOGLWindow()
