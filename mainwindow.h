@@ -1,6 +1,11 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "oglwindow.h"
+#include "workerthread.h"
+#include "logviewer.h"
+#include "keypressfilter.h"
+
 #include <QMainWindow>
 #include <QSettings>
 #include <QSurfaceFormat>
@@ -16,6 +21,11 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
+    WorkerThread* getWorkerThread();
+    OGLWindow* getOGLWindow();
+    QSettings* getSettings();
+    LogViewer* getLogViewer();
+
     void openROM(QString filename);
     void resetTitle();
     void setVerbose();
@@ -92,9 +102,14 @@ private:
     int nogui;
     int gles;
     QString m_title;
+
+    OGLWindow *my_window = nullptr;
+    WorkerThread *workerThread = nullptr;
+    LogViewer *logViewer = nullptr;
+    QSettings *settings = nullptr;
+    KeyPressFilter *keyPressFilter = nullptr;
 };
 
 extern MainWindow *w;
-extern QSettings *settings;
 
 #endif // MAINWINDOW_H

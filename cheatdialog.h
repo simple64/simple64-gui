@@ -7,7 +7,7 @@ class CheatDialog : public QDialog
 {
     Q_OBJECT
 public:
-    CheatDialog();
+    CheatDialog(QWidget *parent = nullptr);
 };
 
 #endif // CHEATDIALOG_H

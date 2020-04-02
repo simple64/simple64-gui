@@ -22,6 +22,4 @@ private:
     QPlainTextEdit *textArea = nullptr;
 };
 
-extern LogViewer *logViewer;
-
 #endif // LOGVIEWER_H

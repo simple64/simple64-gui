@@ -2,14 +2,14 @@
 
 LogViewer::LogViewer()
 {
-    file = new QTemporaryFile;
+    file = new QTemporaryFile(this);
     if (!file->open()) {
         delete file;
         file = nullptr;
     }
 
     this->resize(640,480);
-    QVBoxLayout *mainLayout = new QVBoxLayout;
+    QVBoxLayout *mainLayout = new QVBoxLayout(this);
     textArea = new QPlainTextEdit;
     textArea->setReadOnly(1);
     mainLayout->addWidget(textArea);
@@ -18,10 +18,8 @@ LogViewer::LogViewer()
 
 LogViewer::~LogViewer()
 {
-    if (file != nullptr) {
+    if (file != nullptr)
         file->close();
-        delete file;
-    }
 }
 
 void LogViewer::showEvent(QShowEvent *event)

@@ -7,7 +7,7 @@ class PluginDialog : public QDialog
 {
     Q_OBJECT
 public:
-    PluginDialog();
+    PluginDialog(QWidget *parent = nullptr);
 private slots:
     void handleResetButton();
 private:

@@ -30,12 +30,13 @@ m64p_error qtVidExtFuncInit(void)
 m64p_error qtVidExtFuncQuit(void)
 {
     init = 0;
-    workerThread->toggleFS(M64VIDEO_WINDOWED);
-    if (my_window != nullptr) {
-        my_window->doneCurrent();
-        my_window->context()->moveToThread(QApplication::instance()->thread());
-        workerThread->deleteOGLWindow();
+    w->getWorkerThread()->toggleFS(M64VIDEO_WINDOWED);
+    if (w->getOGLWindow() != nullptr) {
+        w->getOGLWindow()->doneCurrent();
+        w->getOGLWindow()->context()->moveToThread(QApplication::instance()->thread());
+        w->getWorkerThread()->deleteOGLWindow();
     }
+    delete format;
     return M64ERR_SUCCESS;
 }
 
@@ -52,10 +53,10 @@ m64p_error qtVidExtFuncListModes(m64p_2d_size *SizeArray, int *NumSizes)
 m64p_error qtVidExtFuncSetMode(int Width, int Height, int, int ScreenMode, int)
 {
     if (!init) {
-        workerThread->createOGLWindow(format);
-        while (!my_window->isValid()) {}
-        workerThread->resizeMainWindow(Width, Height);
-        my_window->makeCurrent();
+        w->getWorkerThread()->createOGLWindow(format);
+        while (!w->getOGLWindow()->isValid()) {}
+        w->getWorkerThread()->resizeMainWindow(Width, Height);
+        w->getOGLWindow()->makeCurrent();
         init = 1;
         needs_toggle = ScreenMode;
     }
@@ -65,7 +66,7 @@ m64p_error qtVidExtFuncSetMode(int Width, int Height, int, int ScreenMode, int)
 m64p_function qtVidExtFuncGLGetProc(const char* Proc)
 {
     if (!init) return NULL;
-    return my_window->context()->getProcAddress(Proc);
+    return w->getOGLWindow()->context()->getProcAddress(Proc);
 }
 
 m64p_error qtVidExtFuncGLSetAttr(m64p_GLattr Attr, int Value)
@@ -130,7 +131,7 @@ m64p_error qtVidExtFuncGLSetAttr(m64p_GLattr Attr, int Value)
 m64p_error qtVidExtFuncGLGetAttr(m64p_GLattr Attr, int *pValue)
 {
     if (!init) return M64ERR_NOT_INIT;
-    QSurfaceFormat::SwapBehavior SB = my_window->format().swapBehavior();
+    QSurfaceFormat::SwapBehavior SB = w->getOGLWindow()->format().swapBehavior();
     switch (Attr) {
     case M64P_GL_DOUBLEBUFFER:
         if (SB == QSurfaceFormat::SingleBuffer)
@@ -139,39 +140,39 @@ m64p_error qtVidExtFuncGLGetAttr(m64p_GLattr Attr, int *pValue)
             *pValue = 1;
         break;
     case M64P_GL_BUFFER_SIZE:
-        *pValue = my_window->format().alphaBufferSize() + my_window->format().redBufferSize() + my_window->format().greenBufferSize() + my_window->format().blueBufferSize();
+        *pValue = w->getOGLWindow()->format().alphaBufferSize() + w->getOGLWindow()->format().redBufferSize() + w->getOGLWindow()->format().greenBufferSize() + w->getOGLWindow()->format().blueBufferSize();
         break;
     case M64P_GL_DEPTH_SIZE:
-        *pValue = my_window->format().depthBufferSize();
+        *pValue = w->getOGLWindow()->format().depthBufferSize();
         break;
     case M64P_GL_RED_SIZE:
-        *pValue = my_window->format().redBufferSize();
+        *pValue = w->getOGLWindow()->format().redBufferSize();
         break;
     case M64P_GL_GREEN_SIZE:
-        *pValue = my_window->format().greenBufferSize();
+        *pValue = w->getOGLWindow()->format().greenBufferSize();
         break;
     case M64P_GL_BLUE_SIZE:
-        *pValue = my_window->format().blueBufferSize();
+        *pValue = w->getOGLWindow()->format().blueBufferSize();
         break;
     case M64P_GL_ALPHA_SIZE:
-        *pValue = my_window->format().alphaBufferSize();
+        *pValue = w->getOGLWindow()->format().alphaBufferSize();
         break;
     case M64P_GL_SWAP_CONTROL:
-        *pValue = my_window->format().swapInterval();
+        *pValue = w->getOGLWindow()->format().swapInterval();
         break;
     case M64P_GL_MULTISAMPLEBUFFERS:
         break;
     case M64P_GL_MULTISAMPLESAMPLES:
-        *pValue = my_window->format().samples();
+        *pValue = w->getOGLWindow()->format().samples();
         break;
     case M64P_GL_CONTEXT_MAJOR_VERSION:
-        *pValue = my_window->format().majorVersion();
+        *pValue = w->getOGLWindow()->format().majorVersion();
         break;
     case M64P_GL_CONTEXT_MINOR_VERSION:
-        *pValue = my_window->format().minorVersion();
+        *pValue = w->getOGLWindow()->format().minorVersion();
         break;
     case M64P_GL_CONTEXT_PROFILE_MASK:
-        switch (my_window->format().profile()) {
+        switch (w->getOGLWindow()->format().profile()) {
         case QSurfaceFormat::CoreProfile:
             *pValue = M64P_GL_CONTEXT_PROFILE_CORE;
             break;
@@ -193,14 +194,14 @@ m64p_error qtVidExtFuncGLSwapBuf(void)
         int value;
         (*CoreDoCommand)(M64CMD_CORE_STATE_QUERY, M64CORE_EMU_STATE, &value);
         if (value > M64EMU_STOPPED) {
-            workerThread->toggleFS(needs_toggle);
+            w->getWorkerThread()->toggleFS(needs_toggle);
             needs_toggle = 0;
         }
     }
 
     if (QThread::currentThread() == rendering_thread) {
-        my_window->context()->swapBuffers(my_window);
-        my_window->context()->makeCurrent(my_window);
+        w->getOGLWindow()->context()->swapBuffers(w->getOGLWindow());
+        w->getOGLWindow()->context()->makeCurrent(w->getOGLWindow());
     }
     return M64ERR_SUCCESS;
 }
@@ -208,13 +209,13 @@ m64p_error qtVidExtFuncGLSwapBuf(void)
 m64p_error qtVidExtFuncSetCaption(const char * _title)
 {
     std::string title = _title;
-    workerThread->setTitle(title);
+    w->getWorkerThread()->setTitle(title);
     return M64ERR_SUCCESS;
 }
 
 m64p_error qtVidExtFuncToggleFS(void)
 {
-    workerThread->toggleFS(M64VIDEO_NONE);
+    w->getWorkerThread()->toggleFS(M64VIDEO_NONE);
     return M64ERR_SUCCESS;
 }
 
@@ -223,7 +224,7 @@ m64p_error qtVidExtFuncResizeWindow(int width, int height)
     int response = M64VIDEO_NONE;
     (*CoreDoCommand)(M64CMD_CORE_STATE_QUERY, M64CORE_VIDEO_MODE, &response);
     if (response == M64VIDEO_WINDOWED)
-        workerThread->resizeMainWindow(width, height);
+        w->getWorkerThread()->resizeMainWindow(width, height);
     return M64ERR_SUCCESS;
 }
 

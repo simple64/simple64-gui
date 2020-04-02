@@ -8,9 +8,10 @@
 #include <QScrollArea>
 #include <QVBoxLayout>
 
-CheatDialog::CheatDialog()
+CheatDialog::CheatDialog(QWidget *parent)
+    : QDialog(parent)
 {
-    QVBoxLayout *mainLayout = new QVBoxLayout;
+    QVBoxLayout *mainLayout = new QVBoxLayout(this);
     QScrollArea *scrollArea = new QScrollArea;
     QWidget *cheatSettings = new QWidget;
     QGridLayout *cheatLayout = new QGridLayout;

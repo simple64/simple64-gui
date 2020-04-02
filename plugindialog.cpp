@@ -104,7 +104,8 @@ void PluginDialog::handleResetButton()
     }
 }
 
-PluginDialog::PluginDialog()
+PluginDialog::PluginDialog(QWidget *parent)
+    : QDialog(parent)
 {
     m64p_error res;
     int value;
@@ -115,7 +116,7 @@ PluginDialog::PluginDialog()
     }
 
     coreLayoutRow = 0;
-    QVBoxLayout *mainLayout = new QVBoxLayout;
+    QVBoxLayout *mainLayout = new QVBoxLayout(this);
     QTabWidget *tabWidget = new QTabWidget;
     tabWidget->setUsesScrollButtons(false);
 

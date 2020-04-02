@@ -14,8 +14,8 @@ void SettingsDialog::handleCoreButton()
         tr("Locate Core Library"), NULL, tr("Shared Libraries (*.dylib *.so* *.dll)"));
     if (!fileName.isNull()) {
         corePath->setText(fileName);
-        settings->setValue("coreLibPath", fileName);
-        qtCoreDirPath = settings->value("coreLibPath").toString();
+        w->getSettings()->setValue("coreLibPath", fileName);
+        qtCoreDirPath = w->getSettings()->value("coreLibPath").toString();
     }
 }
 
@@ -27,13 +27,13 @@ void SettingsDialog::handlePluginButton()
                                                          | QFileDialog::DontResolveSymlinks);
     if (!fileName.isNull()) {
         pluginPath->setText(fileName);
-        settings->setValue("pluginDirPath", fileName);
-        qtPluginDir = settings->value("pluginDirPath").toString();
+        w->getSettings()->setValue("pluginDirPath", fileName);
+        qtPluginDir = w->getSettings()->value("pluginDirPath").toString();
 
-        settings->remove("inputPlugin");
-        settings->remove("videoPlugin");
-        settings->remove("audioPlugin");
-        settings->remove("rspPlugin");
+        w->getSettings()->remove("inputPlugin");
+        w->getSettings()->remove("videoPlugin");
+        w->getSettings()->remove("audioPlugin");
+        w->getSettings()->remove("rspPlugin");
         w->updatePlugins();
         initStuff();
     }
@@ -47,52 +47,52 @@ void SettingsDialog::handleConfigButton()
                                                          | QFileDialog::DontResolveSymlinks);
     if (!fileName.isNull()) {
         configPath->setText(fileName);
-        settings->setValue("configDirPath", fileName);
-        qtConfigDir = settings->value("configDirPath").toString();
+        w->getSettings()->setValue("configDirPath", fileName);
+        qtConfigDir = w->getSettings()->value("configDirPath").toString();
     }
 }
 
 void SettingsDialog::handleClearConfigButton()
 {
     configPath->setText("");
-    settings->remove("configDirPath");
+    w->getSettings()->remove("configDirPath");
     qtConfigDir = QString();
 }
 
 void SettingsDialog::handleCoreEdit()
 {
-    settings->setValue("coreLibPath", corePath->text());
-    qtCoreDirPath = settings->value("coreLibPath").toString();
+    w->getSettings()->setValue("coreLibPath", corePath->text());
+    qtCoreDirPath = w->getSettings()->value("coreLibPath").toString();
 }
 
 void SettingsDialog::handlePluginEdit()
 {
-    settings->setValue("pluginDirPath", pluginPath->text());
-    qtPluginDir = settings->value("pluginDirPath").toString();
+    w->getSettings()->setValue("pluginDirPath", pluginPath->text());
+    qtPluginDir = w->getSettings()->value("pluginDirPath").toString();
 
-    settings->remove("inputPlugin");
-    settings->remove("videoPlugin");
-    settings->remove("audioPlugin");
-    settings->remove("rspPlugin");
+    w->getSettings()->remove("inputPlugin");
+    w->getSettings()->remove("videoPlugin");
+    w->getSettings()->remove("audioPlugin");
+    w->getSettings()->remove("rspPlugin");
     w->updatePlugins();
     initStuff();
 }
 
 void SettingsDialog::handleConfigEdit()
 {
-    settings->setValue("configDirPath", configPath->text());
-    qtConfigDir = settings->value("configDirPath").toString();
+    w->getSettings()->setValue("configDirPath", configPath->text());
+    qtConfigDir = w->getSettings()->value("configDirPath").toString();
 }
 
 void SettingsDialog::initStuff()
 {
     if (layout != nullptr)
         delete layout;
-    layout = new QGridLayout;
+    layout = new QGridLayout(this);
 
     QLabel *coreLabel = new QLabel("Core Library Path");
     corePath = new QLineEdit;
-    corePath->setText(settings->value("coreLibPath").toString());
+    corePath->setText(w->getSettings()->value("coreLibPath").toString());
     QPushButton *coreButton = new QPushButton("Set Path");
     connect(coreButton, SIGNAL (released()),this, SLOT (handleCoreButton()));
     connect(corePath, SIGNAL (editingFinished()),this, SLOT (handleCoreEdit()));
@@ -103,7 +103,7 @@ void SettingsDialog::initStuff()
 
     QLabel *pluginLabel = new QLabel("Plugin Dir Path");
     pluginPath = new QLineEdit;
-    pluginPath->setText(settings->value("pluginDirPath").toString());
+    pluginPath->setText(w->getSettings()->value("pluginDirPath").toString());
     QPushButton *pluginButton = new QPushButton("Set Path");
     connect(pluginButton, SIGNAL (released()),this, SLOT (handlePluginButton()));
     connect(pluginPath, SIGNAL (editingFinished()),this, SLOT (handlePluginEdit()));
@@ -115,7 +115,7 @@ void SettingsDialog::initStuff()
     QLabel *note = new QLabel("Note: If you change the Config Path, you need to close and re-open mupen64plus-gui before it will take effect.");
     QLabel *configLabel = new QLabel("Config Dir Path");
     configPath = new QLineEdit;
-    QString configDirPath = settings->value("configDirPath").toString();
+    QString configDirPath = w->getSettings()->value("configDirPath").toString();
     if (!configDirPath.isEmpty())
         configPath->setText(configDirPath);
     else if (QtAttachCoreLib())
@@ -132,7 +132,7 @@ void SettingsDialog::initStuff()
     layout->addWidget(configButton,3,2);
     layout->addWidget(clearConfigButton,3,3);
 
-    QDir *PluginDir = new QDir(qtPluginDir);
+    QDir PluginDir(qtPluginDir);
     QStringList Filter;
     Filter.append("");
     QStringList current;
@@ -141,7 +141,7 @@ void SettingsDialog::initStuff()
     layout->addWidget(inputLabel,5,0);
     QComboBox *inputChoice = new QComboBox();
     Filter.replace(0,"mupen64plus-input*");
-    current = PluginDir->entryList(Filter);
+    current = PluginDir.entryList(Filter);
     inputChoice->addItems(current);
     int my_index = inputChoice->findText(qtInputPlugin);
     if (my_index == -1) {
@@ -151,15 +151,16 @@ void SettingsDialog::initStuff()
     inputChoice->setCurrentIndex(my_index);
     connect(inputChoice, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::activated),
         [=](const QString &text) {
-            settings->setValue("inputPlugin", text);
-            qtInputPlugin = settings->value("inputPlugin").toString();
+            w->getSettings()->setValue("inputPlugin", text);
+            qtInputPlugin = w->getSettings()->value("inputPlugin").toString();
     });
     layout->addWidget(inputChoice,5,1);
 
     setLayout(layout);
 }
 
-SettingsDialog::SettingsDialog()
+SettingsDialog::SettingsDialog(QWidget *parent)
+    : QDialog(parent)
 {
     initStuff();
 }

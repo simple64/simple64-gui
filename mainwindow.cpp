@@ -3,10 +3,8 @@
 #include <QMessageBox>
 #include <QCloseEvent>
 #include <QActionGroup>
-#include "oglwindow.h"
 #include "settingsdialog.h"
 #include "plugindialog.h"
-#include "keypressfilter.h"
 
 extern "C" {
 #include "osal_dynamiclib.h"
@@ -17,16 +15,9 @@ extern "C" {
 #include "common.h"
 #include "core_interface.h"
 #include "plugin.h"
-#include "workerthread.h"
 #include "cheatdialog.h"
-#include "logviewer.h"
 
 #define RECENT_SIZE 10
-OGLWindow *my_window = nullptr;
-WorkerThread *workerThread = nullptr;
-LogViewer *logViewer = nullptr;
-QSettings *settings = nullptr;
-KeyPressFilter *keyPressFilter = nullptr;
 
 void MainWindow::resetTitle()
 {
@@ -35,15 +26,15 @@ void MainWindow::resetTitle()
 
 void MainWindow::updatePlugins()
 {
-    QDir *PluginDir = new QDir(qtPluginDir);
-    PluginDir->setFilter(QDir::Files);
+    QDir PluginDir(qtPluginDir);
+    PluginDir.setFilter(QDir::Files);
     QStringList Filter;
     Filter.append("");
     QStringList current;
     QString default_value;
     if (!settings->contains("videoPlugin")) {
         Filter.replace(0,"mupen64plus-video*");
-        current = PluginDir->entryList(Filter);
+        current = PluginDir.entryList(Filter);
         default_value = "mupen64plus-video-GLideN64";
         default_value += OSAL_DLL_EXTENSION;
         if (current.isEmpty())
@@ -55,7 +46,7 @@ void MainWindow::updatePlugins()
     }
     if (!settings->contains("audioPlugin")) {
         Filter.replace(0,"mupen64plus-audio*");
-        current = PluginDir->entryList(Filter);
+        current = PluginDir.entryList(Filter);
         default_value = "mupen64plus-audio-sdl2";
         default_value += OSAL_DLL_EXTENSION;
         if (current.isEmpty())
@@ -67,7 +58,7 @@ void MainWindow::updatePlugins()
     }
     if (!settings->contains("rspPlugin")) {
         Filter.replace(0,"mupen64plus-rsp*");
-        current = PluginDir->entryList(Filter);
+        current = PluginDir.entryList(Filter);
         default_value = "mupen64plus-rsp-hle";
         default_value += OSAL_DLL_EXTENSION;
         if (current.isEmpty())
@@ -79,7 +70,7 @@ void MainWindow::updatePlugins()
     }
     if (!settings->contains("inputPlugin")) {
         Filter.replace(0,"mupen64plus-input*");
-        current = PluginDir->entryList(Filter);
+        current = PluginDir.entryList(Filter);
         default_value = "mupen64plus-input-qt";
         default_value += OSAL_DLL_EXTENSION;
         if (current.isEmpty())
@@ -97,7 +88,7 @@ void MainWindow::updatePlugins()
 
 void MainWindow::updateDD(Ui::MainWindow *ui)
 {
-    QMenu *DD = new QMenu;
+    QMenu *DD = new QMenu(this);
     DD->setTitle("64DD");
     ui->menuFile->insertMenu(ui->actionTake_Screenshot, DD);
 
@@ -151,7 +142,7 @@ void MainWindow::updateDD(Ui::MainWindow *ui)
 
 void MainWindow::updateGB(Ui::MainWindow *ui)
 {
-    QMenu *GB = new QMenu;
+    QMenu *GB = new QMenu(this);
     GB->setTitle("Game Boy Cartridges");
     ui->menuFile->insertMenu(ui->actionTake_Screenshot, GB);
 
@@ -327,16 +318,18 @@ MainWindow::MainWindow(QWidget *parent) :
     QString ini_path = QDir(QCoreApplication::applicationDirPath()).filePath("mupen64plus-gui.ini");
     settings = new QSettings(ini_path, QSettings::IniFormat);
 
-    if (!settings->isWritable())
+    if (!settings->isWritable()) {
+        delete settings;
         settings = new QSettings("mupen64plus", "gui");
+    }
 
     restoreGeometry(settings->value("geometry").toByteArray());
     restoreState(settings->value("windowState").toByteArray());
 
     QActionGroup *my_slots_group = new QActionGroup(this);
     QAction *my_slots[10];
-    OpenRecent = new QMenu;
-    QMenu * SaveSlot = new QMenu;
+    OpenRecent = new QMenu(this);
+    QMenu * SaveSlot = new QMenu(this);
     OpenRecent->setTitle("Open Recent");
     SaveSlot->setTitle("Change Save Slot");
     ui->menuFile->insertMenu(ui->actionSave_State, OpenRecent);
@@ -402,6 +395,8 @@ MainWindow::~MainWindow()
 {
     DetachCoreLib();
     delete ui;
+    delete settings;
+    delete logViewer;
 }
 
 void MainWindow::setVerbose()
@@ -532,7 +527,10 @@ void MainWindow::pluginWarning(QString name)
 
 void MainWindow::createOGLWindow(QSurfaceFormat* format)
 {
-    my_window = new OGLWindow();
+    if (my_window) delete my_window;
+    if (keyPressFilter) delete keyPressFilter;
+
+    my_window = new OGLWindow;
     QWidget *container = QWidget::createWindowContainer(my_window);
 
     my_window->setCursor(Qt::BlankCursor);
@@ -572,6 +570,8 @@ void MainWindow::openROM(QString filename)
     stopGame();
 
     logViewer->clearLog();
+    if (workerThread) delete workerThread;
+
     workerThread = new WorkerThread();
     workerThread->setFileName(filename);
     workerThread->start();
@@ -600,7 +600,7 @@ void MainWindow::on_actionOpen_ROM_triggered()
 
 void MainWindow::on_actionPlugin_Paths_triggered()
 {
-    SettingsDialog *settings = new SettingsDialog();
+    SettingsDialog *settings = new SettingsDialog(this);
     settings->show();
 }
 
@@ -617,7 +617,7 @@ void MainWindow::on_actionExit_triggered()
 void MainWindow::on_actionPlugin_Settings_triggered()
 {
     if (QtAttachCoreLib()) {
-        PluginDialog *settings = new PluginDialog();
+        PluginDialog *settings = new PluginDialog(this);
         settings->show();
     }
 }
@@ -720,7 +720,7 @@ void MainWindow::on_actionLoad_State_From_triggered()
 
 void MainWindow::on_actionCheats_triggered()
 {
-    CheatDialog *cheats = new CheatDialog();
+    CheatDialog *cheats = new CheatDialog(this);
     cheats->show();
 }
 
@@ -759,4 +759,24 @@ void MainWindow::on_actionVideo_Settings_triggered()
         if (Config_DoConfig)
             Config_DoConfig();
     }
+}
+
+WorkerThread* MainWindow::getWorkerThread()
+{
+    return workerThread;
+}
+
+OGLWindow* MainWindow::getOGLWindow()
+{
+    return my_window;
+}
+
+QSettings* MainWindow::getSettings()
+{
+    return settings;
+}
+
+LogViewer* MainWindow::getLogViewer()
+{
+    return logViewer;
 }

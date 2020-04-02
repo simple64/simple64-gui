@@ -12,7 +12,7 @@ class SettingsDialog : public QDialog
     Q_OBJECT
 
 public:
-    SettingsDialog();
+    SettingsDialog(QWidget *parent = nullptr);
 private slots:
     void handleCoreButton();
     void handlePluginButton();

@@ -24,7 +24,7 @@
 #include <string.h>
 #include <QCoreApplication>
 
-#include "workerthread.h"
+#include "mainwindow.h"
 #include "core_interface.h"
 #include "m64p_common.h"
 #include "m64p_types.h"
@@ -149,9 +149,9 @@ m64p_error PluginSearchLoad()
         if (g_PluginMap[i].handle == NULL)
         {
             QString name = g_PluginMap[i].name;
-            if (workerThread != nullptr) {
-                if (workerThread->isRunning())
-                    workerThread->pluginWarning(name);
+            if (w->getWorkerThread() != nullptr) {
+                if (w->getWorkerThread()->isRunning())
+                    w->getWorkerThread()->pluginWarning(name);
             }
         }
         else

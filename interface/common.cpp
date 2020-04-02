@@ -72,20 +72,20 @@ void DebugCallback(void *Context, int level, const char *message)
         output = QString("%1 Unknown: %2\n").arg((const char *) Context, message);
 
     if (!output.isEmpty())
-        logViewer->addLog(output);
+        w->getLogViewer()->addLog(output);
 }
 
 static char* media_loader_get_gb_cart_rom(void*, int control_id)
 {
     QString pathname;
     if (control_id == 0)
-        pathname = settings->value("Player1GBROM").toString();
+        pathname = w->getSettings()->value("Player1GBROM").toString();
     else if (control_id == 1)
-        pathname = settings->value("Player2GBROM").toString();
+        pathname = w->getSettings()->value("Player2GBROM").toString();
     else if (control_id == 2)
-        pathname = settings->value("Player3GBROM").toString();
+        pathname = w->getSettings()->value("Player3GBROM").toString();
     else if (control_id == 3)
-        pathname = settings->value("Player4GBROM").toString();
+        pathname = w->getSettings()->value("Player4GBROM").toString();
 
     if (pathname.isEmpty())
         return NULL;
@@ -99,13 +99,13 @@ static char* media_loader_get_gb_cart_ram(void*, int control_id)
 {
     QString pathname;
     if (control_id == 0)
-        pathname = settings->value("Player1GBRAM").toString();
+        pathname = w->getSettings()->value("Player1GBRAM").toString();
     else if (control_id == 1)
-        pathname = settings->value("Player2GBRAM").toString();
+        pathname = w->getSettings()->value("Player2GBRAM").toString();
     else if (control_id == 2)
-        pathname = settings->value("Player3GBRAM").toString();
+        pathname = w->getSettings()->value("Player3GBRAM").toString();
     else if (control_id == 3)
-        pathname = settings->value("Player4GBRAM").toString();
+        pathname = w->getSettings()->value("Player4GBRAM").toString();
 
     if (pathname.isEmpty())
         return NULL;
@@ -117,7 +117,7 @@ static char* media_loader_get_gb_cart_ram(void*, int control_id)
 
 static char* media_loader_get_dd_rom(void*)
 {
-    QString pathname = settings->value("DD_ROM").toString();
+    QString pathname = w->getSettings()->value("DD_ROM").toString();
 
     if (pathname.isEmpty())
         return NULL;
@@ -129,7 +129,7 @@ static char* media_loader_get_dd_rom(void*)
 
 static char* media_loader_get_dd_disk(void*)
 {
-    QString pathname = settings->value("DD_DISK").toString();
+    QString pathname = w->getSettings()->value("DD_DISK").toString();
 
     if (pathname.isEmpty())
         return NULL;

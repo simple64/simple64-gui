@@ -26,5 +26,4 @@ private:
     QString m_fileName;
 };
 
-extern WorkerThread* workerThread;
 #endif // WORKERTHREAD_H

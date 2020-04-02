@@ -6,7 +6,6 @@
 #ifdef __cplusplus
 
 #include "oglwindow.h"
-extern OGLWindow *my_window;
 
 extern "C" {
 #endif
