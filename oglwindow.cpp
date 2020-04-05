@@ -24,4 +24,5 @@ void OGLWindow::timerEvent(QTimerEvent *te) {
         (*CoreDoCommand)(M64CMD_CORE_STATE_SET, M64CORE_VIDEO_SIZE, &size);
     killTimer(te->timerId());
     timerId = 0;
+    requestActivate();
 }
