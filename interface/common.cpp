@@ -203,8 +203,8 @@ m64p_error openROM(std::string filename)
     }
 
     /* Try to load the PIF image into the core */
-    if (!settings->value("PIF_ROM").toString().isEmpty()) {
-        QFile pifFile(settings->value("PIF_ROM").toString());
+    if (!w->getSettings()->value("PIF_ROM").toString().isEmpty()) {
+        QFile pifFile(w->getSettings()->value("PIF_ROM").toString());
         if (pifFile.open(QIODevice::ReadOnly)) {
             QDataStream inPif(&pifFile);
             char *PIF_buffer = (char *) malloc(2048);
