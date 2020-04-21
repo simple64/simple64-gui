@@ -27,7 +27,8 @@
 #ifdef __cplusplus
 #include <Qt>
 #include <string>
-m64p_error openROM(std::string filename);
+m64p_error loadROM(std::string filename);
+m64p_error launchGame(QString netplay_ip, int netplay_port, int netplay_player);
 int QT2SDL2MOD(Qt::KeyboardModifiers modifiers);
 extern "C" {
 #endif

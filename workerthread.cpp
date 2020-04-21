@@ -8,9 +8,12 @@
 #include <QDBusInterface>
 #endif
 
-WorkerThread::WorkerThread(QObject *parent)
+WorkerThread::WorkerThread(QString _netplay_ip, int _netplay_port, int _netplay_player, QObject *parent)
     : QThread(parent)
 {
+    netplay_ip = _netplay_ip;
+    netplay_port = _netplay_port;
+    netplay_player = _netplay_player;
 }
 
 void WorkerThread::run()
@@ -32,7 +35,11 @@ void WorkerThread::run()
             cookieID = reply.value();
     }
 #endif
-    m64p_error res = openROM(m_fileName.toStdString());
+
+    m64p_error res = loadROM(m_fileName.toStdString());
+    if (res == M64ERR_SUCCESS)
+        res = launchGame(netplay_ip, netplay_port, netplay_player);
+
 #ifdef _WIN32
     SetThreadExecutionState(ES_CONTINUOUS);
 #else

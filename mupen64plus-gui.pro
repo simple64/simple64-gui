@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += widgets
+QT       += widgets websockets
 
 TARGET = mupen64plus-gui
 TEMPLATE = app
@@ -30,7 +30,10 @@ SOURCES += main.cpp \
     interface/cheat.cpp \
     interface/sdl_key_converter.c \
     logviewer.cpp \
-    keypressfilter.cpp
+    keypressfilter.cpp \
+    netplay/createroom.cpp \
+    netplay/joinroom.cpp \
+    netplay/waitroom.cpp
 
 win32 {
 SOURCES += osal/osal_dynamiclib_win32.c \
@@ -77,7 +80,10 @@ HEADERS  += mainwindow.h \
     interface/cheat.h \
     interface/sdl_key_converter.h \
     logviewer.h \
-    keypressfilter.h
+    keypressfilter.h \
+    netplay/createroom.h \
+    netplay/joinroom.h \
+    netplay/waitroom.h
 
 FORMS    += mainwindow.ui
 

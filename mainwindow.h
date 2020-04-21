@@ -24,7 +24,7 @@ public:
     QSettings* getSettings();
     LogViewer* getLogViewer();
 
-    void openROM(QString filename);
+    void openROM(QString filename, QString netplay_ip, int netplay_port, int netplay_player);
     void resetTitle();
     void setVerbose();
     int getVerbose();
@@ -87,6 +87,10 @@ private slots:
     void on_actionView_Log_triggered();
 
     void on_actionVideo_Settings_triggered();
+
+    void on_actionCreate_Room_triggered();
+
+    void on_actionJoin_Room_triggered();
 
 private:
     void stopGame();

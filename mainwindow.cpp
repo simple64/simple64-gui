@@ -16,6 +16,8 @@ extern "C" {
 #include "core_interface.h"
 #include "plugin.h"
 #include "cheatdialog.h"
+#include "netplay/createroom.h"
+#include "netplay/joinroom.h"
 
 #define RECENT_SIZE 10
 
@@ -523,7 +525,7 @@ void MainWindow::updateOpenRecent()
         OpenRecent->addAction(recent[i]);
         QAction *temp_recent = recent[i];
         connect(temp_recent, &QAction::triggered,[=](){
-                    openROM(temp_recent->text());
+                    openROM(temp_recent->text(), "", 0, 0);
                 });
     }
     OpenRecent->addSeparator();
@@ -590,13 +592,13 @@ void MainWindow::stopGame()
     DetachCoreLib();
 }
 
-void MainWindow::openROM(QString filename)
+void MainWindow::openROM(QString filename, QString netplay_ip, int netplay_port, int netplay_player)
 {
     stopGame();
 
     logViewer.clearLog();
 
-    workerThread = new WorkerThread(this);
+    workerThread = new WorkerThread(netplay_ip, netplay_port, netplay_player, this);
     workerThread->setFileName(filename);
     connect(workerThread, SIGNAL(finished()), workerThread, SLOT(deleteLater()));
     workerThread->start();
@@ -619,7 +621,7 @@ void MainWindow::on_actionOpen_ROM_triggered()
     if (!filename.isNull()) {
         QFileInfo info(filename);
         settings->setValue("ROMdir", info.absoluteDir().absolutePath());
-        openROM(filename);
+        openROM(filename, "", 0, 0);
     }
 }
 
@@ -783,6 +785,22 @@ void MainWindow::on_actionVideo_Settings_triggered()
         Config_Func Config_DoConfig = (Config_Func) osal_dynlib_getproc(g_PluginMap[0].handle, "Config_DoConfig");
         if (Config_DoConfig)
             Config_DoConfig();
+    }
+}
+
+void MainWindow::on_actionCreate_Room_triggered()
+{
+    if (QtAttachCoreLib()) {
+        CreateRoom *createRoom = new CreateRoom(this);
+        createRoom->show();
+    }
+}
+
+void MainWindow::on_actionJoin_Room_triggered()
+{
+    if (QtAttachCoreLib()) {
+        JoinRoom *joinRoom = new JoinRoom(this);
+        joinRoom->show();
     }
 }
 
