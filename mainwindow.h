@@ -10,8 +10,6 @@
 #include <QSettings>
 #include <QSurfaceFormat>
 
-void updatePlugins();
-
 namespace Ui {
 class MainWindow;
 }
