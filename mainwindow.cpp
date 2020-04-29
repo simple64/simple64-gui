@@ -601,10 +601,10 @@ void MainWindow::openROM(QString filename)
     stopGame();
 
     logViewer->clearLog();
-    if (workerThread) delete workerThread;
 
     workerThread = new WorkerThread();
     workerThread->setFileName(filename);
+    connect(workerThread, SIGNAL(finished()), workerThread, SLOT(deleteLater()));
     workerThread->start();
 
     QStringList list;
