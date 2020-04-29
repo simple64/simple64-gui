@@ -251,16 +251,6 @@ m64p_error openROM(std::string filename)
         return M64ERR_INVALID_STATE;
     }
 
-    int gfx_hle = -1;
-    m64p_handle rspHandle;
-    if (g_PluginMap[3].libname == "Static Interpreter" && g_PluginMap[0].libname.find(std::string("angrylion")) != std::string::npos)
-    {
-        (*ConfigOpenSection)("rsp-cxd4", &rspHandle);
-        gfx_hle = (*ConfigGetParamBool)(rspHandle, "DisplayListToGraphicsPlugin");
-        int temp_value = 0;
-        (*ConfigSetParameter)(rspHandle, "DisplayListToGraphicsPlugin", M64TYPE_BOOL, &temp_value);
-    }
-
     /* attach plugins to core */
     for (i = 0; i < 4; i++)
     {
@@ -296,11 +286,6 @@ m64p_error openROM(std::string filename)
 
     /* run the game */
     (*CoreDoCommand)(M64CMD_EXECUTE, 0, NULL);
-
-    if (gfx_hle != -1)
-    {
-        (*ConfigSetParameter)(rspHandle, "DisplayListToGraphicsPlugin", M64TYPE_BOOL, &gfx_hle);
-    }
 
     /* detach plugins from core and unload them */
     for (i = 0; i < 4; i++)
