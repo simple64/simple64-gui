@@ -12,9 +12,9 @@ CheatDialog::CheatDialog(QWidget *parent)
     : QDialog(parent)
 {
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
-    QScrollArea *scrollArea = new QScrollArea;
-    QWidget *cheatSettings = new QWidget;
-    QGridLayout *cheatLayout = new QGridLayout;
+    QScrollArea *scrollArea = new QScrollArea(this);
+    QWidget *cheatSettings = new QWidget(this);
+    QGridLayout *cheatLayout = new QGridLayout(this);
     QString cheatName;
     QString desc;
     int p = 0;
@@ -23,7 +23,7 @@ CheatDialog::CheatDialog(QWidget *parent)
         while (pCur != NULL)
         {
             cheatName = pCur->Name;
-            QLabel* label = new QLabel(cheatName);
+            QLabel* label = new QLabel(cheatName, this);
             if (pCur->Description != NULL) {
                 desc = pCur->Description;
                 desc.prepend("<span style=\"color:black;\">");
@@ -33,7 +33,7 @@ CheatDialog::CheatDialog(QWidget *parent)
             label->setStyleSheet("border: 1px solid; padding: 10px");
             cheatLayout->addWidget(label, p, 0);
             if(pCur->VariableLine == -1) {
-                CheatCheckBox* checkBox = new CheatCheckBox();
+                CheatCheckBox* checkBox = new CheatCheckBox(this);
                 checkBox->setStyleSheet("border: 1px solid; padding: 10px");
                 checkBox->setNumber(pCur->Number);
                 checkBox->setOption(0);
@@ -41,17 +41,17 @@ CheatDialog::CheatDialog(QWidget *parent)
                 cheatLayout->addWidget(checkBox, p, 1);
             } else {
                 int i;
-                QButtonGroup *subGroup = new QButtonGroup;
-                QCheckBox * faker = new QCheckBox;
+                QButtonGroup *subGroup = new QButtonGroup(this);
+                QCheckBox * faker = new QCheckBox(this);
                 subGroup->addButton(faker);
                 subGroup->setExclusive(true);
                 for (i = 0; i < pCur->Codes[pCur->VariableLine].var_count; i++) {
                     ++p;
-                    QLabel* subLabel = new QLabel(pCur->Codes[pCur->VariableLine].variable_names[i]);
+                    QLabel* subLabel = new QLabel(pCur->Codes[pCur->VariableLine].variable_names[i], this);
                     subLabel->setStyleSheet("border: 1px solid; padding: 10px");
                     subLabel->setAlignment(Qt::AlignRight);
                     cheatLayout->addWidget(subLabel, p, 0);
-                    CheatCheckBox* subCheckBox = new CheatCheckBox();
+                    CheatCheckBox* subCheckBox = new CheatCheckBox(this);
                     subCheckBox->setStyleSheet("border: 1px solid; padding: 10px");
                     subCheckBox->setNumber(pCur->Number);
                     subCheckBox->setOption(i);

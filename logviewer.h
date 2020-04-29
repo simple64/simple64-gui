@@ -11,14 +11,14 @@ class LogViewer : public QDialog
 {
     Q_OBJECT
 public:
-    LogViewer();
+    explicit LogViewer(QWidget *parent = 0);
     ~LogViewer();
     void addLog(QString text);
     void clearLog();
 protected:
     void showEvent(QShowEvent *event);
 private:
-    QTemporaryFile *file = nullptr;
+    QTemporaryFile file;
     QPlainTextEdit *textArea = nullptr;
 };
 

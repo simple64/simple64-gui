@@ -17,7 +17,7 @@ m64p_handle coreConfigHandle;
 QGridLayout *coreLayout;
 int coreLayoutRow;
 
-void paramListCallback(void * context, const char *ParamName, m64p_type ParamType)
+static void paramListCallback(void * context, const char *ParamName, m64p_type ParamType)
 {
     QGridLayout *my_layout = nullptr;
     int * my_row = nullptr;
@@ -43,7 +43,7 @@ void paramListCallback(void * context, const char *ParamName, m64p_type ParamTyp
     void *my_Widget = nullptr;
     switch (ParamType) {
     case M64TYPE_INT:
-        my_Widget = new CustomLineEdit;
+        my_Widget = new CustomLineEdit();
         ((CustomLineEdit*)my_Widget)->setConfigHandle(current_handle);
         ((CustomLineEdit*)my_Widget)->setParamType(ParamType);
         ((CustomLineEdit*)my_Widget)->setParamName(ParamName);
@@ -53,7 +53,7 @@ void paramListCallback(void * context, const char *ParamName, m64p_type ParamTyp
         ((CustomLineEdit*)my_Widget)->setValidator(new QIntValidator());
         break;
     case M64TYPE_FLOAT:
-        my_Widget = new CustomLineEdit;
+        my_Widget = new CustomLineEdit();
         ((CustomLineEdit*)my_Widget)->setConfigHandle(current_handle);
         ((CustomLineEdit*)my_Widget)->setParamType(ParamType);
         ((CustomLineEdit*)my_Widget)->setParamName(ParamName);
@@ -63,7 +63,7 @@ void paramListCallback(void * context, const char *ParamName, m64p_type ParamTyp
         ((CustomLineEdit*)my_Widget)->setValidator(new QDoubleValidator());
         break;
     case M64TYPE_BOOL:
-        my_Widget = new CustomCheckBox;
+        my_Widget = new CustomCheckBox();
         ((CustomCheckBox*)my_Widget)->setConfigHandle(current_handle);
         ((CustomCheckBox*)my_Widget)->setParamType(ParamType);
         ((CustomCheckBox*)my_Widget)->setParamName(ParamName);
@@ -72,7 +72,7 @@ void paramListCallback(void * context, const char *ParamName, m64p_type ParamTyp
         ((CustomCheckBox*)my_Widget)->setCheckState(l_ParamBool ? Qt::Checked : Qt::Unchecked);
         break;
     case M64TYPE_STRING:
-        my_Widget = new CustomLineEdit;
+        my_Widget = new CustomLineEdit();
         ((CustomLineEdit*)my_Widget)->setConfigHandle(current_handle);
         ((CustomLineEdit*)my_Widget)->setParamType(ParamType);
         ((CustomLineEdit*)my_Widget)->setParamName(ParamName);
@@ -117,26 +117,26 @@ PluginDialog::PluginDialog(QWidget *parent)
 
     coreLayoutRow = 0;
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
-    QTabWidget *tabWidget = new QTabWidget;
+    QTabWidget *tabWidget = new QTabWidget(this);
     tabWidget->setUsesScrollButtons(false);
 
-    QWidget *coreSettings = new QWidget;
-    coreLayout = new QGridLayout;
+    QWidget *coreSettings = new QWidget(this);
+    coreLayout = new QGridLayout(this);
     coreSettings->setLayout(coreLayout);
     res = (*ConfigOpenSection)("Core", &coreConfigHandle);
     if (res == M64ERR_SUCCESS)
         (*ConfigListParameters)(coreConfigHandle, (char*)"Core", paramListCallback);
-    QScrollArea *coreScroll = new QScrollArea;
+    QScrollArea *coreScroll = new QScrollArea(this);
     coreScroll->setWidget(coreSettings);
     coreScroll->setMinimumWidth(coreSettings->sizeHint().width() + 20);
     coreScroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     tabWidget->addTab(coreScroll, tr("Core"));
 
-    QLabel *myLabel = new QLabel("Hover your mouse over the configuration item name for a description.\n");
+    QLabel *myLabel = new QLabel("Hover your mouse over the configuration item name for a description.\n", this);
     myLabel->setStyleSheet("font-weight: bold");
     mainLayout->addWidget(myLabel);
     mainLayout->addWidget(tabWidget);
-    QPushButton *resetButton = new QPushButton("Reset All Settings");
+    QPushButton *resetButton = new QPushButton("Reset All Settings", this);
     resetButton->setAutoDefault(false);
     connect(resetButton, SIGNAL (released()),this, SLOT (handleResetButton()));
     mainLayout->addWidget(resetButton);

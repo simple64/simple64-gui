@@ -12,7 +12,7 @@
 class CustomLineEdit : public QLineEdit
 {
 public:
-    CustomLineEdit();
+    explicit CustomLineEdit(QWidget *parent = 0);
     void setParamName(const char* ParamName) {
         m_ParamName = ParamName;
     }
@@ -32,7 +32,7 @@ private:
 class CustomCheckBox : public QCheckBox
 {
 public:
-    CustomCheckBox();
+    explicit CustomCheckBox(QWidget *parent = 0);
     void setParamName(const char* ParamName) {
         m_ParamName = ParamName;
     }
@@ -52,7 +52,7 @@ private:
 class CheatCheckBox : public QCheckBox
 {
 public:
-    CheatCheckBox();
+    explicit CheatCheckBox(QWidget *parent = 0);
     void setNumber(int num) {
         m_Number = num;
     }

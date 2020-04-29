@@ -88,7 +88,7 @@ void MainWindow::updatePlugins()
 
 void MainWindow::updatePIF(Ui::MainWindow *ui)
 {
-    QMenu *PIF = new QMenu;
+    QMenu *PIF = new QMenu(this);
     PIF->setTitle("PIF ROM");
     ui->menuFile->insertMenu(ui->actionTake_Screenshot, PIF);
 
@@ -345,11 +345,11 @@ MainWindow::MainWindow(QWidget *parent) :
     resetTitle();
 
     QString ini_path = QDir(QCoreApplication::applicationDirPath()).filePath("mupen64plus-gui.ini");
-    settings = new QSettings(ini_path, QSettings::IniFormat);
+    settings = new QSettings(ini_path, QSettings::IniFormat, this);
 
     if (!settings->isWritable()) {
         delete settings;
-        settings = new QSettings("mupen64plus", "gui");
+        settings = new QSettings("mupen64plus", "gui", this);
     }
 
     restoreGeometry(settings->value("geometry").toByteArray());
@@ -418,15 +418,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
     updatePlugins();
 
-    logViewer = new LogViewer();
+    logViewer = new LogViewer(this);
 }
 
 MainWindow::~MainWindow()
 {
     DetachCoreLib();
     delete ui;
-    delete settings;
-    delete logViewer;
 }
 
 void MainWindow::setVerbose()
@@ -558,9 +556,8 @@ void MainWindow::pluginWarning(QString name)
 void MainWindow::createOGLWindow(QSurfaceFormat* format)
 {
     if (my_window) delete my_window;
-    if (keyPressFilter) delete keyPressFilter;
 
-    my_window = new OGLWindow;
+    my_window = new OGLWindow();
     QWidget *container = QWidget::createWindowContainer(my_window);
     container->setFocusPolicy(Qt::StrongFocus);
 
@@ -569,7 +566,7 @@ void MainWindow::createOGLWindow(QSurfaceFormat* format)
 
     setCentralWidget(container);
 
-    keyPressFilter = new KeyPressFilter;
+    keyPressFilter = new KeyPressFilter(this);
     my_window->installEventFilter(keyPressFilter);
     this->installEventFilter(keyPressFilter);
 }
@@ -602,7 +599,7 @@ void MainWindow::openROM(QString filename)
 
     logViewer->clearLog();
 
-    workerThread = new WorkerThread();
+    workerThread = new WorkerThread(this);
     workerThread->setFileName(filename);
     connect(workerThread, SIGNAL(finished()), workerThread, SLOT(deleteLater()));
     workerThread->start();

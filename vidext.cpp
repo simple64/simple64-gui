@@ -8,20 +8,20 @@
 
 static int init;
 static int needs_toggle;
-QSurfaceFormat* format;
+static QSurfaceFormat format;
 QThread* rendering_thread;
 
 m64p_error qtVidExtFuncInit(void)
 {
     init = 0;
-    format = new QSurfaceFormat;
-    format->setOption(QSurfaceFormat::DeprecatedFunctions, 1);
-    format->setDepthBufferSize(24);
-    format->setProfile(QSurfaceFormat::CompatibilityProfile);
-    format->setMajorVersion(2);
-    format->setMinorVersion(1);
+    format = QSurfaceFormat::defaultFormat();
+    format.setOption(QSurfaceFormat::DeprecatedFunctions, 1);
+    format.setDepthBufferSize(24);
+    format.setProfile(QSurfaceFormat::CompatibilityProfile);
+    format.setMajorVersion(2);
+    format.setMinorVersion(1);
     if (w->getGLES())
-        format->setRenderableType(QSurfaceFormat::OpenGLES);
+        format.setRenderableType(QSurfaceFormat::OpenGLES);
 
     rendering_thread = QThread::currentThread();
     return M64ERR_SUCCESS;
@@ -36,7 +36,6 @@ m64p_error qtVidExtFuncQuit(void)
         w->getOGLWindow()->context()->moveToThread(QApplication::instance()->thread());
         w->getWorkerThread()->deleteOGLWindow();
     }
-    delete format;
     return M64ERR_SUCCESS;
 }
 
@@ -53,7 +52,7 @@ m64p_error qtVidExtFuncListModes(m64p_2d_size *SizeArray, int *NumSizes)
 m64p_error qtVidExtFuncSetMode(int Width, int Height, int, int ScreenMode, int)
 {
     if (!init) {
-        w->getWorkerThread()->createOGLWindow(format);
+        w->getWorkerThread()->createOGLWindow(&format);
         while (!w->getOGLWindow()->isValid()) {}
         w->getWorkerThread()->resizeMainWindow(Width, Height);
         w->getOGLWindow()->makeCurrent();
@@ -74,51 +73,51 @@ m64p_error qtVidExtFuncGLSetAttr(m64p_GLattr Attr, int Value)
     switch (Attr) {
     case M64P_GL_DOUBLEBUFFER:
         if (Value == 1)
-            format->setSwapBehavior(QSurfaceFormat::DoubleBuffer);
+            format.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
         else if (Value == 0)
-            format->setSwapBehavior(QSurfaceFormat::SingleBuffer);
+            format.setSwapBehavior(QSurfaceFormat::SingleBuffer);
         break;
     case M64P_GL_BUFFER_SIZE:
         break;
     case M64P_GL_DEPTH_SIZE:
-        format->setDepthBufferSize(Value);
+        format.setDepthBufferSize(Value);
         break;
     case M64P_GL_RED_SIZE:
-        format->setRedBufferSize(Value);
+        format.setRedBufferSize(Value);
         break;
     case M64P_GL_GREEN_SIZE:
-        format->setGreenBufferSize(Value);
+        format.setGreenBufferSize(Value);
         break;
     case M64P_GL_BLUE_SIZE:
-        format->setBlueBufferSize(Value);
+        format.setBlueBufferSize(Value);
         break;
     case M64P_GL_ALPHA_SIZE:
-        format->setAlphaBufferSize(Value);
+        format.setAlphaBufferSize(Value);
         break;
     case M64P_GL_SWAP_CONTROL:
-        format->setSwapInterval(Value);
+        format.setSwapInterval(Value);
         break;
     case M64P_GL_MULTISAMPLEBUFFERS:
         break;
     case M64P_GL_MULTISAMPLESAMPLES:
-        format->setSamples(Value);
+        format.setSamples(Value);
         break;
     case M64P_GL_CONTEXT_MAJOR_VERSION:
-        format->setMajorVersion(Value);
+        format.setMajorVersion(Value);
         break;
     case M64P_GL_CONTEXT_MINOR_VERSION:
-        format->setMinorVersion(Value);
+        format.setMinorVersion(Value);
         break;
     case M64P_GL_CONTEXT_PROFILE_MASK:
         switch (Value) {
         case M64P_GL_CONTEXT_PROFILE_CORE:
-            format->setProfile(QSurfaceFormat::CoreProfile);
+            format.setProfile(QSurfaceFormat::CoreProfile);
             break;
         case M64P_GL_CONTEXT_PROFILE_COMPATIBILITY:
-            format->setProfile(QSurfaceFormat::CompatibilityProfile);
+            format.setProfile(QSurfaceFormat::CompatibilityProfile);
             break;
         case M64P_GL_CONTEXT_PROFILE_ES:
-            format->setRenderableType(QSurfaceFormat::OpenGLES);
+            format.setRenderableType(QSurfaceFormat::OpenGLES);
             break;
         }
 

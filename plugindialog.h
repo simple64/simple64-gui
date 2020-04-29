@@ -1,6 +1,7 @@
 #ifndef PLUGINDIALOG_H
 #define PLUGINDIALOG_H
 
+#include "m64p_types.h"
 #include <QDialog>
 
 class PluginDialog : public QDialog

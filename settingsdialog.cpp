@@ -86,14 +86,12 @@ void SettingsDialog::handleConfigEdit()
 
 void SettingsDialog::initStuff()
 {
-    if (layout != nullptr)
-        delete layout;
     layout = new QGridLayout(this);
 
-    QLabel *coreLabel = new QLabel("Core Library Path");
-    corePath = new QLineEdit;
+    QLabel *coreLabel = new QLabel("Core Library Path", this);
+    corePath = new QLineEdit(this);
     corePath->setText(w->getSettings()->value("coreLibPath").toString());
-    QPushButton *coreButton = new QPushButton("Set Path");
+    QPushButton *coreButton = new QPushButton("Set Path", this);
     connect(coreButton, SIGNAL (released()),this, SLOT (handleCoreButton()));
     connect(corePath, SIGNAL (editingFinished()),this, SLOT (handleCoreEdit()));
     corePath->setStyleSheet("border: 1px solid; padding: 10px");
@@ -101,10 +99,10 @@ void SettingsDialog::initStuff()
     layout->addWidget(corePath,0,1);
     layout->addWidget(coreButton,0,2);
 
-    QLabel *pluginLabel = new QLabel("Plugin Dir Path");
-    pluginPath = new QLineEdit;
+    QLabel *pluginLabel = new QLabel("Plugin Dir Path", this);
+    pluginPath = new QLineEdit(this);
     pluginPath->setText(w->getSettings()->value("pluginDirPath").toString());
-    QPushButton *pluginButton = new QPushButton("Set Path");
+    QPushButton *pluginButton = new QPushButton("Set Path", this);
     connect(pluginButton, SIGNAL (released()),this, SLOT (handlePluginButton()));
     connect(pluginPath, SIGNAL (editingFinished()),this, SLOT (handlePluginEdit()));
     pluginPath->setStyleSheet("border: 1px solid; padding: 10px");
@@ -112,18 +110,18 @@ void SettingsDialog::initStuff()
     layout->addWidget(pluginPath,1,1);
     layout->addWidget(pluginButton,1,2);
 
-    QLabel *note = new QLabel("Note: If you change the Config Path, you need to close and re-open mupen64plus-gui before it will take effect.");
-    QLabel *configLabel = new QLabel("Config Dir Path");
-    configPath = new QLineEdit;
+    QLabel *note = new QLabel("Note: If you change the Config Path, you need to close and re-open mupen64plus-gui before it will take effect.", this);
+    QLabel *configLabel = new QLabel("Config Dir Path", this);
+    configPath = new QLineEdit(this);
     QString configDirPath = w->getSettings()->value("configDirPath").toString();
     if (!configDirPath.isEmpty())
         configPath->setText(configDirPath);
     else if (QtAttachCoreLib())
         configPath->setText(ConfigGetUserConfigPath());
-    QPushButton *configButton = new QPushButton("Set Path");
+    QPushButton *configButton = new QPushButton("Set Path", this);
     connect(configButton, SIGNAL (released()),this, SLOT (handleConfigButton()));
     connect(configPath, SIGNAL (editingFinished()),this, SLOT (handleConfigEdit()));
-    QPushButton *clearConfigButton = new QPushButton("Clear");
+    QPushButton *clearConfigButton = new QPushButton("Clear", this);
     connect(clearConfigButton, SIGNAL (released()),this, SLOT (handleClearConfigButton()));
     configPath->setStyleSheet("border: 1px solid; padding: 10px");
     layout->addWidget(note,2,0,1,-1);
@@ -137,9 +135,9 @@ void SettingsDialog::initStuff()
     Filter.append("");
     QStringList current;
 
-    QLabel *inputLabel = new QLabel("Input Plugin");
+    QLabel *inputLabel = new QLabel("Input Plugin", this);
     layout->addWidget(inputLabel,5,0);
-    QComboBox *inputChoice = new QComboBox();
+    QComboBox *inputChoice = new QComboBox(this);
     Filter.replace(0,"mupen64plus-input*");
     current = PluginDir.entryList(Filter);
     inputChoice->addItems(current);

@@ -3,6 +3,11 @@
 #include "common.h"
 #include <QKeyEvent>
 
+KeyPressFilter::KeyPressFilter(QObject *parent)
+    : QObject(parent)
+{
+}
+
 bool KeyPressFilter::eventFilter(QObject *obj, QEvent *event)
 {
     if (event->type() == QEvent::KeyPress) {

@@ -1,16 +1,13 @@
 #include "logviewer.h"
 
-LogViewer::LogViewer()
+LogViewer::LogViewer(QWidget *parent)
+    : QDialog(parent)
 {
-    file = new QTemporaryFile(this);
-    if (!file->open()) {
-        delete file;
-        file = nullptr;
-    }
+    file.open();
 
     this->resize(640,480);
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
-    textArea = new QPlainTextEdit;
+    textArea = new QPlainTextEdit(this);
     textArea->setReadOnly(1);
     mainLayout->addWidget(textArea);
     setLayout(mainLayout);
@@ -18,41 +15,35 @@ LogViewer::LogViewer()
 
 LogViewer::~LogViewer()
 {
-    if (file != nullptr)
-        file->close();
+    file.close();
 }
 
 void LogViewer::showEvent(QShowEvent *event)
 {
-    if (file != nullptr) file->flush();
-    else return;
+    file.flush();
 
-    qint64 pos = file->pos();
-    file->seek(0);
-    QTextStream in(file);
+    qint64 pos = file.pos();
+    file.seek(0);
+    QTextStream in(&file);
     QString data;
     while (!in.atEnd()) {
         data += in.readLine();
         data += "\n";
     }
-    file->seek(pos);
+    file.seek(pos);
     textArea->setPlainText(data);
     QWidget::showEvent( event );
 }
 
 void LogViewer::addLog(QString text)
 {
-    if (file == nullptr) return;
-
-    QTextStream out(file);
+    QTextStream out(&file);
     out << text;
 }
 
 void LogViewer::clearLog()
 {
-    if (file != nullptr) {
-        file->seek(0);
-        file->resize(0);
-        file->flush();
-    }
+    file.seek(0);
+    file.resize(0);
+    file.flush();
 }

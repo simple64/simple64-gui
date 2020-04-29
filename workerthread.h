@@ -12,6 +12,7 @@ class WorkerThread : public QThread
     Q_OBJECT
     void run() Q_DECL_OVERRIDE;
 public:
+    explicit WorkerThread(QObject *parent = 0);
     void setFileName(QString filename);
 
 signals:

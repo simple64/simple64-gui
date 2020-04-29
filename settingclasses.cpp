@@ -7,7 +7,8 @@
 #include <QLabel>
 #include <QVBoxLayout>
 
-CustomLineEdit::CustomLineEdit()
+CustomLineEdit::CustomLineEdit(QWidget *parent)
+    : QLineEdit(parent)
 {
     connect(this, &QLineEdit::editingFinished, [=](){
         int i_value = this->text().toInt();
@@ -29,7 +30,8 @@ CustomLineEdit::CustomLineEdit()
     });
 }
 
-CustomCheckBox::CustomCheckBox()
+CustomCheckBox::CustomCheckBox(QWidget *parent)
+    : QCheckBox(parent)
 {
     connect(this, &QCheckBox::stateChanged, [=](int state){
         int value = state == Qt::Checked ? 1 : 0;
@@ -38,7 +40,8 @@ CustomCheckBox::CustomCheckBox()
     });
 }
 
-CheatCheckBox::CheatCheckBox()
+CheatCheckBox::CheatCheckBox(QWidget *parent)
+    : QCheckBox(parent)
 {
     m_Checked = false;
     connect(this, &QAbstractButton::clicked, [=](bool checked){
