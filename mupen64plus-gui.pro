@@ -15,7 +15,7 @@ ICON = mupen64plus.icns
 INCLUDEPATH += \
         "../../mupen64plus-core/src/api"
 
-SOURCES += main.cpp\
+SOURCES += main.cpp \
     mainwindow.cpp \
     vidext.cpp \
     settingsdialog.cpp \
