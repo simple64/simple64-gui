@@ -104,9 +104,9 @@ private:
 
     OGLWindow *my_window = nullptr;
     WorkerThread *workerThread = nullptr;
-    LogViewer *logViewer = nullptr;
+    LogViewer logViewer;
     QSettings *settings = nullptr;
-    KeyPressFilter *keyPressFilter = nullptr;
+    KeyPressFilter keyPressFilter;
 };
 
 extern MainWindow *w;

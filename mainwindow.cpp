@@ -417,8 +417,6 @@ MainWindow::MainWindow(QWidget *parent) :
         qtConfigDir = settings->value("configDirPath").toString();
 
     updatePlugins();
-
-    logViewer = new LogViewer(this);
 }
 
 MainWindow::~MainWindow()
@@ -566,9 +564,8 @@ void MainWindow::createOGLWindow(QSurfaceFormat* format)
 
     setCentralWidget(container);
 
-    keyPressFilter = new KeyPressFilter(this);
-    my_window->installEventFilter(keyPressFilter);
-    this->installEventFilter(keyPressFilter);
+    my_window->installEventFilter(&keyPressFilter);
+    this->installEventFilter(&keyPressFilter);
 }
 
 void MainWindow::deleteOGLWindow()
@@ -597,7 +594,7 @@ void MainWindow::openROM(QString filename)
 {
     stopGame();
 
-    logViewer->clearLog();
+    logViewer.clearLog();
 
     workerThread = new WorkerThread(this);
     workerThread->setFileName(filename);
@@ -775,7 +772,7 @@ void MainWindow::on_actionToggle_Speed_Limiter_triggered()
 
 void MainWindow::on_actionView_Log_triggered()
 {
-    logViewer->show();
+    logViewer.show();
 }
 
 void MainWindow::on_actionVideo_Settings_triggered()
@@ -806,5 +803,5 @@ QSettings* MainWindow::getSettings()
 
 LogViewer* MainWindow::getLogViewer()
 {
-    return logViewer;
+    return &logViewer;
 }
