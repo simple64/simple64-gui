@@ -56,6 +56,7 @@ WaitRoom::WaitRoom(QString filename, QJsonObject room, QWebSocket *socket, QWidg
 
     startGameButton = new QPushButton(this);
     startGameButton->setText("Start Game");
+    startGameButton->setAutoDefault(0);
     connect(startGameButton, &QPushButton::released, this, &WaitRoom::startGame);
     layout->addWidget(startGameButton, 10, 0, 1, 2);
 
