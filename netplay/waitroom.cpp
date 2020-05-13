@@ -11,6 +11,7 @@ WaitRoom::WaitRoom(QString filename, QJsonObject room, QWebSocket *socket, QWidg
 
     player_name = room.value("player_name").toString();
     room_port = room.value("port").toInt();
+    room_name = room.value("room_name").toString();
     file_name = filename;
 
     webSocket = socket;
@@ -22,7 +23,7 @@ WaitRoom::WaitRoom(QString filename, QJsonObject room, QWebSocket *socket, QWidg
     QGridLayout *layout = new QGridLayout(this);
     QLabel *nameLabel = new QLabel("Room Name:", this);
     layout->addWidget(nameLabel, 0, 0);
-    QLabel *roomName = new QLabel(room.value("room_name").toString(), this);
+    QLabel *roomName = new QLabel(room_name, this);
     layout->addWidget(roomName, 0, 1);
 
     QLabel *gameLabel = new QLabel("Game Name:", this);
@@ -68,6 +69,13 @@ WaitRoom::WaitRoom(QString filename, QJsonObject room, QWebSocket *socket, QWidg
     connect(startGameButton, &QPushButton::released, this, &WaitRoom::startGame);
     layout->addWidget(startGameButton, 11, 0, 1, 2);
 
+    discordLink = new QLabel(this);
+    discordLink->setTextFormat(Qt::RichText);
+    discordLink->setTextInteractionFlags(Qt::TextBrowserInteraction);
+    discordLink->setOpenExternalLinks(true);
+    discordLink->setAlignment(Qt::AlignCenter);
+    layout->addWidget(discordLink, 12, 0, 1, 2);
+
     setLayout(layout);
 
     connect(this, SIGNAL (finished(int)), this, SLOT (onFinished(int)));
@@ -85,6 +93,15 @@ WaitRoom::WaitRoom(QString filename, QJsonObject room, QWebSocket *socket, QWidg
 
 void WaitRoom::sendPing()
 {
+    if (discordLink->text().isEmpty())
+    {
+        QJsonObject json;
+        json.insert("type", "get_discord");
+        json.insert("room_name", room_name);
+        QJsonDocument json_doc = QJsonDocument(json);
+        webSocket->sendBinaryMessage(json_doc.toBinaryData());
+    }
+
     webSocket->ping();
 }
 
@@ -158,5 +175,10 @@ void WaitRoom::processBinaryMessage(QByteArray message)
     {
         w->openROM(file_name, webSocket->peerAddress().toString(), room_port, player_number);
         accept();
+    }
+    else if (json.value("type").toString() == "discord_link")
+    {
+        QString link = json.value("link").toString();
+        discordLink->setText("<a href=\"" + link + "\">Discord Voice Chat</a>");
     }
 }

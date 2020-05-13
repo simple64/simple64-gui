@@ -31,8 +31,10 @@ private:
     int player_number;
     QString file_name;
     int room_port;
+    QString room_name;
     QPushButton *startGameButton;
     QLabel *pingValue;
+    QLabel *discordLink;
 };
 
 #endif // WAITROOM_H
