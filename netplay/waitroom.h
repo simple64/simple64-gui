@@ -9,6 +9,7 @@
 #include <QPlainTextEdit>
 #include <QLineEdit>
 #include <QPushButton>
+#include <QTimer>
 
 class WaitRoom : public QDialog
 {
@@ -35,6 +36,7 @@ private:
     QPushButton *startGameButton;
     QLabel *pingValue;
     QLabel *discordLink;
+    QTimer *timer;
 };
 
 #endif // WAITROOM_H

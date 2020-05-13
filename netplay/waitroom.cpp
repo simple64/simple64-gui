@@ -2,7 +2,6 @@
 #include "mainwindow.h"
 #include <QGridLayout>
 #include <QMessageBox>
-#include <QTimer>
 
 WaitRoom::WaitRoom(QString filename, QJsonObject room, QWebSocket *socket, QWidget *parent)
     : QDialog(parent)
@@ -86,7 +85,7 @@ WaitRoom::WaitRoom(QString filename, QJsonObject room, QWebSocket *socket, QWidg
     QJsonDocument json_doc = QJsonDocument(json);
     webSocket->sendBinaryMessage(json_doc.toBinaryData());
 
-    QTimer *timer = new QTimer(this);
+    timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &WaitRoom::sendPing);
     timer->start(5000);
 }
@@ -145,6 +144,7 @@ void WaitRoom::sendChat()
 
 void WaitRoom::onFinished(int)
 {
+    timer->stop();
     webSocket->close();
     webSocket->deleteLater();
 }
