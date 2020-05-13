@@ -2,6 +2,7 @@
 #include "mainwindow.h"
 #include <QGridLayout>
 #include <QMessageBox>
+#include <QTimer>
 
 WaitRoom::WaitRoom(QString filename, QJsonObject room, QWebSocket *socket, QWidget *parent)
     : QDialog(parent)
@@ -16,6 +17,8 @@ WaitRoom::WaitRoom(QString filename, QJsonObject room, QWebSocket *socket, QWidg
     connect(webSocket, &QWebSocket::binaryMessageReceived,
             this, &WaitRoom::processBinaryMessage);
 
+    connect(webSocket, &QWebSocket::pong, this, &WaitRoom::updatePing);
+
     QGridLayout *layout = new QGridLayout(this);
     QLabel *nameLabel = new QLabel("Room Name:", this);
     layout->addWidget(nameLabel, 0, 0);
@@ -27,38 +30,43 @@ WaitRoom::WaitRoom(QString filename, QJsonObject room, QWebSocket *socket, QWidg
     QLabel *gameName = new QLabel(room.value("game_name").toString(), this);
     layout->addWidget(gameName, 1, 1);
 
+    QLabel *pingLabel = new QLabel("Your ping:", this);
+    layout->addWidget(pingLabel, 2, 0);
+    pingValue = new QLabel(this);
+    layout->addWidget(pingValue, 2, 1);
+
     QLabel *p1Label = new QLabel("Player 1:", this);
-    layout->addWidget(p1Label, 2, 0);
+    layout->addWidget(p1Label, 3, 0);
 
     QLabel *p2Label = new QLabel("Player 2:", this);
-    layout->addWidget(p2Label, 3, 0);
+    layout->addWidget(p2Label, 4, 0);
 
     QLabel *p3Label = new QLabel("Player 3:", this);
-    layout->addWidget(p3Label, 4, 0);
+    layout->addWidget(p3Label, 5, 0);
 
     QLabel *p4Label = new QLabel("Player 4:", this);
-    layout->addWidget(p4Label, 5, 0);
+    layout->addWidget(p4Label, 6, 0);
 
     for (int i = 0; i < 4; ++i)
     {
         pName[i] = new QLabel(this);
-        layout->addWidget(pName[i], i+2, 1);
+        layout->addWidget(pName[i], i+3, 1);
     }
 
     chatWindow = new QPlainTextEdit(this);
     chatWindow->setReadOnly(1);
-    layout->addWidget(chatWindow, 6, 0, 3, 2);
+    layout->addWidget(chatWindow, 7, 0, 3, 2);
 
     chatEdit = new QLineEdit(this);
     chatEdit->setPlaceholderText("Enter chat message here");
     connect(chatEdit, &QLineEdit::returnPressed, this, &WaitRoom::sendChat);
-    layout->addWidget(chatEdit, 9, 0, 1, 2);
+    layout->addWidget(chatEdit, 10, 0, 1, 2);
 
     startGameButton = new QPushButton(this);
     startGameButton->setText("Start Game");
     startGameButton->setAutoDefault(0);
     connect(startGameButton, &QPushButton::released, this, &WaitRoom::startGame);
-    layout->addWidget(startGameButton, 10, 0, 1, 2);
+    layout->addWidget(startGameButton, 11, 0, 1, 2);
 
     setLayout(layout);
 
@@ -69,6 +77,20 @@ WaitRoom::WaitRoom(QString filename, QJsonObject room, QWebSocket *socket, QWidg
     json.insert("port", room_port);
     QJsonDocument json_doc = QJsonDocument(json);
     webSocket->sendBinaryMessage(json_doc.toBinaryData());
+
+    QTimer *timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, this, &WaitRoom::sendPing);
+    timer->start(5000);
+}
+
+void WaitRoom::sendPing()
+{
+    webSocket->ping();
+}
+
+void WaitRoom::updatePing(quint64 elapsedTime, const QByteArray&)
+{
+    pingValue->setText(QString::number(elapsedTime) + " ms");
 }
 
 void WaitRoom::startGame()

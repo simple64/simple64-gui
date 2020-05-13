@@ -20,6 +20,8 @@ private slots:
     void onFinished(int);
     void sendChat();
     void startGame();
+    void updatePing(quint64 elapsedTime, const QByteArray &payload);
+    void sendPing();
 private:
     QWebSocket *webSocket = nullptr;
     QLabel *pName[4];
@@ -30,6 +32,7 @@ private:
     QString file_name;
     int room_port;
     QPushButton *startGameButton;
+    QLabel *pingValue;
 };
 
 #endif // WAITROOM_H
