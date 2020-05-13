@@ -116,7 +116,7 @@ void JoinRoom::refresh()
 void JoinRoom::joinGame()
 {
     QMessageBox msgBox;
-    if (webSocket && webSocket->state() == QAbstractSocket::ConnectedState)
+    if (webSocket && webSocket->state() != QAbstractSocket::ConnectedState)
     {
         msgBox.setText("Could not connect to server");
         msgBox.exec();
