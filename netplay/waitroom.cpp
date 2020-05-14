@@ -179,6 +179,6 @@ void WaitRoom::processBinaryMessage(QByteArray message)
     else if (json.value("type").toString() == "discord_link")
     {
         QString link = json.value("link").toString();
-        discordLink->setText("Discord Voice Chat <a href=\"discord://" + link + "\">PC Link</a> - <a href=\"http://" + link + "\">Web Link</a>");
+        discordLink->setText("Discord Voice Chat <a href=\"discord://" + link + "\">App Link</a> - <a href=\"http://" + link + "\">Web Link</a>");
     }
 }
