@@ -56,7 +56,7 @@ JoinRoom::JoinRoom(QWidget *parent)
 
     connect(this, SIGNAL (finished(int)), this, SLOT (onFinished(int)));
 
-    QNetworkRequest request(QUrl(QStringLiteral("https://m64p.s3.amazonaws.com/servers.ini")));
+    QNetworkRequest request(QUrl(QStringLiteral("https://m64p.s3.amazonaws.com/servers.json")));
     manager.get(request);
 
     launched = 0;
@@ -91,18 +91,11 @@ void JoinRoom::downloadFinished(QNetworkReply *reply)
 {
     if (!reply->error())
     {
-        QTemporaryFile file;
-        if (file.open())
-        {
-            file.write(reply->readAll());
-            file.close();
-            QSettings serversList(file.fileName(), QSettings::IniFormat);
-            QStringList servers = serversList.allKeys();
-            for (int i = 0; i < servers.size(); ++i)
-            {
-                serverChooser->addItem(servers.at(i), serversList.value(servers.at(i)));
-            }
-        }
+        QJsonDocument json_doc = QJsonDocument::fromJson(reply->readAll());
+        QJsonObject json = json_doc.object();
+        QStringList servers = json.keys();
+        for (int i = 0; i < servers.size(); ++i)
+            serverChooser->addItem(servers.at(i), json.value(servers.at(i)).toString());
     }
 
     reply->deleteLater();
