@@ -12,7 +12,7 @@ class WorkerThread : public QThread
     Q_OBJECT
     void run() Q_DECL_OVERRIDE;
 public:
-    explicit WorkerThread(QObject *parent = 0);
+    explicit WorkerThread(QString _netplay_ip, int _netplay_port, int _netplay_player, QObject *parent = 0);
     void setFileName(QString filename);
 
 signals:
@@ -25,6 +25,9 @@ signals:
 
 private:
     QString m_fileName;
+    QString netplay_ip;
+    int netplay_port;
+    int netplay_player;
 };
 
 #endif // WORKERTHREAD_H

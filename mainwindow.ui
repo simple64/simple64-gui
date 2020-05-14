@@ -67,9 +67,17 @@
     <addaction name="separator"/>
     <addaction name="actionView_Log"/>
    </widget>
+   <widget class="QMenu" name="menuNetplay">
+    <property name="title">
+     <string>Netplay</string>
+    </property>
+    <addaction name="actionCreate_Room"/>
+    <addaction name="actionJoin_Room"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEmulation"/>
    <addaction name="menuSettings"/>
+   <addaction name="menuNetplay"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionOpen_ROM">
@@ -180,6 +188,16 @@
   <action name="actionVideo_Settings">
    <property name="text">
     <string>Video Settings</string>
+   </property>
+  </action>
+  <action name="actionCreate_Room">
+   <property name="text">
+    <string>Create Room</string>
+   </property>
+  </action>
+  <action name="actionJoin_Room">
+   <property name="text">
+    <string>Join Room</string>
    </property>
   </action>
  </widget>

@@ -149,14 +149,13 @@ static m64p_media_loader media_loader =
     media_loader_get_dd_disk
 };
 
-m64p_error openROM(std::string filename)
+m64p_error loadROM(std::string filename)
 {
     if (!QtAttachCoreLib())
         return M64ERR_INVALID_STATE;
 
     char *ROM_buffer = NULL;
     size_t romlength = 0;
-    uint32_t i;
 
     if (filename.find(".7z") != std::string::npos || (filename.find(".zip") != std::string::npos) || (filename.find(".ZIP") != std::string::npos))
     {
@@ -202,6 +201,22 @@ m64p_error openROM(std::string filename)
         file.close();
     }
 
+    /* Try to load the ROM image into the core */
+    if ((*CoreDoCommand)(M64CMD_ROM_OPEN, (int) romlength, ROM_buffer) != M64ERR_SUCCESS)
+    {
+        DebugMessage(M64MSG_ERROR, "core failed to open ROM image file '%s'.", filename.c_str());
+        free(ROM_buffer);
+        DetachCoreLib();
+        return M64ERR_INVALID_STATE;
+    }
+    free(ROM_buffer); /* the core copies the ROM image, so we can release this buffer immediately */
+
+    return M64ERR_SUCCESS;
+}
+
+static void loadPif()
+{
+#if 0
     /* Try to load the PIF image into the core */
     if (!w->getSettings()->value("PIF_ROM").toString().isEmpty()) {
         QFile pifFile(w->getSettings()->value("PIF_ROM").toString());
@@ -222,25 +237,13 @@ m64p_error openROM(std::string filename)
             pifFile.close();
         }
     }
+#endif
+}
 
-    /* Try to load the ROM image into the core */
-    if ((*CoreDoCommand)(M64CMD_ROM_OPEN, (int) romlength, ROM_buffer) != M64ERR_SUCCESS)
-    {
-        DebugMessage(M64MSG_ERROR, "core failed to open ROM image file '%s'.", filename.c_str());
-        free(ROM_buffer);
-        DetachCoreLib();
-        return M64ERR_INVALID_STATE;
-    }
-    free(ROM_buffer); /* the core copies the ROM image, so we can release this buffer immediately */
-
-    m64p_rom_header    l_RomHeader;
-    /* get the ROM header for the currently loaded ROM image from the core */
-    if ((*CoreDoCommand)(M64CMD_ROM_GET_HEADER, sizeof(l_RomHeader), &l_RomHeader) != M64ERR_SUCCESS)
-    {
-        DebugMessage(M64MSG_WARNING, "couldn't get ROM header information from core library");
-        DetachCoreLib();
-        return M64ERR_INVALID_STATE;
-    }
+m64p_error launchGame(QString netplay_ip, int netplay_port, int netplay_player)
+{
+    uint32_t i;
+    loadPif();
 
     /* search for and load plugins */
     m64p_error rval = PluginSearchLoad();
@@ -261,6 +264,16 @@ m64p_error openROM(std::string filename)
             DetachCoreLib();
             return M64ERR_INVALID_STATE;
         }
+    }
+
+    m64p_rom_header    l_RomHeader;
+    /* get the ROM header for the currently loaded ROM image from the core */
+    if ((*CoreDoCommand)(M64CMD_ROM_GET_HEADER, sizeof(l_RomHeader), &l_RomHeader) != M64ERR_SUCCESS)
+    {
+        DebugMessage(M64MSG_WARNING, "couldn't get ROM header information from core library");
+        (*CoreDoCommand)(M64CMD_ROM_CLOSE, 0, NULL);
+        DetachCoreLib();
+        return M64ERR_INVALID_STATE;
     }
 
     /* generate section name from ROM's CRC and country code */
@@ -284,8 +297,26 @@ m64p_error openROM(std::string filename)
        long-running game. */
     (*ConfigSaveFile)();
 
+    if (netplay_port)
+    {
+        uint32_t version;
+        if ((*CoreDoCommand)(M64CMD_NETPLAY_GET_VERSION, 0x010000, &version) == M64ERR_SUCCESS)
+        {
+            DebugMessage(M64MSG_INFO, "Netplay: using core version %u", version);
+
+            if ((*CoreDoCommand)(M64CMD_NETPLAY_INIT, netplay_port, netplay_ip.toLocal8Bit().data()) == M64ERR_SUCCESS)
+                DebugMessage(M64MSG_INFO, "Netplay: init success");
+
+            if ((*CoreDoCommand)(M64CMD_NETPLAY_CONTROL_PLAYER, netplay_player, NULL) == M64ERR_SUCCESS)
+                DebugMessage(M64MSG_INFO, "Netplay: registered for player %d", netplay_player);
+        }
+    }
+
     /* run the game */
     (*CoreDoCommand)(M64CMD_EXECUTE, 0, NULL);
+
+    if (netplay_port)
+        (*CoreDoCommand)(M64CMD_NETPLAY_CLOSE, 0, NULL);
 
     /* detach plugins from core and unload them */
     for (i = 0; i < 4; i++)
