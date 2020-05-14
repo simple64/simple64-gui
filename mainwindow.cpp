@@ -350,7 +350,7 @@ MainWindow::MainWindow(QWidget *parent) :
     settings = new QSettings(ini_path, QSettings::IniFormat, this);
 
     if (!settings->isWritable()) {
-        delete settings;
+        settings->deleteLater();
         settings = new QSettings("mupen64plus", "gui", this);
     }
 
@@ -555,7 +555,7 @@ void MainWindow::pluginWarning(QString name)
 
 void MainWindow::createOGLWindow(QSurfaceFormat* format)
 {
-    if (my_window) delete my_window;
+    if (my_window) my_window->deleteLater();
 
     my_window = new OGLWindow();
     QWidget *container = QWidget::createWindowContainer(my_window);
@@ -572,20 +572,25 @@ void MainWindow::createOGLWindow(QSurfaceFormat* format)
 
 void MainWindow::deleteOGLWindow()
 {
+    QWidget *container = new QWidget(this);
+    setCentralWidget(container);
     my_window->doneCurrent();
-    my_window->destroy();
+    my_window->deleteLater();
     my_window = nullptr;
 }
 
 void MainWindow::stopGame()
 {
-    if (workerThread != nullptr) {
-        if (workerThread->isRunning()) {
+    if (coreStarted)
+    {
+        int response;
+        (*CoreDoCommand)(M64CMD_CORE_STATE_QUERY, M64CORE_EMU_STATE, &response);
+        if (response == M64EMU_RUNNING)
+        {
             (*CoreDoCommand)(M64CMD_STOP, 0, NULL);
             while (workerThread->isRunning())
                 QCoreApplication::processEvents();
         }
-        workerThread = nullptr;
     }
 
     PluginUnload();
