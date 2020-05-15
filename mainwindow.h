@@ -92,6 +92,8 @@ private slots:
 
     void on_actionJoin_Room_triggered();
 
+    void on_actionSupport_on_Patreon_triggered();
+
 private:
     void stopGame();
     void updateOpenRecent();

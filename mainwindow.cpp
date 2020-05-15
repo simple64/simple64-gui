@@ -3,6 +3,7 @@
 #include <QMessageBox>
 #include <QCloseEvent>
 #include <QActionGroup>
+#include <QDesktopServices>
 #include "settingsdialog.h"
 #include "plugindialog.h"
 
@@ -807,6 +808,11 @@ void MainWindow::on_actionJoin_Room_triggered()
         JoinRoom *joinRoom = new JoinRoom(this);
         joinRoom->show();
     }
+}
+
+void MainWindow::on_actionSupport_on_Patreon_triggered()
+{
+    QDesktopServices::openUrl(QUrl("https://www.patreon.com/m64p"));
 }
 
 WorkerThread* MainWindow::getWorkerThread()

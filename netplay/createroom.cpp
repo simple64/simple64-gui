@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "createroom.h"
 #include "waitroom.h"
+#include "version.h"
 #include <QGridLayout>
 #include <QLabel>
 #include <QLineEdit>
@@ -99,6 +100,7 @@ void CreateRoom::handleCreateButton()
     }
     if (loadROM(romButton->text().toStdString()) == M64ERR_SUCCESS)
     {
+        createButton->setEnabled(false);
         if (webSocket)
         {
             webSocket->close();
@@ -128,6 +130,8 @@ void CreateRoom::onConnected()
     json.insert("password", passwordEdit->text());
     json.insert("MD5", QString(rom_settings.MD5));
     json.insert("game_name", QString(rom_settings.goodname));
+    json.insert("client_sha", QStringLiteral(GUI_VERSION));
+    json.insert("netplay_version", NETPLAY_VER);
     QJsonDocument json_doc(json);
     webSocket->sendBinaryMessage(json_doc.toBinaryData());
 }

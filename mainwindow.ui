@@ -73,6 +73,7 @@
     </property>
     <addaction name="actionCreate_Room"/>
     <addaction name="actionJoin_Room"/>
+    <addaction name="actionSupport_on_Patreon"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEmulation"/>
@@ -198,6 +199,11 @@
   <action name="actionJoin_Room">
    <property name="text">
     <string>Join Room</string>
+   </property>
+  </action>
+  <action name="actionSupport_on_Patreon">
+   <property name="text">
+    <string>Support on Patreon</string>
    </property>
   </action>
  </widget>

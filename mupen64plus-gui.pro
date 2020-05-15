@@ -12,6 +12,8 @@ TEMPLATE = app
 RC_ICONS = mupen64plus.ico
 ICON = mupen64plus.icns
 
+DEFINES += "NETPLAY_VER=2"
+
 INCLUDEPATH += \
         "../../mupen64plus-core/src/api"
 
@@ -83,7 +85,8 @@ HEADERS  += mainwindow.h \
     keypressfilter.h \
     netplay/createroom.h \
     netplay/joinroom.h \
-    netplay/waitroom.h
+    netplay/waitroom.h \
+    version.h
 
 FORMS    += mainwindow.ui
 

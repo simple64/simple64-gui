@@ -1,6 +1,7 @@
 #include "joinroom.h"
 #include "waitroom.h"
 #include "mainwindow.h"
+#include "version.h"
 #include <QGridLayout>
 #include <QLabel>
 #include <QJsonObject>
@@ -136,6 +137,7 @@ void JoinRoom::joinGame()
                 json.insert("type", "join_room");
                 json.insert("player_name", playerName->text());
                 json.insert("password", passwordEdit->text());
+                json.insert("client_sha", QStringLiteral(GUI_VERSION));
                 QJsonDocument json_doc(json);
                 webSocket->sendBinaryMessage(json_doc.toBinaryData());
             }
@@ -175,6 +177,7 @@ void JoinRoom::onConnected()
 
     QJsonObject json;
     json.insert("type", "get_rooms");
+    json.insert("netplay_version", NETPLAY_VER);
     QJsonDocument json_doc(json);
     webSocket->sendBinaryMessage(json_doc.toBinaryData());
 }
@@ -185,7 +188,12 @@ void JoinRoom::processBinaryMessage(QByteArray message)
     QJsonObject json = json_doc.object();
     QMessageBox msgBox;
 
-    if (json.value("type").toString() == "send_room")
+    if (json.value("type").toString() == "message")
+    {
+        msgBox.setText(json.value("message").toString());
+        msgBox.exec();
+    }
+    else if (json.value("type").toString() == "send_room")
     {
         json.remove("type");
         rooms << json;
@@ -204,7 +212,7 @@ void JoinRoom::processBinaryMessage(QByteArray message)
     }
     else if (json.value("type").toString() == "accept_join")
     {
-        if (json.value("accept").toInt() == 1)
+        if (json.value("accept").toInt() == 0)
         {
             json.remove("type");
             json.remove("accept");
@@ -213,10 +221,16 @@ void JoinRoom::processBinaryMessage(QByteArray message)
             waitRoom->show();
             accept();
         }
-        else if (json.value("accept").toInt() == -1)
+        else if (json.value("accept").toInt() == 1)
         {
-           (*CoreDoCommand)(M64CMD_ROM_CLOSE, 0, NULL);
+            (*CoreDoCommand)(M64CMD_ROM_CLOSE, 0, NULL);
             msgBox.setText("Bad password");
+            msgBox.exec();
+        }
+        else if (json.value("accept").toInt() == 2)
+        {
+            (*CoreDoCommand)(M64CMD_ROM_CLOSE, 0, NULL);
+            msgBox.setText("client versions do not match");
             msgBox.exec();
         }
         else
