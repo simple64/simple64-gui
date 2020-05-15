@@ -203,10 +203,13 @@ void JoinRoom::processBinaryMessage(QByteArray message)
         newItem->setFlags(newItem->flags() & ~Qt::ItemIsEditable);
         listWidget->setItem(row, 0, newItem);
         newItem = new QTableWidgetItem(json.value("game_name").toString());
+        newItem->setFlags(newItem->flags() & ~Qt::ItemIsEditable);
         listWidget->setItem(row, 1, newItem);
         newItem = new QTableWidgetItem(json.value("MD5").toString());
+        newItem->setFlags(newItem->flags() & ~Qt::ItemIsEditable);
         listWidget->setItem(row, 2, newItem);
         newItem = new QTableWidgetItem(json.value("protected").toString());
+        newItem->setFlags(newItem->flags() & ~Qt::ItemIsEditable);
         listWidget->setItem(row, 3, newItem);
 
         ++row;
