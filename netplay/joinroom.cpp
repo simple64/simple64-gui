@@ -187,6 +187,8 @@ void JoinRoom::processBinaryMessage(QByteArray message)
     QJsonDocument json_doc = QJsonDocument::fromBinaryData(message);
     QJsonObject json = json_doc.object();
     QMessageBox msgBox;
+    msgBox.setTextFormat(Qt::RichText);
+    msgBox.setTextInteractionFlags(Qt::TextBrowserInteraction);
 
     if (json.value("type").toString() == "message")
     {

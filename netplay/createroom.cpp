@@ -139,6 +139,8 @@ void CreateRoom::onConnected()
 void CreateRoom::processBinaryMessage(QByteArray message)
 {
     QMessageBox msgBox;
+    msgBox.setTextFormat(Qt::RichText);
+    msgBox.setTextInteractionFlags(Qt::TextBrowserInteraction);
     QJsonDocument json_doc = QJsonDocument::fromBinaryData(message);
     QJsonObject json = json_doc.object();
     if (json.value("type").toString() == "message")
