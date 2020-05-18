@@ -22,6 +22,7 @@ signals:
     void deleteOGLWindow();
     void setTitle(std::string title);
     void pluginWarning(QString name);
+    void showMessage(QString message);
 
 private:
     QString m_fileName;

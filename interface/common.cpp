@@ -60,7 +60,12 @@ void DebugCallback(void *Context, int level, const char *message)
     QString output;
 
     if (level == M64MSG_ERROR)
+    {
         output = QString("%1 Error: %2\n").arg((const char *) Context, message);
+        QString netplay = QString::fromUtf8(message);
+        if (netplay.contains("Netplay"))
+            w->getWorkerThread()->showMessage(netplay);
+    }
     else if (level == M64MSG_WARNING)
         output = QString("%1 Warning: %2\n").arg((const char *) Context, message);
     else if (level == M64MSG_INFO)

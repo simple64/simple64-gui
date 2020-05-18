@@ -46,6 +46,7 @@ public slots:
     void deleteOGLWindow();
     void setTitle(std::string title);
     void pluginWarning(QString name);
+    void showMessage(QString message);
 
 private slots:
     void on_actionOpen_ROM_triggered();

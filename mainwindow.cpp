@@ -554,6 +554,13 @@ void MainWindow::pluginWarning(QString name)
     msgBox.exec();
 }
 
+void MainWindow::showMessage(QString message)
+{
+    QMessageBox *msgBox = new QMessageBox(this);
+    msgBox->setText(message);
+    msgBox->show();
+}
+
 void MainWindow::createOGLWindow(QSurfaceFormat* format)
 {
     if (my_window) my_window->deleteLater();
