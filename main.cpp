@@ -5,6 +5,8 @@
 MainWindow *w;
 int main(int argc, char *argv[])
 {
+    srand (time(NULL));
+
     QApplication a(argc, argv);
 
     QCoreApplication::setApplicationName("mupen64plus-gui");

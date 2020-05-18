@@ -21,6 +21,10 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.          *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+#ifdef __MINGW32__
+#define _CRT_RAND_S
+#endif
+
 #include <stdlib.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -307,7 +311,14 @@ m64p_error launchGame(QString netplay_ip, int netplay_port, int netplay_player)
             if ((*CoreDoCommand)(M64CMD_NETPLAY_INIT, netplay_port, netplay_ip.toLocal8Bit().data()) == M64ERR_SUCCESS)
                 DebugMessage(M64MSG_INFO, "Netplay: init success");
 
-            if ((*CoreDoCommand)(M64CMD_NETPLAY_CONTROL_PLAYER, netplay_player, NULL) == M64ERR_SUCCESS)
+            uint32_t reg_id;
+#ifdef __MINGW32__
+            rand_s(&reg_id);
+#else
+            reg_id = rand();
+#endif
+
+            if ((*CoreDoCommand)(M64CMD_NETPLAY_CONTROL_PLAYER, netplay_player, &reg_id) == M64ERR_SUCCESS)
                 DebugMessage(M64MSG_INFO, "Netplay: registered for player %d", netplay_player);
         }
     }
