@@ -316,12 +316,15 @@ m64p_error launchGame(QString netplay_ip, int netplay_port, int netplay_player)
             if ((*CoreDoCommand)(M64CMD_NETPLAY_INIT, netplay_port, netplay_ip.toLocal8Bit().data()) == M64ERR_SUCCESS)
                 DebugMessage(M64MSG_INFO, "Netplay: init success");
 
-            uint32_t reg_id;
+            uint32_t reg_id = 0;
+            while (reg_id == 0)
+            {
 #ifdef __MINGW32__
-            rand_s(&reg_id);
+                rand_s(&reg_id);
 #else
-            reg_id = rand();
+                reg_id = rand();
 #endif
+            }
 
             if ((*CoreDoCommand)(M64CMD_NETPLAY_CONTROL_PLAYER, netplay_player, &reg_id) == M64ERR_SUCCESS)
                 DebugMessage(M64MSG_INFO, "Netplay: registered for player %d", netplay_player);
