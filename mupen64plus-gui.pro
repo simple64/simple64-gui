@@ -12,7 +12,7 @@ TEMPLATE = app
 RC_ICONS = mupen64plus.ico
 ICON = mupen64plus.icns
 
-DEFINES += "NETPLAY_VER=4"
+DEFINES += "NETPLAY_VER=5"
 
 INCLUDEPATH += \
         "../../mupen64plus-core/src/api"
