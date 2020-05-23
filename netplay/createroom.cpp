@@ -39,6 +39,7 @@ CreateRoom::CreateRoom(QWidget *parent)
     QLabel *serverLabel = new QLabel("Server", this);
     layout->addWidget(serverLabel, 4, 0);
     serverChooser = new QComboBox(this);
+    serverChooser->setSizeAdjustPolicy(QComboBox::AdjustToContents);
     layout->addWidget(serverChooser, 4, 1);
 
     QFrame* lineH1 = new QFrame(this);

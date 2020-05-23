@@ -26,6 +26,7 @@ JoinRoom::JoinRoom(QWidget *parent)
     serverLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     layout->addWidget(serverLabel, 0, 1);
     serverChooser = new QComboBox(this);
+    serverChooser->setSizeAdjustPolicy(QComboBox::AdjustToContents);
     connect(serverChooser, SIGNAL(currentTextChanged(QString)), this, SLOT(serverChanged(QString)));
 
     layout->addWidget(serverChooser, 0, 2);
