@@ -822,6 +822,11 @@ void MainWindow::on_actionSupport_on_Patreon_triggered()
     QDesktopServices::openUrl(QUrl("https://www.patreon.com/m64p"));
 }
 
+void MainWindow::on_actionOpen_Discord_Channel_triggered()
+{
+    QDesktopServices::openUrl(QUrl("https://discord.gg/B5svWhR"));
+}
+
 WorkerThread* MainWindow::getWorkerThread()
 {
     return workerThread;

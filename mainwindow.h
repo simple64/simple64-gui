@@ -95,6 +95,8 @@ private slots:
 
     void on_actionSupport_on_Patreon_triggered();
 
+    void on_actionOpen_Discord_Channel_triggered();
+
 private:
     void stopGame();
     void updateOpenRecent();
