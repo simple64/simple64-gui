@@ -35,15 +35,6 @@
 #include "osal_files.h"
 #include "osal_preproc.h"
 
-/* definitions for system directories to search when looking for mupen64plus plugins */
-#if defined(PLUGINDIR)
-  const int   osal_libsearchdirs = 4;
-  const char *osal_libsearchpath[4] = { PLUGINDIR, "/usr/local/lib/mupen64plus",  "/usr/lib/mupen64plus", "./" };
-#else
-  const int   osal_libsearchdirs = 3;
-  const char *osal_libsearchpath[3] = { "/usr/local/lib/mupen64plus",  "/usr/lib/mupen64plus", "./" };
-#endif
-
 osal_lib_search *osal_library_search(const char *searchpath)
 {
     osal_lib_search *head = NULL, *curr = NULL;

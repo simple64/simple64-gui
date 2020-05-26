@@ -390,28 +390,10 @@ MainWindow::MainWindow(QWidget *parent) :
     updateDD(ui);
     updatePIF(ui);
 
-    if (!settings->contains("coreLibPath")) {
-        QStringList files;
-        findRecursion("/usr/lib", OSAL_DEFAULT_DYNLIB_FILENAME, &files);
-        findRecursion("/usr/local/lib", OSAL_DEFAULT_DYNLIB_FILENAME, &files);
-        if (files.size() > 0)
-            settings->setValue("coreLibPath", files.at(0));
-        else
-            settings->setValue("coreLibPath", QDir(QCoreApplication::applicationDirPath()).filePath(OSAL_DEFAULT_DYNLIB_FILENAME));
-    }
-    if (!settings->contains("pluginDirPath")) {
-        QStringList files2;
-        findRecursion("/usr/lib", QString("mupen64plus-rsp-cxd4-sse2") + OSAL_DLL_EXTENSION, &files2);
-        findRecursion("/usr/local/lib", QString("mupen64plus-rsp-cxd4-sse2") + OSAL_DLL_EXTENSION, &files2);
-        findRecursion("/usr/lib", QString("mupen64plus-rsp-hle") + OSAL_DLL_EXTENSION, &files2);
-        findRecursion("/usr/local/lib", QString("mupen64plus-rsp-hle") + OSAL_DLL_EXTENSION, &files2);
-
-        if (files2.size() > 0) {
-            QFileInfo pluginPath(files2.at(0));
-            settings->setValue("pluginDirPath", pluginPath.absolutePath());
-        } else
-            settings->setValue("pluginDirPath", QCoreApplication::applicationDirPath());
-    }
+    if (!settings->contains("coreLibPath"))
+        settings->setValue("coreLibPath", QDir(QCoreApplication::applicationDirPath()).filePath(OSAL_DEFAULT_DYNLIB_FILENAME));
+    if (!settings->contains("pluginDirPath"))
+        settings->setValue("pluginDirPath", QCoreApplication::applicationDirPath());
     if (!settings->value("coreLibPath").isNull())
         qtCoreDirPath = settings->value("coreLibPath").toString();
     if (!settings->value("pluginDirPath").isNull())
