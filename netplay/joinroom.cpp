@@ -89,6 +89,7 @@ void JoinRoom::processMulticast()
 
 void JoinRoom::onFinished(int)
 {
+    multicastSocket.close();
     (*CoreDoCommand)(M64CMD_ROM_CLOSE, 0, NULL);
     if (!launched && webSocket)
     {
