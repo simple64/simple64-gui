@@ -63,7 +63,28 @@ JoinRoom::JoinRoom(QWidget *parent)
     QNetworkRequest request(QUrl(QStringLiteral("https://m64p.s3.amazonaws.com/servers.json")));
     manager.get(request);
 
+    multicastSocket.bind(QHostAddress(QHostAddress::AnyIPv4), 0);
+    connect(&multicastSocket, &QUdpSocket::readyRead, this, &JoinRoom::processMulticast);
+    QHostAddress multicastAddr(QStringLiteral("239.64.64.64"));
+    QByteArray multirequest;
+    multirequest.append(1);
+    multicastSocket.writeDatagram(multirequest, multicastAddr, 45000);
+
     launched = 0;
+}
+
+void JoinRoom::processMulticast()
+{
+    while (multicastSocket.hasPendingDatagrams())
+    {
+        QNetworkDatagram datagram = multicastSocket.receiveDatagram();
+        QByteArray incomingData = datagram.data();
+        QJsonDocument json_doc = QJsonDocument::fromJson(incomingData);
+        QJsonObject json = json_doc.object();
+        QStringList servers = json.keys();
+        for (int i = 0; i < servers.size(); ++i)
+            serverChooser->addItem(servers.at(i), json.value(servers.at(i)).toString());
+    }
 }
 
 void JoinRoom::onFinished(int)
@@ -142,7 +163,7 @@ void JoinRoom::joinGame()
                 json.insert("password", passwordEdit->text());
                 json.insert("client_sha", QStringLiteral(GUI_VERSION));
                 QJsonDocument json_doc(json);
-                webSocket->sendBinaryMessage(json_doc.toBinaryData());
+                webSocket->sendBinaryMessage(json_doc.toJson());
             }
             else
             {
@@ -182,12 +203,12 @@ void JoinRoom::onConnected()
     json.insert("type", "get_rooms");
     json.insert("netplay_version", NETPLAY_VER);
     QJsonDocument json_doc(json);
-    webSocket->sendBinaryMessage(json_doc.toBinaryData());
+    webSocket->sendBinaryMessage(json_doc.toJson());
 }
 
 void JoinRoom::processBinaryMessage(QByteArray message)
 {
-    QJsonDocument json_doc = QJsonDocument::fromBinaryData(message);
+    QJsonDocument json_doc = QJsonDocument::fromJson(message);
     QJsonObject json = json_doc.object();
     QMessageBox msgBox;
     msgBox.setTextFormat(Qt::RichText);
