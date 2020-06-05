@@ -172,7 +172,8 @@ m64p_error loadROM(std::string filename)
         QString command = "7za e -so \"";
         command += QString::fromStdString(filename);
         command += "\" *64";
-        process.start(command);
+        process.setProgram(command);
+        process.start();
         process.waitForFinished(-1);
         QByteArray data = process.readAllStandardOutput();
         romlength = data.size();
