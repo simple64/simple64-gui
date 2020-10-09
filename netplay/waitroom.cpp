@@ -179,9 +179,9 @@ void WaitRoom::processBinaryMessage(QByteArray message)
         w->openROM(file_name, webSocket->peerAddress().toString(), room_port, player_number);
         accept();
     }
-    else if (json.value("type").toString() == "discord_link")
+    else if (json.value("type").toString() == "motd")
     {
-        QString link = json.value("link").toString();
-        discordLink->setText("Discord Voice Chat <a href=\"discord://" + link + "\">App Link</a> - <a href=\"http://" + link + "\">Web Link</a>");
+        QString message = json.value("message").toString();
+        discordLink->setText(message);
     }
 }
