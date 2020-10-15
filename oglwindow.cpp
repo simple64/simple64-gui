@@ -1,10 +1,7 @@
 
 #include "oglwindow.h"
-extern QThread* rendering_thread;
 
 void OGLWindow::initializeGL() {
-    doneCurrent();
-    context()->moveToThread(rendering_thread);
 }
 
 void OGLWindow::resizeEvent(QResizeEvent *event) {

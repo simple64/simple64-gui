@@ -19,6 +19,7 @@ extern "C" {
 #include "cheatdialog.h"
 #include "netplay/createroom.h"
 #include "netplay/joinroom.h"
+extern QThread* rendering_thread;
 
 #define RECENT_SIZE 10
 
@@ -411,11 +412,23 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(volumeAction->slider(), SIGNAL(valueChanged(int)), this, SLOT(volumeValueChanged(int)));
     volumeAction->slider()->setValue(settings->value("volume").toInt());
     ui->menuEmulation->insertAction(ui->actionMute, volumeAction);
+
+    my_window = new OGLWindow;
+    QWidget *container = QWidget::createWindowContainer(my_window);
+    container->setFocusPolicy(Qt::StrongFocus);
+
+    my_window->setCursor(Qt::BlankCursor);
+
+    setCentralWidget(container);
+
+    my_window->installEventFilter(&keyPressFilter);
+    this->installEventFilter(&keyPressFilter);
 }
 
 MainWindow::~MainWindow()
 {
     DetachCoreLib();
+    my_window->deleteLater();
     delete ui;
 }
 
@@ -562,30 +575,18 @@ void MainWindow::showMessage(QString message)
     msgBox->show();
 }
 
-void MainWindow::createOGLWindow(QSurfaceFormat* format)
+void MainWindow::setOGLWindowFormat(QSurfaceFormat* format)
 {
-    if (my_window) my_window->deleteLater();
-
-    my_window = new OGLWindow();
-    QWidget *container = QWidget::createWindowContainer(my_window);
-    container->setFocusPolicy(Qt::StrongFocus);
-
-    my_window->setCursor(Qt::BlankCursor);
+    my_window->doneCurrent();
+    my_window->destroy();
     my_window->setFormat(*format);
-
-    setCentralWidget(container);
-
-    my_window->installEventFilter(&keyPressFilter);
-    this->installEventFilter(&keyPressFilter);
+    my_window->show();
+    my_window->context()->moveToThread(rendering_thread);
 }
 
-void MainWindow::deleteOGLWindow()
+void MainWindow::closeOGLWindow()
 {
-    QWidget *container = new QWidget(this);
-    setCentralWidget(container);
     my_window->doneCurrent();
-    my_window->deleteLater();
-    my_window = nullptr;
 }
 
 void MainWindow::stopGame()
