@@ -411,6 +411,8 @@ MainWindow::MainWindow(QWidget *parent) :
         settings->setValue("coreLibPath", "$APP_PATH$");
     if (!settings->contains("pluginDirPath"))
         settings->setValue("pluginDirPath", "$APP_PATH$");
+    if (!settings->contains("configDirPath"))
+        settings->setValue("configDirPath", "$CONFIG_PATH$");
 
     updatePlugins();
 
@@ -935,6 +937,9 @@ void MainWindow::loadCoreLib()
     CoreCheatEnabled            = (ptr_CoreCheatEnabled) osal_dynlib_getproc(coreLib, "CoreCheatEnabled");
 
     QString qtConfigDir = settings->value("configDirPath").toString();
+    qtConfigDir.replace("$APP_PATH$", QCoreApplication::applicationDirPath());
+    qtConfigDir.replace("$CONFIG_PATH$", ConfigGetUserConfigPath());
+
     if (!qtConfigDir.isEmpty())
         (*CoreStartup)(CORE_API_VERSION, qtConfigDir.toLatin1().data() /*Config dir*/, QCoreApplication::applicationDirPath().toLatin1().data(), (char*)"Core", DebugCallback, NULL, NULL);
     else
