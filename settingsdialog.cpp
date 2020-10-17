@@ -32,7 +32,6 @@ void SettingsDialog::handlePluginButton()
         w->getSettings()->remove("audioPlugin");
         w->getSettings()->remove("rspPlugin");
         w->updatePlugins();
-        initStuff();
     }
 }
 
@@ -68,7 +67,6 @@ void SettingsDialog::handlePluginEdit()
     w->getSettings()->remove("audioPlugin");
     w->getSettings()->remove("rspPlugin");
     w->updatePlugins();
-    initStuff();
 }
 
 void SettingsDialog::handleConfigEdit()
@@ -155,6 +153,7 @@ SettingsDialog::SettingsDialog(QWidget *parent)
 
 void SettingsDialog::closeEvent(QCloseEvent *event)
 {
+    w->getSettings()->sync();
     if (w->getCoreStarted() == 0)
     {
         w->closePlugins();
