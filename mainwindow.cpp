@@ -843,11 +843,6 @@ LogViewer* MainWindow::getLogViewer()
     return &logViewer;
 }
 
-m64p_dynlib_handle MainWindow::getCoreLib()
-{
-    return coreLib;
-}
-
 m64p_dynlib_handle MainWindow::getAudioPlugin()
 {
     return audioPlugin;

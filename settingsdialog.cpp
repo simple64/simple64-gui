@@ -159,6 +159,8 @@ void SettingsDialog::closeEvent(QCloseEvent *event)
 {
     if (w->getCoreStarted() == 0)
     {
+        w->closePlugins();
+        w->closeCoreLib();
         w->loadCoreLib();
         w->loadPlugins();
     }
