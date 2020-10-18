@@ -561,13 +561,6 @@ void MainWindow::updateOpenRecent()
     });
 }
 
-void MainWindow::pluginWarning(QString name)
-{
-    QMessageBox msgBox;
-    msgBox.setText("No " + name + " plugin attached. Please go to \"Settings->Plugin Selection\" and choose one.");
-    msgBox.exec();
-}
-
 void MainWindow::showMessage(QString message)
 {
     QMessageBox *msgBox = new QMessageBox(this);
