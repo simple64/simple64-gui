@@ -593,8 +593,8 @@ void MainWindow::createOGLWindow(QSurfaceFormat* format)
 void MainWindow::deleteOGLWindow()
 {
     QWidget *container = new QWidget(this);
-    setCentralWidget(container);
     my_window->doneCurrent();
+    setCentralWidget(container);
 }
 
 void MainWindow::stopGame()
