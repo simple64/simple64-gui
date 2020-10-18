@@ -487,6 +487,8 @@ void MainWindow::resizeMainWindow(int Width, int Height)
 
 void MainWindow::toggleFS(int force)
 {
+    if (coreLib == nullptr) return;
+
     int response = M64VIDEO_NONE;
     if (force == M64VIDEO_NONE)
         (*CoreDoCommand)(M64CMD_CORE_STATE_QUERY, M64CORE_VIDEO_MODE, &response);
