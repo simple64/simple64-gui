@@ -362,10 +362,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QString ini_path = QDir(QCoreApplication::applicationDirPath()).filePath("mupen64plus-gui.ini");
     settings = new QSettings(ini_path, QSettings::IniFormat, this);
 
-    if (!settings->isWritable()) {
-        settings->deleteLater();
+    if (!settings->isWritable())
         settings = new QSettings("mupen64plus", "gui", this);
-    }
 
     if (!settings->contains("version") || settings->value("version").toInt() != SETTINGS_VER)
     {
@@ -577,8 +575,6 @@ void MainWindow::showMessage(QString message)
 
 void MainWindow::createOGLWindow(QSurfaceFormat* format)
 {
-    if (my_window) my_window->deleteLater();
-
     my_window = new OGLWindow();
     QWidget *container = QWidget::createWindowContainer(my_window, this);
     container->setFocusPolicy(Qt::StrongFocus);
@@ -597,8 +593,6 @@ void MainWindow::deleteOGLWindow()
     QWidget *container = new QWidget(this);
     setCentralWidget(container);
     my_window->doneCurrent();
-    my_window->deleteLater();
-    my_window = nullptr;
 }
 
 void MainWindow::stopGame()
@@ -633,7 +627,6 @@ void MainWindow::openROM(QString filename, QString netplay_ip, int netplay_port,
 
     workerThread = new WorkerThread(netplay_ip, netplay_port, netplay_player, this);
     workerThread->setFileName(filename);
-    connect(workerThread, SIGNAL(finished()), workerThread, SLOT(deleteLater()));
     workerThread->start();
 
     QStringList list;
