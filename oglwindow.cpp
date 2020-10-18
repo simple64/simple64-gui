@@ -23,8 +23,7 @@ void OGLWindow::resizeEvent(QResizeEvent *event) {
 
 void OGLWindow::timerEvent(QTimerEvent *te) {
     int size = (m_width << 16) + m_height;
-    if (w->getCoreStarted())
-        (*CoreDoCommand)(M64CMD_CORE_STATE_SET, M64CORE_VIDEO_SIZE, &size);
+    (*CoreDoCommand)(M64CMD_CORE_STATE_SET, M64CORE_VIDEO_SIZE, &size);
     killTimer(te->timerId());
     timerId = 0;
     requestActivate();
