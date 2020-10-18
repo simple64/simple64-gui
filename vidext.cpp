@@ -62,6 +62,7 @@ m64p_error qtVidExtFuncSetMode(int Width, int Height, int, int ScreenMode, int)
     if (!init) {
         w->getWorkerThread()->createOGLWindow(&format);
         while (!w->getOGLWindow()->isValid()) {}
+        while (w->getOGLWindow()->context()->thread() != rendering_thread) {}
         w->getWorkerThread()->resizeMainWindow(Width, Height);
         w->getOGLWindow()->makeCurrent();
         init = 1;
