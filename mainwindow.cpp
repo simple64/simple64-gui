@@ -434,9 +434,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    closePlugins();
-    closeCoreLib();
-
     delete ui;
 }
 
@@ -523,6 +520,9 @@ void MainWindow::findRecursion(const QString &path, const QString &pattern, QStr
 void MainWindow::closeEvent (QCloseEvent *event)
 {
     stopGame();
+
+    closePlugins();
+    closeCoreLib();
 
     settings->setValue("geometry", saveGeometry());
     settings->setValue("windowState", saveState());
