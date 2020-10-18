@@ -603,6 +603,8 @@ void MainWindow::deleteOGLWindow()
 
 void MainWindow::stopGame()
 {
+    if (!coreLib) return;
+
     int response;
     (*CoreDoCommand)(M64CMD_CORE_STATE_QUERY, M64CORE_EMU_STATE, &response);
     if (response != M64EMU_STOPPED)
@@ -998,4 +1000,9 @@ void MainWindow::loadPlugins()
     }
     PluginStartup = (ptr_PluginStartup) osal_dynlib_getproc(rspPlugin, "PluginStartup");
     (*PluginStartup)(coreLib, (char*)"RSP", DebugCallback);
+}
+
+m64p_dynlib_handle MainWindow::getCoreLib()
+{
+    return coreLib;
 }

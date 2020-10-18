@@ -155,10 +155,14 @@ void SettingsDialog::closeEvent(QCloseEvent *event)
 {
     w->getSettings()->sync();
     int value;
-    (*CoreDoCommand)(M64CMD_CORE_STATE_QUERY, M64CORE_EMU_STATE, &value);
-    if (value == M64EMU_STOPPED)
+    if (w->getCoreLib())
     {
-        w->resetCore();
+        (*CoreDoCommand)(M64CMD_CORE_STATE_QUERY, M64CORE_EMU_STATE, &value);
+        if (value == M64EMU_STOPPED)
+            w->resetCore();
     }
+    else
+        w->resetCore();
+
     event->accept();
 }

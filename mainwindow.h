@@ -43,6 +43,7 @@ public:
     int getGLES();
     void updatePlugins();
     void resetCore();
+    m64p_dynlib_handle getCoreLib();
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
