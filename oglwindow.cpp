@@ -5,7 +5,9 @@
 
 void OGLWindow::initializeGL() {
     doneCurrent();
+#ifndef SINGLE_THREAD
     context()->moveToThread(w->getRenderingThread());
+#endif
 }
 
 void OGLWindow::resizeEvent(QResizeEvent *event) {

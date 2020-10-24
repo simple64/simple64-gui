@@ -520,6 +520,19 @@ void MainWindow::findRecursion(const QString &path, const QString &pattern, QStr
 
 void MainWindow::closeEvent (QCloseEvent *event)
 {
+#ifdef SINGLE_THREAD
+    int response;
+    (*CoreDoCommand)(M64CMD_CORE_STATE_QUERY, M64CORE_EMU_STATE, &response);
+    if (response != M64EMU_STOPPED)
+    {
+        QMessageBox msgBox;
+        msgBox.setText("Stop current game first");
+        msgBox.exec();
+        event->ignore();
+        return;
+    }
+#endif
+
     stopGame();
 
     closePlugins();
@@ -600,8 +613,10 @@ void MainWindow::stopGame()
     if (response != M64EMU_STOPPED)
     {
         (*CoreDoCommand)(M64CMD_STOP, 0, NULL);
+#ifndef SINGLE_THREAD
         while (workerThread->isRunning())
             QCoreApplication::processEvents();
+#endif
     }
 }
 
@@ -615,6 +630,18 @@ void MainWindow::resetCore()
 
 void MainWindow::openROM(QString filename, QString netplay_ip, int netplay_port, int netplay_player)
 {
+#ifdef SINGLE_THREAD
+    int response;
+    (*CoreDoCommand)(M64CMD_CORE_STATE_QUERY, M64CORE_EMU_STATE, &response);
+    if (response != M64EMU_STOPPED)
+    {
+        QMessageBox msgBox;
+        msgBox.setText("Stop current game first");
+        msgBox.exec();
+        return;
+    }
+#endif
+
     stopGame();
 
     logViewer.clearLog();
@@ -623,7 +650,6 @@ void MainWindow::openROM(QString filename, QString netplay_ip, int netplay_port,
 
     workerThread = new WorkerThread(netplay_ip, netplay_port, netplay_player, this);
     workerThread->setFileName(filename);
-    workerThread->start();
 
     QStringList list;
     if (settings->contains("RecentROMs"))
@@ -634,6 +660,8 @@ void MainWindow::openROM(QString filename, QString netplay_ip, int netplay_port,
         list.removeLast();
     settings->setValue("RecentROMs",list.join(";"));
     updateOpenRecent();
+
+    workerThread->start();
 }
 
 void MainWindow::on_actionOpen_ROM_triggered()
