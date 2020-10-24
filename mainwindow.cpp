@@ -699,12 +699,18 @@ void MainWindow::on_actionPlugin_Settings_triggered()
 
 void MainWindow::on_actionPause_Game_triggered()
 {
+#ifndef SINGLE_THREAD
     int response;
     (*CoreDoCommand)(M64CMD_CORE_STATE_QUERY, M64CORE_EMU_STATE, &response);
     if (response == M64EMU_RUNNING)
         (*CoreDoCommand)(M64CMD_PAUSE, 0, NULL);
     else if (response == M64EMU_PAUSED)
         (*CoreDoCommand)(M64CMD_RESUME, 0, NULL);
+#else
+    QMessageBox msgBox;
+    msgBox.setText("Paused");
+    msgBox.exec();
+#endif
 }
 
 void MainWindow::on_actionMute_triggered()
