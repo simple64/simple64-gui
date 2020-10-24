@@ -758,6 +758,13 @@ void MainWindow::on_actionCheats_triggered()
 
 void MainWindow::on_actionController_Configuration_triggered()
 {
+    if (!coreLib) return;
+
+    int response;
+    (*CoreDoCommand)(M64CMD_CORE_STATE_QUERY, M64CORE_EMU_STATE, &response);
+    if (response == M64EMU_STOPPED)
+        resetCore();
+
     typedef void (*Config_Func)();
     Config_Func PluginConfig = (Config_Func) osal_dynlib_getproc(inputPlugin, "PluginConfig");
     if (PluginConfig)
