@@ -561,7 +561,11 @@ void MainWindow::updateOpenRecent()
         OpenRecent->addAction(recent[i]);
         QAction *temp_recent = recent[i];
         connect(temp_recent, &QAction::triggered,[=](){
+#ifndef SINGLE_THREAD
                     openROM(temp_recent->text(), "", 0, 0);
+#else
+                    singleThreadLaunch(temp_recent->text(), "", 0, 0);
+#endif
                 });
     }
     OpenRecent->addSeparator();
@@ -628,6 +632,13 @@ void MainWindow::resetCore()
     loadPlugins();
 }
 
+#ifdef SINGLE_THREAD
+void MainWindow::singleThreadLaunch(QString filename, QString netplay_ip, int netplay_port, int netplay_player)
+{
+    QTimer::singleShot(1000, [=]() { openROM(filename, netplay_ip, netplay_port, netplay_player); } );
+}
+#endif
+
 void MainWindow::openROM(QString filename, QString netplay_ip, int netplay_port, int netplay_player)
 {
 #ifdef SINGLE_THREAD
@@ -671,7 +682,11 @@ void MainWindow::on_actionOpen_ROM_triggered()
     if (!filename.isNull()) {
         QFileInfo info(filename);
         settings->setValue("ROMdir", info.absoluteDir().absolutePath());
+#ifndef SINGLE_THREAD
         openROM(filename, "", 0, 0);
+#else
+        singleThreadLaunch(filename, "", 0, 0);
+#endif
     }
 }
 
