@@ -17,8 +17,8 @@ void OGLWindow::resizeEvent(QResizeEvent *event) {
         timerId = 0;
     }
     timerId = startTimer(500);
-    m_width = event->size().width();
-    m_height = event->size().height();
+    m_width = event->size().width() * devicePixelRatio();
+    m_height = event->size().height() * devicePixelRatio();
 }
 
 void OGLWindow::timerEvent(QTimerEvent *te) {
@@ -26,7 +26,7 @@ void OGLWindow::timerEvent(QTimerEvent *te) {
     int current_size = 0;
 
     (*CoreDoCommand)(M64CMD_CORE_STATE_QUERY, M64CORE_VIDEO_SIZE, &current_size);
-    if (current_size != size && current_size != 0)
+    if (current_size != size)
         (*CoreDoCommand)(M64CMD_CORE_STATE_SET, M64CORE_VIDEO_SIZE, &size);
 
     killTimer(te->timerId());
