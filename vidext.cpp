@@ -253,7 +253,13 @@ m64p_error qtVidExtFuncResizeWindow(int width, int height)
     int response = M64VIDEO_NONE;
     (*CoreDoCommand)(M64CMD_CORE_STATE_QUERY, M64CORE_VIDEO_MODE, &response);
     if (response == M64VIDEO_WINDOWED)
-        w->getWorkerThread()->resizeMainWindow(width, height);
+    {
+        int size = (width << 16) + height;
+        int current_size = 0;
+        (*CoreDoCommand)(M64CMD_CORE_STATE_QUERY, M64CORE_VIDEO_SIZE, &current_size);
+        if (current_size != size)
+            w->getWorkerThread()->resizeMainWindow(width, height);
+    }
     return M64ERR_SUCCESS;
 }
 
