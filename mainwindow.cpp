@@ -475,7 +475,7 @@ void MainWindow::updateReplyFinished(QNetworkReply *reply)
     {
         QJsonDocument json_doc = QJsonDocument::fromJson(reply->readAll());
         QJsonObject json = json_doc.object();
-        if (json.value("target_commitish").toString() == QString(GUI_VERSION))
+        if (json.value("target_commitish").toString() != QString(GUI_VERSION))
         {
             QMessageBox::StandardButton reply;
             reply = QMessageBox::question(this, "Update Available", "A newer version is available, update?", QMessageBox::Yes|QMessageBox::No);
