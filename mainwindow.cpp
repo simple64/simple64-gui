@@ -491,6 +491,10 @@ void MainWindow::updateReplyFinished(QNetworkReply *reply)
 #endif
                 req.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
                 updateManager->get(req);
+                QMessageBox *message = new QMessageBox(this);
+                message->setStandardButtons(0);
+                message->setText("Downloading updater");
+                message->show();
             }
         }
     }
