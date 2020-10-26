@@ -492,7 +492,6 @@ void MainWindow::updateReplyFinished(QNetworkReply *reply)
                 updateManager->get(req);
             }
         }
-
     }
     reply->deleteLater();
 }
