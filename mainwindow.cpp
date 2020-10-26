@@ -458,10 +458,10 @@ void MainWindow::updateDownloadFinished(QNetworkReply *reply)
             file.write(reply->readAll());
             file.setPermissions(QFileDevice::ReadOwner | QFileDevice::WriteOwner | QFileDevice::ExeOwner);
             file.close();
-            QProcess process;
+            QProcess* process = new QProcess();
             QString command = fullpath + " ";
             command += QCoreApplication::applicationDirPath();
-            process.start(command);
+            process->start(command);
             QCoreApplication::quit();
         }
     }
