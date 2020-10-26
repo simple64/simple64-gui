@@ -462,6 +462,7 @@ void MainWindow::updateDownloadFinished(QNetworkReply *reply)
             QString command = fullpath + " ";
             command += QCoreApplication::applicationDirPath();
             process->start(command);
+            reply->deleteLater();
             QCoreApplication::quit();
         }
     }
