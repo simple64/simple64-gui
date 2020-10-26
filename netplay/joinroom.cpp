@@ -278,7 +278,7 @@ void JoinRoom::processBinaryMessage(QByteArray message)
         }
         else
         {
-           (*CoreDoCommand)(M64CMD_ROM_CLOSE, 0, NULL);
+            (*CoreDoCommand)(M64CMD_ROM_CLOSE, 0, NULL);
             msgBox.setText("Could not join room");
             msgBox.exec();
         }
