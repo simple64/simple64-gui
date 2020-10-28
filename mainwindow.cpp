@@ -9,7 +9,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "common.h"
-#include "cheatdialog.h"
 #include "vidext.h"
 #include "netplay/createroom.h"
 #include "netplay/joinroom.h"
@@ -865,12 +864,6 @@ void MainWindow::on_actionLoad_State_From_triggered()
     }
 }
 
-void MainWindow::on_actionCheats_triggered()
-{
-    CheatDialog *cheats = new CheatDialog(this);
-    cheats->show();
-}
-
 void MainWindow::on_actionController_Configuration_triggered()
 {
     if (!coreLib) return;
@@ -1013,9 +1006,6 @@ void MainWindow::loadCoreLib()
     ConfigOpenSection =           (ptr_ConfigOpenSection) osal_dynlib_getproc(coreLib, "ConfigOpenSection");
     ConfigListParameters =        (ptr_ConfigListParameters) osal_dynlib_getproc(coreLib, "ConfigListParameters");
     ConfigGetSharedDataFilepath = (ptr_ConfigGetSharedDataFilepath) osal_dynlib_getproc(coreLib, "ConfigGetSharedDataFilepath");
-
-    CoreAddCheat                = (ptr_CoreAddCheat) osal_dynlib_getproc(coreLib, "CoreAddCheat");
-    CoreCheatEnabled            = (ptr_CoreCheatEnabled) osal_dynlib_getproc(coreLib, "CoreCheatEnabled");
 
     QString qtConfigDir = settings->value("configDirPath").toString();
     qtConfigDir.replace("$APP_PATH$", QCoreApplication::applicationDirPath());

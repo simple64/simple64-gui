@@ -26,9 +26,7 @@ SOURCES += main.cpp \
     oglwindow.cpp \
     workerthread.cpp \
     settingclasses.cpp \
-    cheatdialog.cpp \
     interface/core_commands.cpp \
-    interface/cheat.cpp \
     interface/sdl_key_converter.c \
     logviewer.cpp \
     keypressfilter.cpp \
@@ -79,8 +77,6 @@ HEADERS  += mainwindow.h \
     oglwindow.h \
     settingclasses.h \
     osal/osal_dynamiclib.h \
-    cheatdialog.h \
-    interface/cheat.h \
     interface/sdl_key_converter.h \
     logviewer.h \
     keypressfilter.h \
