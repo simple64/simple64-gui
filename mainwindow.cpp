@@ -398,7 +398,6 @@ MainWindow::MainWindow(QWidget *parent) :
             }
         });
     }
-    my_slots[0]->setChecked(true);
 
     updateOpenRecent();
     updateGB(ui);
@@ -428,6 +427,17 @@ MainWindow::MainWindow(QWidget *parent) :
     inputPlugin = nullptr;
     loadCoreLib();
     loadPlugins();
+
+    if (coreLib)
+    {
+        m64p_handle coreConfigHandle;
+        m64p_error res = (*ConfigOpenSection)("Core", &coreConfigHandle);
+        if (res == M64ERR_SUCCESS)
+        {
+            int current_slot = (*ConfigGetParamInt)(coreConfigHandle, "CurrentStateSlot");
+            my_slots[current_slot]->setChecked(true);
+        }
+    }
 
 #ifndef __APPLE__
     QNetworkAccessManager *updateManager = new QNetworkAccessManager(this);
@@ -966,6 +976,7 @@ void MainWindow::closeCoreLib()
 {
     if (coreLib != nullptr)
     {
+        (*ConfigSaveFile)();
         (*CoreShutdown)();
         osal_dynlib_close(coreLib);
         coreLib = nullptr;
