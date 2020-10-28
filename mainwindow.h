@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "discord/discord_game_sdk.h"
 #include "oglwindow.h"
 #include "workerthread.h"
 #include "logviewer.h"
@@ -19,6 +20,11 @@ extern "C" {
 namespace Ui {
 class MainWindow;
 }
+
+struct Application {
+    struct IDiscordCore* core;
+    struct IDiscordActivityManager* activities;
+};
 
 class MainWindow : public QMainWindow
 {
@@ -62,8 +68,12 @@ public slots:
     void createOGLWindow(QSurfaceFormat* format);
     void deleteOGLWindow();
     void showMessage(QString message);
+    void updateDiscordActivity(struct DiscordActivity activity);
+    void clearDiscordActivity();
 
 private slots:
+    void discordCallback();
+
     void updateDownloadFinished(QNetworkReply *reply);
 
     void updateReplyFinished(QNetworkReply *reply);
@@ -117,6 +127,7 @@ private slots:
     void on_actionOpen_Discord_Channel_triggered();
 
 private:
+    void setupDiscord();
     void stopGame();
     void updateOpenRecent();
     void updateGB(Ui::MainWindow *ui);
@@ -146,6 +157,10 @@ private:
     m64p_dynlib_handle audioPlugin;
     m64p_dynlib_handle gfxPlugin;
     m64p_dynlib_handle inputPlugin;
+
+    struct Application discord_app;
+    IDiscordCoreEvents core_events;
+    IDiscordActivityEvents activities_events;
 };
 
 extern MainWindow *w;

@@ -83,7 +83,8 @@ HEADERS  += mainwindow.h \
     netplay/createroom.h \
     netplay/joinroom.h \
     netplay/waitroom.h \
-    version.h
+    version.h \
+    discord/discord_game_sdk.h
 
 FORMS    += mainwindow.ui
 
