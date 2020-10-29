@@ -132,7 +132,7 @@ void WaitRoom::sendPing()
         QJsonDocument json_doc = QJsonDocument(json);
         webSocket->sendBinaryMessage(json_doc.toJson());
     }
-    if (!discordCheckbox->isEnabled())
+    if (!discordCheckbox->isEnabled() && w->getDiscordApp()->lobbies)
     {
         QJsonObject json;
         json.insert("type", "get_discord_lobby");
