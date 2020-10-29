@@ -42,6 +42,7 @@ private:
     QCheckBox *discordCheckbox;
     QString discord_id;
     QString discord_secret;
+    int started;
 };
 
 #endif // WAITROOM_H

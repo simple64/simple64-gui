@@ -13,6 +13,7 @@ WaitRoom::WaitRoom(QString filename, QJsonObject room, QWebSocket *socket, QWidg
     room_port = room.value("port").toInt();
     room_name = room.value("room_name").toString();
     file_name = filename;
+    started = 0;
 
     w->getSettings()->setValue("netplay_name", player_name);
 
@@ -96,6 +97,17 @@ WaitRoom::WaitRoom(QString filename, QJsonObject room, QWebSocket *socket, QWidg
     timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &WaitRoom::sendPing);
     timer->start(5000);
+
+    struct DiscordActivity activity;
+    struct DiscordActivityAssets assets;
+    memset(&activity, 0, sizeof(activity));
+    memset(&assets, 0, sizeof(assets));
+    strcpy(assets.large_image, "6205049");
+    strcpy(assets.large_text, "https://m64p.github.io");
+    activity.assets = assets;
+    strncpy(activity.details, room.value("game_name").toString().toLatin1().data(), 128);
+    strcpy(activity.state, "Netplay waiting room");
+    w->updateDiscordActivity(activity);
 }
 
 static void discordVoiceCallback(void* callback_data, enum EDiscordResult result)
@@ -184,6 +196,8 @@ void WaitRoom::sendChat()
 
 void WaitRoom::onFinished(int)
 {
+    if (!started)
+        w->clearDiscordActivity();
     timer->stop();
     webSocket->close();
     webSocket->deleteLater();
@@ -213,6 +227,7 @@ void WaitRoom::processBinaryMessage(QByteArray message)
     }
     else if (json.value("type").toString() == "begin_game")
     {
+        started = 1;
 #ifndef SINGLE_THREAD
         w->openROM(file_name, webSocket->peerAddress().toString(), room_port, player_number);
 #else
