@@ -110,17 +110,10 @@ WaitRoom::WaitRoom(QString filename, QJsonObject room, QWebSocket *socket, QWidg
     w->updateDiscordActivity(activity);
 }
 
-static void discordVoiceCallback(void* callback_data, enum EDiscordResult result)
+static void discordConnectCallback(void*, enum EDiscordResult result, struct DiscordLobby* lobby)
 {
-}
-
-static void discordConnectCallback(void* callback_data, enum EDiscordResult result, struct DiscordLobby* lobby)
-{
-    w->getDiscordApp()->lobbies->connect_voice(w->getDiscordApp()->lobbies, lobby->id, w->getDiscordApp(), discordVoiceCallback);
-}
-
-static void discordDisconnectCallback(void* callback_data, enum EDiscordResult result)
-{
+    if (result == DiscordResult_Ok)
+        w->getDiscordApp()->lobbies->connect_voice(w->getDiscordApp()->lobbies, lobby->id, w->getDiscordApp(), nullptr);
 }
 
 void WaitRoom::discordCheck(int state)
@@ -131,7 +124,7 @@ void WaitRoom::discordCheck(int state)
     if (state == Qt::Checked)
         w->getDiscordApp()->lobbies->connect_lobby(w->getDiscordApp()->lobbies, discord_id.toLongLong(), discord_secret.toLatin1().data(), w->getDiscordApp(), discordConnectCallback);
     else if (state == Qt::Unchecked)
-        w->getDiscordApp()->lobbies->disconnect_lobby(w->getDiscordApp()->lobbies, discord_id.toLongLong(), w->getDiscordApp(), discordDisconnectCallback);
+        w->getDiscordApp()->lobbies->disconnect_lobby(w->getDiscordApp()->lobbies, discord_id.toLongLong(), w->getDiscordApp(), nullptr);
 }
 
 void WaitRoom::sendPing()

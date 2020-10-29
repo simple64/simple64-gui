@@ -460,15 +460,11 @@ void MainWindow::setupDiscord()
     QLibrary *discordLib = new QLibrary((QDir(QCoreApplication::applicationDirPath()).filePath("discord_game_sdk")), this);
 
     memset(&discord_app, 0, sizeof(discord_app));
-    memset(&core_events, 0, sizeof(core_events));
-    memset(&activities_events, 0, sizeof(activities_events));
 
     DiscordCreateParams params;
     DiscordCreateParamsSetDefault(&params);
-    params.client_id = 770838334015930398;
+    params.client_id = 770838334015930398LL;
     params.flags = DiscordCreateFlags_NoRequireDiscord;
-    params.events = &core_events;
-    params.activity_events = &activities_events;
     params.event_data = &discord_app;
 
     typedef EDiscordResult (*CreatePrototype)(DiscordVersion version, struct DiscordCreateParams* params, struct IDiscordCore** result);

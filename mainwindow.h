@@ -161,8 +161,6 @@ private:
     m64p_dynlib_handle inputPlugin;
 
     struct Discord_Application discord_app;
-    IDiscordCoreEvents core_events;
-    IDiscordActivityEvents activities_events;
 };
 
 extern MainWindow *w;
