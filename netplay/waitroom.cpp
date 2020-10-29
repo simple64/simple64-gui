@@ -116,6 +116,12 @@ static void discordConnectCallback(void*, enum EDiscordResult result, struct Dis
         w->getDiscordApp()->lobbies->connect_voice(w->getDiscordApp()->lobbies, lobby->id, w->getDiscordApp(), nullptr);
 }
 
+static void discordDisconnectCallback(void* _discord_id, enum EDiscordResult)
+{
+    QString* id = (QString*) _discord_id;
+    w->getDiscordApp()->lobbies->disconnect_lobby(w->getDiscordApp()->lobbies, id->toLongLong(), w->getDiscordApp(), nullptr);
+}
+
 void WaitRoom::discordCheck(int state)
 {
     if (!w->getDiscordApp()->lobbies)
@@ -124,7 +130,7 @@ void WaitRoom::discordCheck(int state)
     if (state == Qt::Checked)
         w->getDiscordApp()->lobbies->connect_lobby(w->getDiscordApp()->lobbies, discord_id.toLongLong(), discord_secret.toLatin1().data(), w->getDiscordApp(), discordConnectCallback);
     else if (state == Qt::Unchecked)
-        w->getDiscordApp()->lobbies->disconnect_lobby(w->getDiscordApp()->lobbies, discord_id.toLongLong(), w->getDiscordApp(), nullptr);
+        w->getDiscordApp()->lobbies->disconnect_voice(w->getDiscordApp()->lobbies, discord_id.toLongLong(), &discord_id, discordDisconnectCallback);
 }
 
 void WaitRoom::sendPing()
