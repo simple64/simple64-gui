@@ -34,6 +34,7 @@ private:
     int player_number;
     QString file_name;
     int room_port;
+    int input_delay;
     QString room_name;
     QPushButton *startGameButton;
     QLabel *pingValue;

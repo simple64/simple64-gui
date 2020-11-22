@@ -25,9 +25,10 @@ JoinRoom::JoinRoom(QWidget *parent)
     playerName->setPlaceholderText("Player Name");
     layout->addWidget(playerName, 0, 0);
 
-    QLabel *serverLabel = new QLabel("Server", this);
-    serverLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-    layout->addWidget(serverLabel, 0, 1);
+    inputDelay = new QLineEdit(this);
+    inputDelay->setPlaceholderText("Delay");
+    inputDelay->setMaximumWidth(40);
+    layout->addWidget(inputDelay, 0, 1);
     serverChooser = new QComboBox(this);
     serverChooser->setSizeAdjustPolicy(QComboBox::AdjustToContents);
     connect(serverChooser, SIGNAL(currentTextChanged(QString)), this, SLOT(serverChanged(QString)));
@@ -182,6 +183,7 @@ void JoinRoom::joinGame()
                 json.insert("player_name", playerName->text());
                 json.insert("password", passwordEdit->text());
                 json.insert("client_sha", QStringLiteral(GUI_VERSION));
+                json.insert("input_delay", inputDelay->text().toInt());
                 QJsonDocument json_doc(json);
                 webSocket->sendBinaryMessage(json_doc.toJson());
             }

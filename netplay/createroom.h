@@ -31,6 +31,7 @@ private:
     QLineEdit *nameEdit;
     QLineEdit *passwordEdit;
     QLineEdit *playerNameEdit;
+    QLineEdit *inputDelay;
     int launched;
     QString filename;
     QUdpSocket broadcastSocket;
