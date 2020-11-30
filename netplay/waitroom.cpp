@@ -12,7 +12,6 @@ WaitRoom::WaitRoom(QString filename, QJsonObject room, QWebSocket *socket, QWidg
     player_name = room.value("player_name").toString();
     room_port = room.value("port").toInt();
     room_name = room.value("room_name").toString();
-    input_delay = room.value("input_delay").toInt();
     file_name = filename;
     started = 0;
 

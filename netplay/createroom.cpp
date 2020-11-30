@@ -50,6 +50,7 @@ CreateRoom::CreateRoom(QWidget *parent)
     layout->addWidget(inputDelayLabel, 5, 0);
     inputDelay = new QLineEdit(this);
     inputDelay->setEnabled(false);
+    inputDelay->setValidator(new QIntValidator(0, 100, this));
     layout->addWidget(inputDelay, 5, 1);
 
     QLabel *serverLabel = new QLabel("Server", this);

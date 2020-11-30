@@ -27,6 +27,7 @@ JoinRoom::JoinRoom(QWidget *parent)
 
     inputDelay = new QLineEdit(this);
     inputDelay->setPlaceholderText("Input Delay");
+    inputDelay->setValidator(new QIntValidator(0, 100, this));
     inputDelay->setMaximumWidth(80);
     layout->addWidget(inputDelay, 0, 1);
     serverChooser = new QComboBox(this);
@@ -111,7 +112,7 @@ void JoinRoom::resetList()
     headers.append("Game MD5");
     headers.append("Password Protected");
     headers.append("LLE");
-    headers.append("Input Delay");
+    headers.append("Fixed Input Delay");
     listWidget->setHorizontalHeaderLabels(headers);
     listWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 }
