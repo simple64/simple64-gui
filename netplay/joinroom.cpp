@@ -250,7 +250,7 @@ void JoinRoom::serverChanged(QString serverName)
 
     QString serverUrlStr = customServerAddress.isNull() ? serverChooser->currentData().toString() : customServerAddress;
     QUrl serverUrl = QUrl(serverUrlStr);
-    if (customServerAddress != NULL && serverUrl.port() < 0)
+    if (!customServerAddress.isNull() && serverUrl.port() < 0)
         // Be forgiving of custom server addresses that forget the port
         serverUrl.setPort(45000);
 
