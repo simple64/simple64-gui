@@ -15,7 +15,7 @@ jobs:
       - name: Update and install packages
         run: |
           sudo apt-get -qq update
-          sudo apt-get -y install build-essential qt5-default libqt5websockets5-dev
+          sudo apt-get -y install build-essential qt5-default libqt5websockets5-dev libsdl2-dev
       - name: Run build script
         run: |
           echo "#define GUI_VERSION \"a12345\"" > version.h
@@ -37,6 +37,7 @@ jobs:
           update: true
           install: >-
             make
+            mingw-w64-x86_64-SDL2
             mingw-w64-x86_64-qt5
             mingw-w64-x86_64-gcc
       - name: Run build script
