@@ -7,6 +7,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Checkout core repo
+        uses: actions/checkout@v2
+        with:
+          repository: mupen64plus/mupen64plus-core
+          path: core
       - name: Update and install packages
         run: |
           sudo apt-get -qq update
@@ -21,6 +26,11 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Checkout core repo
+        uses: actions/checkout@v2
+        with:
+          repository: mupen64plus/mupen64plus-core
+          path: core
       - uses: msys2/setup-msys2@v2
         with:
           update: true
