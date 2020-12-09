@@ -42,7 +42,7 @@ jobs:
             mingw-w64-x86_64-gcc
       - name: Run build script
         run: |
-          msys2 -c 'echo "#define GUI_VERSION \"a12345\"" > version.h'
+          echo '#define GUI_VERSION "a12345"' > version.h
           mkdir build
           cd build
           msys2 -c 'qmake ..'
