@@ -222,7 +222,7 @@ void JoinRoom::serverChanged(QString serverName)
     if (serverName == "Custom")
     {
         bool ok;
-        customServerAddress = QInputDialog::getText(0, "Custom Netplay Server", "IP Address / Host:", QLineEdit::Normal, "", &ok);
+        customServerAddress = QInputDialog::getText(this, "Custom Netplay Server", "IP Address / Host:", QLineEdit::Normal, "", &ok);
 
         if (!ok || customServerAddress.isEmpty())
         {

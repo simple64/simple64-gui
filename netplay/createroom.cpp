@@ -246,7 +246,7 @@ void CreateRoom::handleServerChanged(int index)
 {
     if (serverChooser->itemData(index) == "Custom") {
         bool ok;
-        QString host = QInputDialog::getText(0, "Custom Netplay Server", "IP Address / Host:", QLineEdit::Normal, "", &ok);
+        QString host = QInputDialog::getText(this, "Custom Netplay Server", "IP Address / Host:", QLineEdit::Normal, "", &ok);
 
         if (ok && !host.isEmpty()) {
             customServerHost = host;
