@@ -1,13 +1,21 @@
 #include "mainwindow.h"
 #include <QApplication>
 #include <QCommandLineParser>
+#include <csignal>
 
 MainWindow *w = nullptr;
+
+void sigHandler(int s)
+{
+    std::signal(s, SIG_DFL);
+    w->close();
+}
+
 int main(int argc, char *argv[])
 {
     srand (time(NULL));
 
-    QApplication a(argc, argv);
+    QApplication a(argc, argv);    
 
     QCoreApplication::setApplicationName("mupen64plus-gui");
 
@@ -33,6 +41,9 @@ int main(int argc, char *argv[])
         w->setGLES();
     if (args.size() > 0)
         w->openROM(args.at(0), "", 0, 0);
+
+    std::signal(SIGINT,  sigHandler);
+    std::signal(SIGTERM, sigHandler);
 
     return a.exec();
 }
