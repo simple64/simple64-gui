@@ -12,6 +12,7 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QInputDialog>
+#include <QLabel>
 
 CreateRoom::CreateRoom(QWidget *parent)
     : QDialog(parent)
@@ -61,14 +62,19 @@ CreateRoom::CreateRoom(QWidget *parent)
     layout->addWidget(serverChooser, 6, 1);
     connect(serverChooser, SIGNAL(currentIndexChanged(int)), this, SLOT(handleServerChanged(int)));
 
+    QLabel *pingLabel = new QLabel("Your ping:", this);
+    layout->addWidget(pingLabel, 7, 0);
+    pingValue = new QLabel(this);
+    layout->addWidget(pingValue, 7, 1);
+
     QFrame* lineH1 = new QFrame(this);
     lineH1->setFrameShape(QFrame::HLine);
     lineH1->setFrameShadow(QFrame::Sunken);
-    layout->addWidget(lineH1, 7, 0, 1, 2);
+    layout->addWidget(lineH1, 8, 0, 1, 2);
 
     createButton = new QPushButton("Create Game", this);
     connect(createButton, SIGNAL (released()), this, SLOT (handleCreateButton()));
-    layout->addWidget(createButton, 8, 0, 1, 2);
+    layout->addWidget(createButton, 9, 0, 1, 2);
 
     setLayout(layout);
 
@@ -158,11 +164,7 @@ void CreateRoom::handleCreateButton()
         (*CoreDoCommand)(M64CMD_ROM_GET_SETTINGS, sizeof(rom_settings), &rom_settings);
         connect(webSocket, &QWebSocket::connected, this, &CreateRoom::onConnected);
         connect(webSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(handleConnectionError(QAbstractSocket::SocketError)));
-        QString serverAddress = serverChooser->currentData() == "Custom" ? customServerHost.prepend("ws://") : serverChooser->currentData().toString();
-        QUrl serverUrl = QUrl(serverAddress);
-        if (serverChooser->currentData() == "Custom" && serverUrl.port() < 0)
-            // Be forgiving of custom server addresses that forget the port
-            serverUrl.setPort(45000);
+        QUrl serverUrl = getServerUrl(serverChooser->currentIndex());
         connectionTimer = new QTimer(this);
         connectionTimer->setSingleShot(true);
         connectionTimer->start(1000);
@@ -252,6 +254,22 @@ void CreateRoom::handleServerChanged(int index)
             customServerHost = host;
         }
     }
+
+    if (webSocket)
+    {
+        disconnect(webSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(handleConnectionError(QAbstractSocket::SocketError)));
+        webSocket->close();
+        webSocket->deleteLater();
+    }
+
+    webSocket = new QWebSocket();
+    connect(webSocket, &QWebSocket::pong, this, &CreateRoom::updatePing);
+    QTimer *timer = new QTimer(webSocket);
+    connect(timer, &QTimer::timeout, this, &CreateRoom::sendPing);
+
+    timer->start(2500);
+    QUrl serverUrl = getServerUrl(index);
+    webSocket->open(serverUrl);
 }
 
 void CreateRoom::handleConnectionError(QAbstractSocket::SocketError error)
@@ -270,4 +288,25 @@ void CreateRoom::connectionFailed()
     createButton->setEnabled(true);
     // Trigger input dialog for custom IP address, if using custom IP
     handleServerChanged(serverChooser->currentIndex());
+}
+
+QUrl CreateRoom::getServerUrl(int index)
+{
+    QString serverAddress = serverChooser->itemData(index) == "Custom" ? customServerHost.prepend("ws://") : serverChooser->itemData(index).toString();
+    QUrl serverUrl = QUrl(serverAddress);
+    if (serverChooser->itemData(index) == "Custom" && serverUrl.port() < 0)
+        // Be forgiving of custom server addresses that forget the port
+        serverUrl.setPort(45000);
+    return serverUrl;
+}
+
+void CreateRoom::updatePing(quint64 elapsedTime, const QByteArray&)
+{
+    int inputDelay = elapsedTime / 16.66;
+    pingValue->setText(QString::number(elapsedTime) + " ms (" + QString::number(inputDelay) + " frames)");
+}
+
+void CreateRoom::sendPing()
+{
+    webSocket->ping();
 }

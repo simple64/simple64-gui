@@ -8,6 +8,7 @@
 #include <QComboBox>
 #include <QtNetwork>
 #include "interface/common.h"
+#include <QLabel>
 
 class CreateRoom : public QDialog
 {
@@ -26,6 +27,9 @@ private slots:
     void handleServerChanged(int index);
     void handleConnectionError(QAbstractSocket::SocketError error);
     void connectionFailed();
+    QUrl getServerUrl(int index);
+    void sendPing();
+    void updatePing(quint64 elapsedTime, const QByteArray&);
 private:
     QPushButton *romButton;
     QPushButton *createButton;
@@ -38,6 +42,8 @@ private:
     QLineEdit *playerNameEdit;
     QCheckBox *useInputDelay;
     QLineEdit *inputDelay;
+    QLabel *pingLabel;
+    QLabel *pingValue;
     int launched;
     QString filename;
     QUdpSocket broadcastSocket;
