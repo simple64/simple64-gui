@@ -369,11 +369,7 @@ void JoinRoom::processBinaryMessage(QByteArray message)
 
 void JoinRoom::updatePing(quint64 elapsedTime, const QByteArray&)
 {
-    int inputDelay = (elapsedTime / 16);
-    if (elapsedTime % 16 != 0) {
-        inputDelay += 1;
-    }
-    pingLabel->setText("Ping " + QString::number(elapsedTime) + " ms (" + QString::number(inputDelay) + " frames)");
+    pingLabel->setText("Ping: " + QString::number(elapsedTime) + " ms");
 }
 
 void JoinRoom::sendPing()
