@@ -20,7 +20,7 @@ class WorkerThread
     void run() Q_DECL_OVERRIDE;
 #endif
 public:
-    explicit WorkerThread(QString _netplay_ip, int _netplay_port, int _netplay_player, QObject *parent = 0);
+    explicit WorkerThread(QString _netplay_ip, int _netplay_port, int _netplay_player, int _input_delay, QObject *parent = 0);
     void setFileName(QString filename);
 #ifdef SINGLE_THREAD
     void start();
@@ -39,6 +39,7 @@ private:
     QString netplay_ip;
     int netplay_port;
     int netplay_player;
+    int input_delay;
 };
 
 #endif // WORKERTHREAD_H

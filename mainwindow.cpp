@@ -750,9 +750,9 @@ void MainWindow::updateOpenRecent()
         QAction *temp_recent = recent[i];
         connect(temp_recent, &QAction::triggered,[=](){
 #ifndef SINGLE_THREAD
-                    openROM(temp_recent->text(), "", 0, 0);
+                    openROM(temp_recent->text(), "", 0, 0, 0);
 #else
-                    singleThreadLaunch(temp_recent->text(), "", 0, 0);
+                    singleThreadLaunch(temp_recent->text(), "", 0, 0, 0);
 #endif
                 });
     }
@@ -821,13 +821,13 @@ void MainWindow::resetCore()
 }
 
 #ifdef SINGLE_THREAD
-void MainWindow::singleThreadLaunch(QString filename, QString netplay_ip, int netplay_port, int netplay_player)
+void MainWindow::singleThreadLaunch(QString filename, QString netplay_ip, int netplay_port, int netplay_player, int input_delay)
 {
-    QTimer::singleShot(1000, [=]() { openROM(filename, netplay_ip, netplay_port, netplay_player); } );
+    QTimer::singleShot(1000, [=]() { openROM(filename, netplay_ip, netplay_port, netplay_player, input_delay); } );
 }
 #endif
 
-void MainWindow::openROM(QString filename, QString netplay_ip, int netplay_port, int netplay_player)
+void MainWindow::openROM(QString filename, QString netplay_ip, int netplay_port, int netplay_player, int input_delay)
 {
 #ifdef SINGLE_THREAD
     int response;
@@ -847,7 +847,7 @@ void MainWindow::openROM(QString filename, QString netplay_ip, int netplay_port,
 
     resetCore();
 
-    workerThread = new WorkerThread(netplay_ip, netplay_port, netplay_player, this);
+    workerThread = new WorkerThread(netplay_ip, netplay_port, netplay_player, input_delay, this);
     workerThread->setFileName(filename);
 
     QStringList list;
@@ -871,9 +871,9 @@ void MainWindow::on_actionOpen_ROM_triggered()
         QFileInfo info(filename);
         settings->setValue("ROMdir", info.absoluteDir().absolutePath());
 #ifndef SINGLE_THREAD
-        openROM(filename, "", 0, 0);
+        openROM(filename, "", 0, 0, 0);
 #else
-        singleThreadLaunch(filename, "", 0, 0);
+        singleThreadLaunch(filename, "", 0, 0, 0);
 #endif
     }
 }

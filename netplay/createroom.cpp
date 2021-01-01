@@ -216,7 +216,8 @@ void CreateRoom::processBinaryMessage(QByteArray message)
     {
         json.remove("type");
         launched = 1;
-        WaitRoom *waitRoom = new WaitRoom(filename, json, webSocket, parentWidget());
+        int input_delay = inputDelay->isEnabled() ? inputDelay->text().toInt() : 0;
+        WaitRoom *waitRoom = new WaitRoom(filename, json, webSocket, input_delay, parentWidget());
         waitRoom->show();
         accept();
     }

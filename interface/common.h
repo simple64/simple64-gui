@@ -28,7 +28,7 @@
 #include <Qt>
 #include <string>
 m64p_error loadROM(std::string filename);
-m64p_error launchGame(QString netplay_ip, int netplay_port, int netplay_player);
+m64p_error launchGame(QString netplay_ip, int netplay_port, int netplay_player, int input_delay);
 int QT2SDL2MOD(Qt::KeyboardModifiers modifiers);
 extern "C" {
 #endif

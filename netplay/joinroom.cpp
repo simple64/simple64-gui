@@ -326,7 +326,9 @@ void JoinRoom::processBinaryMessage(QByteArray message)
             json.remove("type");
             json.remove("accept");
             launched = 1;
-            WaitRoom *waitRoom = new WaitRoom(filename, json, webSocket, parentWidget());
+            bool usesInputDelay = json.contains("use_input_delay") ? json.value("use_input_delay").toBool() : false;
+            int input_delay = usesInputDelay ? inputDelay->text().toInt() : 0;
+            WaitRoom *waitRoom = new WaitRoom(filename, json, webSocket, input_delay, parentWidget());
             waitRoom->show();
             accept();
         }

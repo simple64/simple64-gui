@@ -16,7 +16,7 @@ class WaitRoom : public QDialog
 {
     Q_OBJECT
 public:
-    WaitRoom(QString filename, QJsonObject room, QWebSocket *socket, QWidget *parent = nullptr);
+    WaitRoom(QString filename, QJsonObject room, QWebSocket *socket, int input_delay, QWidget *parent = nullptr);
 private slots:
     void processBinaryMessage(QByteArray message);
     void onFinished(int);
@@ -34,6 +34,7 @@ private:
     int player_number;
     QString file_name;
     int room_port;
+    int input_delay;
     QString room_name;
     QPushButton *startGameButton;
     QLabel *pingValue;

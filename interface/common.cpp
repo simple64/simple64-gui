@@ -237,7 +237,7 @@ static void loadPif()
     }
 }
 
-m64p_error launchGame(QString netplay_ip, int netplay_port, int netplay_player)
+m64p_error launchGame(QString netplay_ip, int netplay_port, int netplay_player, int input_delay)
 {
     if (!netplay_port)
         loadPif();
@@ -290,6 +290,9 @@ m64p_error launchGame(QString netplay_ip, int netplay_port, int netplay_player)
 
             if ((*CoreDoCommand)(M64CMD_NETPLAY_CONTROL_PLAYER, netplay_player, &reg_id) == M64ERR_SUCCESS)
                 DebugMessage(M64MSG_INFO, "Netplay: registered for player %d", netplay_player);
+
+            if (input_delay > 0 && (*CoreDoCommand)(M64CMD_NETPLAY_SET_INPUT_DELAY, input_delay, NULL))
+                DebugMessage(M64MSG_INFO, "Netplay: set core input delay %d", input_delay);
         }
     }
 

@@ -42,9 +42,9 @@ public:
     m64p_dynlib_handle getInputPlugin();
     m64p_dynlib_handle getGfxPlugin();
 
-    void openROM(QString filename, QString netplay_ip, int netplay_port, int netplay_player);
+    void openROM(QString filename, QString netplay_ip, int netplay_port, int netplay_player, int input_delay);
 #ifdef SINGLE_THREAD
-    void singleThreadLaunch(QString filename, QString netplay_ip, int netplay_port, int netplay_player);
+    void singleThreadLaunch(QString filename, QString netplay_ip, int netplay_port, int netplay_player, int input_delay);
 #endif
     void setVerbose();
     int getVerbose();

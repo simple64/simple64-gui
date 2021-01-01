@@ -15,7 +15,7 @@
 #define CONNECTION_TYPE Qt::BlockingQueuedConnection
 #endif
 
-WorkerThread::WorkerThread(QString _netplay_ip, int _netplay_port, int _netplay_player, QObject *parent)
+WorkerThread::WorkerThread(QString _netplay_ip, int _netplay_port, int _netplay_player, int _input_delay, QObject *parent)
 #ifdef SINGLE_THREAD
     : QObject(parent)
 #else
@@ -25,6 +25,7 @@ WorkerThread::WorkerThread(QString _netplay_ip, int _netplay_port, int _netplay_
     netplay_ip = _netplay_ip;
     netplay_port = _netplay_port;
     netplay_player = _netplay_player;
+    input_delay = _input_delay;
 }
 
 #ifdef SINGLE_THREAD
@@ -72,7 +73,7 @@ void WorkerThread::run()
         strncpy(activity.details, rom_settings.goodname, 128);
         emit updateDiscordActivity(activity);
 
-        res = launchGame(netplay_ip, netplay_port, netplay_player);
+        res = launchGame(netplay_ip, netplay_port, netplay_player, input_delay);
 
         emit clearDiscordActivity();
     }

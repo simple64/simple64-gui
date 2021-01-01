@@ -4,7 +4,7 @@
 #include <QGridLayout>
 #include <QMessageBox>
 
-WaitRoom::WaitRoom(QString filename, QJsonObject room, QWebSocket *socket, QWidget *parent)
+WaitRoom::WaitRoom(QString filename, QJsonObject room, QWebSocket *socket, int _input_delay, QWidget *parent)
     : QDialog(parent)
 {
     this->resize(640,480);
@@ -13,6 +13,7 @@ WaitRoom::WaitRoom(QString filename, QJsonObject room, QWebSocket *socket, QWidg
     room_port = room.value("port").toInt();
     room_name = room.value("room_name").toString();
     file_name = filename;
+    input_delay = _input_delay;
     started = 0;
 
     w->getSettings()->setValue("netplay_name", player_name);
@@ -228,9 +229,9 @@ void WaitRoom::processBinaryMessage(QByteArray message)
     {
         started = 1;
 #ifndef SINGLE_THREAD
-        w->openROM(file_name, webSocket->peerAddress().toString(), room_port, player_number);
+        w->openROM(file_name, webSocket->peerAddress().toString(), room_port, player_number, input_delay);
 #else
-        w->singleThreadLaunch(file_name, webSocket->peerAddress().toString(), room_port, player_number);
+        w->singleThreadLaunch(file_name, webSocket->peerAddress().toString(), room_port, player_number, input_delay);
 #endif
         accept();
     }

@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
     if (parser.isSet(GLESOption))
         w->setGLES();
     if (args.size() > 0)
-        w->openROM(args.at(0), "", 0, 0);
+        w->openROM(args.at(0), "", 0, 0, 0);
 
     return a.exec();
 }
