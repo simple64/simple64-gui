@@ -249,9 +249,9 @@ void JoinRoom::serverChanged(int index)
     resetList();
     webSocket = new QWebSocket();
     connect(webSocket, &QWebSocket::connected, this, &JoinRoom::onConnected);
-    connectionTimer = new QTimer(this);
+    connectionTimer = new QTimer(webSocket);
     connectionTimer->setSingleShot(true);
-    connectionTimer->start(1000);
+    connectionTimer->start(5000);
 
     QTimer *pingTimer = new QTimer(webSocket);
     connect(webSocket, &QWebSocket::pong, this, &JoinRoom::updatePing);

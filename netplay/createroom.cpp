@@ -115,7 +115,6 @@ void CreateRoom::onFinished(int)
     (*CoreDoCommand)(M64CMD_ROM_CLOSE, 0, NULL);
     if (!launched && webSocket)
     {
-        disconnect(webSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(handleConnectionError(QAbstractSocket::SocketError)));
         webSocket->close();
         webSocket->deleteLater();
     }
@@ -155,21 +154,21 @@ void CreateRoom::handleCreateButton()
     if (loadROM(romButton->text().toStdString()) == M64ERR_SUCCESS)
     {
         createButton->setEnabled(false);
-        if (webSocket)
-        {
-            webSocket->close();
-            webSocket->deleteLater();
-        }
-        webSocket = new QWebSocket;
         (*CoreDoCommand)(M64CMD_ROM_GET_SETTINGS, sizeof(rom_settings), &rom_settings);
-        connect(webSocket, &QWebSocket::connected, this, &CreateRoom::onConnected);
-        connect(webSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(handleConnectionError(QAbstractSocket::SocketError)));
-        QUrl serverUrl = getServerUrl(serverChooser->currentIndex());
-        connectionTimer = new QTimer(this);
+
+        connectionTimer = new QTimer(webSocket);
         connectionTimer->setSingleShot(true);
-        connectionTimer->start(1000);
+        connectionTimer->start(5000);
         connect(connectionTimer, SIGNAL(timeout()), this, SLOT(connectionFailed()));
-        webSocket->open(serverUrl);
+
+        if (webSocket->isValid())
+        {
+            createRoom();
+        }
+        else
+        {
+            connect(webSocket, &QWebSocket::connected, this, &CreateRoom::createRoom);
+        }
     }
     else
     {
@@ -178,7 +177,7 @@ void CreateRoom::handleCreateButton()
     }
 }
 
-void CreateRoom::onConnected()
+void CreateRoom::createRoom()
 {
     connect(webSocket, &QWebSocket::binaryMessageReceived,
             this, &CreateRoom::processBinaryMessage);
@@ -257,29 +256,27 @@ void CreateRoom::handleServerChanged(int index)
 
     if (webSocket)
     {
-        disconnect(webSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(handleConnectionError(QAbstractSocket::SocketError)));
         webSocket->close();
         webSocket->deleteLater();
     }
 
-    webSocket = new QWebSocket();
+    webSocket = new QWebSocket;
     connect(webSocket, &QWebSocket::pong, this, &CreateRoom::updatePing);
-    QTimer *timer = new QTimer(this);
+    QTimer *timer = new QTimer(webSocket);
     connect(timer, &QTimer::timeout, this, &CreateRoom::sendPing);
 
     timer->start(2500);
-    QUrl serverUrl = getServerUrl(index);
-    webSocket->open(serverUrl);
-}
+    QString serverAddress = serverChooser->itemData(index) == "Custom" ? customServerHost.prepend("ws://") : serverChooser->itemData(index).toString();
+    QUrl serverUrl = QUrl(serverAddress);
+    if (serverChooser->itemData(index) == "Custom" && serverUrl.port() < 0)
+        // Be forgiving of custom server addresses that forget the port
+        serverUrl.setPort(45000);
 
-void CreateRoom::handleConnectionError(QAbstractSocket::SocketError error)
-{
-    connectionFailed();
+    webSocket->open(serverUrl);
 }
 
 void CreateRoom::connectionFailed()
 {
-    disconnect(webSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(handleConnectionError(QAbstractSocket::SocketError)));
     (*CoreDoCommand)(M64CMD_ROM_CLOSE, 0, NULL);
     QMessageBox msgBox;
     msgBox.setText("Could not connect to netplay server.");
@@ -288,16 +285,6 @@ void CreateRoom::connectionFailed()
     createButton->setEnabled(true);
     // Trigger input dialog for custom IP address, if using custom IP
     handleServerChanged(serverChooser->currentIndex());
-}
-
-QUrl CreateRoom::getServerUrl(int index)
-{
-    QString serverAddress = serverChooser->itemData(index) == "Custom" ? customServerHost.prepend("ws://") : serverChooser->itemData(index).toString();
-    QUrl serverUrl = QUrl(serverAddress);
-    if (serverChooser->itemData(index) == "Custom" && serverUrl.port() < 0)
-        // Be forgiving of custom server addresses that forget the port
-        serverUrl.setPort(45000);
-    return serverUrl;
 }
 
 void CreateRoom::updatePing(quint64 elapsedTime, const QByteArray&)

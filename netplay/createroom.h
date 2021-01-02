@@ -18,16 +18,14 @@ public:
 private slots:
     void handleRomButton();
     void handleCreateButton();
-    void onConnected();
+    void createRoom();
     void downloadFinished(QNetworkReply *reply);
     void processBinaryMessage(QByteArray message);
     void onFinished(int result);
     void processBroadcast();
     void handleUseInputDelay(bool useInputDelay);
     void handleServerChanged(int index);
-    void handleConnectionError(QAbstractSocket::SocketError error);
     void connectionFailed();
-    QUrl getServerUrl(int index);
     void sendPing();
     void updatePing(quint64 elapsedTime, const QByteArray&);
 private:
