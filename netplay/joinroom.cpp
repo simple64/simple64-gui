@@ -249,7 +249,7 @@ void JoinRoom::serverChanged(int index)
     resetList();
     webSocket = new QWebSocket();
     connect(webSocket, &QWebSocket::connected, this, &JoinRoom::onConnected);
-    connectionTimer = new QTimer(webSocket);
+    connectionTimer = new QTimer(this);
     connectionTimer->setSingleShot(true);
     connectionTimer->start(1000);
 

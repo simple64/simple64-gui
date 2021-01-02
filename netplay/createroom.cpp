@@ -264,7 +264,7 @@ void CreateRoom::handleServerChanged(int index)
 
     webSocket = new QWebSocket();
     connect(webSocket, &QWebSocket::pong, this, &CreateRoom::updatePing);
-    QTimer *timer = new QTimer(webSocket);
+    QTimer *timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &CreateRoom::sendPing);
 
     timer->start(2500);
