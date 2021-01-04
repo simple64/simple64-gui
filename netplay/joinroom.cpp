@@ -33,7 +33,7 @@ JoinRoom::JoinRoom(QWidget *parent)
     inputDelay->setMaximumWidth(80);
     layout->addWidget(inputDelay, 0, 1);
 
-    pingLabel = new QLabel("Ping: (Unknown)", this);
+    pingLabel = new QLabel("Ping: (Calculating)", this);
     layout->addWidget(pingLabel, 0, 2);
 
     serverChooser = new QComboBox(this);
@@ -246,16 +246,22 @@ void JoinRoom::serverChanged(int index)
         customServerAddress = QString::null;
     }
 
+    pingLabel->setText("Ping: (Calculating)");
+
     resetList();
     webSocket = new QWebSocket();
     connect(webSocket, &QWebSocket::connected, this, &JoinRoom::onConnected);
-    connectionTimer = new QTimer(webSocket);
+    connectionTimer = new QTimer(this);
     connectionTimer->setSingleShot(true);
     connectionTimer->start(5000);
+    connect(webSocket, &QWebSocket::disconnected, connectionTimer, &QTimer::stop);
+    connect(webSocket, &QObject::destroyed, connectionTimer, &QTimer::stop);
 
-    QTimer *pingTimer = new QTimer(webSocket);
+    QTimer *pingTimer = new QTimer(this);
     connect(webSocket, &QWebSocket::pong, this, &JoinRoom::updatePing);
     connect(pingTimer, &QTimer::timeout, this, &JoinRoom::sendPing);
+    connect(webSocket, &QWebSocket::disconnected, pingTimer, &QTimer::stop);
+    connect(webSocket, &QObject::destroyed, pingTimer, &QTimer::stop);
     pingTimer->start(2500);
     webSocket->ping();
 

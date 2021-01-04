@@ -65,6 +65,7 @@ CreateRoom::CreateRoom(QWidget *parent)
     QLabel *pingLabel = new QLabel("Your ping:", this);
     layout->addWidget(pingLabel, 7, 0);
     pingValue = new QLabel(this);
+    pingValue->setText("(Calculating)");
     layout->addWidget(pingValue, 7, 1);
 
     QFrame* lineH1 = new QFrame(this);
@@ -160,6 +161,8 @@ void CreateRoom::handleCreateButton()
         connectionTimer->setSingleShot(true);
         connectionTimer->start(5000);
         connect(connectionTimer, SIGNAL(timeout()), this, SLOT(connectionFailed()));
+        connect(webSocket, &QWebSocket::disconnected, connectionTimer, &QTimer::stop);
+        connect(webSocket, &QObject::destroyed, connectionTimer, &QTimer::stop);
 
         if (webSocket->isValid())
         {
@@ -260,10 +263,14 @@ void CreateRoom::handleServerChanged(int index)
         webSocket->deleteLater();
     }
 
+    pingValue->setText("(Calculating)");
+
     webSocket = new QWebSocket;
     connect(webSocket, &QWebSocket::pong, this, &CreateRoom::updatePing);
     QTimer *timer = new QTimer(webSocket);
     connect(timer, &QTimer::timeout, this, &CreateRoom::sendPing);
+    connect(webSocket, &QWebSocket::disconnected, timer, &QTimer::stop);
+    connect(webSocket, &QObject::destroyed, timer, &QTimer::stop);
 
     timer->start(2500);
     QString serverAddress = serverChooser->itemData(index) == "Custom" ? customServerHost.prepend("ws://") : serverChooser->itemData(index).toString();
