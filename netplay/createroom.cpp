@@ -157,7 +157,7 @@ void CreateRoom::handleCreateButton()
         createButton->setEnabled(false);
         (*CoreDoCommand)(M64CMD_ROM_GET_SETTINGS, sizeof(rom_settings), &rom_settings);
 
-        connectionTimer = new QTimer(webSocket);
+        connectionTimer = new QTimer(this);
         connectionTimer->setSingleShot(true);
         connectionTimer->start(5000);
         connect(connectionTimer, SIGNAL(timeout()), this, SLOT(connectionFailed()));
@@ -267,7 +267,7 @@ void CreateRoom::handleServerChanged(int index)
 
     webSocket = new QWebSocket;
     connect(webSocket, &QWebSocket::pong, this, &CreateRoom::updatePing);
-    QTimer *timer = new QTimer(webSocket);
+    QTimer *timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &CreateRoom::sendPing);
     connect(webSocket, &QWebSocket::disconnected, timer, &QTimer::stop);
     connect(webSocket, &QObject::destroyed, timer, &QTimer::stop);
