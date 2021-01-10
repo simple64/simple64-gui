@@ -33,6 +33,8 @@ int main(int argc, char *argv[])
         w->setGLES();
     if (args.size() > 0)
         w->openROM(args.at(0), "", 0, 0);
+    else
+        w->updateApp();
 
     return a.exec();
 }
