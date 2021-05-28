@@ -144,7 +144,7 @@ void MainWindow::updateDD(Ui::MainWindow *ui)
     DD->addAction(fileSelect);
     connect(fileSelect, &QAction::triggered, [=](){
         QString filename = QFileDialog::getOpenFileName(this,
-            tr("64DD IPL ROM"), NULL, tr("64DD ROM File (*.zip, *.7z, *.z64, *.n64, *.v64, *.rom, *.usa, *.jap, *.pal, *.bin)"));
+            tr("64DD IPL ROM"), NULL, tr("64DD IPL ROM File (*.zip, *.7z, *.z64, *.n64, *.v64, *.rom, *.usa, *.jap, *.pal, *.bin)"));
         if (!filename.isNull()) {
             settings->setValue("DD_ROM", filename);
             QString current = filename;
