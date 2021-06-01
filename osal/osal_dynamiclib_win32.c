@@ -34,7 +34,7 @@ m64p_error osal_dynlib_open(m64p_dynlib_handle *pLibHandle, const char *pccLibra
 
     wchar_t wstr[1024];
     MultiByteToWideChar(CP_UTF8, 0, pccLibraryPath, -1, wstr, 1024);
-    *pLibHandle = LoadLibrary(wstr);
+    *pLibHandle = LoadLibraryW(wstr);
 
     if (*pLibHandle == NULL)
     {
