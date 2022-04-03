@@ -15,8 +15,8 @@ jobs:
           path: mupen64plus-core
       - name: Update and install packages
         run: |
-          sudo dnf -y update
-          sudo dnf -y install qt5-qtwebsockets-devel
+          dnf -y update
+          dnf -y install qt5-qtwebsockets-devel
       - name: Run build script
         run: |
           echo "#define GUI_VERSION \"a12345\"" > version.h
