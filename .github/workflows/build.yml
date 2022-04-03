@@ -15,6 +15,8 @@ jobs:
           path: mupen64plus-core
       - name: Update and install packages
         run: |
+          dnf -y config-manager --set-enabled powertools
+          dnf -y install epel-release epel-next-release
           dnf -y update
           dnf -y install qt5-qtwebsockets-devel SDL2-devel
       - name: Run build script
