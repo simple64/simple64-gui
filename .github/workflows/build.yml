@@ -5,7 +5,7 @@ on: [push, pull_request]
 jobs:
   build-linux:
     runs-on: ubuntu-20.04
-    container: quay.io/centos/centos:stream8
+    container: quay.io/centos/centos:stream9
     steps:
       - uses: actions/checkout@v2
       - name: Checkout core repo
