@@ -719,6 +719,7 @@ void MainWindow::deleteOGLWindow()
     QWidget *container = new QWidget(this);
     my_window->context()->doneCurrent();
     setCentralWidget(container);
+    my_window->deleteLater();
 }
 
 void MainWindow::stopGame()
