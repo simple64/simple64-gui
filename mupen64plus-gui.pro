@@ -75,6 +75,8 @@ SOURCES += osal/osal_dynamiclib_win32.c
 !win32 {
 QT += dbus
 
+CONFIG += ltcg
+
 SOURCES += osal/osal_dynamiclib_unix.c
 
 LIBS += -L/usr/local/lib -ldl -lSDL2 -lz
@@ -104,8 +106,6 @@ FORMS    += mainwindow.ui
 QMAKE_INCDIR += api interface
 
 QMAKE_LFLAGS += -no-pie
-
-CONFIG += ltcg
 
 QMAKE_CXXFLAGS_RELEASE -= -O2
 QMAKE_CXXFLAGS_RELEASE += -O3 -march=x86-64-v3
