@@ -1,18 +1,23 @@
 name: Build project
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
 
 jobs:
   build-linux:
     runs-on: ubuntu-20.04
-    container: quay.io/centos/centos:stream9
+    container: registry.fedoraproject.org/fedora:latest
     steps:
       - uses: actions/checkout@v3
       - name: Checkout core repo
         uses: actions/checkout@v3
         with:
-          repository: mupen64plus/mupen64plus-core
+          repository: loganmc10/mupen64plus-core
           path: mupen64plus-core
+          ref: m64p
       - name: Update and install packages
         run: |
           dnf -y update
