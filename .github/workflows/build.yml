@@ -27,7 +27,7 @@ jobs:
           echo "#define GUI_VERSION \"a12345\"" > version.h
           mkdir build
           cd build
-          qmake-qt5 ..
+          qmake-qt6 ..
           make
   build-windows:
     runs-on: windows-2022
@@ -44,7 +44,7 @@ jobs:
           install: >-
             make
             mingw-w64-x86_64-SDL2
-            mingw-w64-x86_64-qt5
+            mingw-w64-x86_64-qt6
             mingw-w64-x86_64-gcc
       - name: Run build script
         run: |
