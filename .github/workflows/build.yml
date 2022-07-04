@@ -51,5 +51,5 @@ jobs:
           echo '#define GUI_VERSION "a12345"' > version.h
           mkdir build
           cd build
-          msys2 -c 'qmake ..'
+          msys2 -c 'qmake-qt6 ..'
           msys2 -c 'make'
