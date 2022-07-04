@@ -27,7 +27,7 @@ jobs:
           echo "#define GUI_VERSION \"a12345\"" > version.h
           mkdir build
           cd build
-          qmake-qt6 ..
+          qmake ..
           make
   build-windows:
     runs-on: windows-2022
