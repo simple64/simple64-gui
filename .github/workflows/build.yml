@@ -15,7 +15,7 @@ jobs:
       - name: Checkout core repo
         uses: actions/checkout@v3
         with:
-          repository: loganmc10/mupen64plus-core
+          repository: simple64/mupen64plus-core
           path: mupen64plus-core
           ref: simple64
       - name: Update and install packages
