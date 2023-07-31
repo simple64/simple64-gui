@@ -123,8 +123,6 @@ PluginDialog::PluginDialog(QWidget *parent)
     : QDialog(parent)
 {
     m64p_error res;
-    int value;
-    (*CoreDoCommand)(M64CMD_CORE_STATE_QUERY, M64CORE_EMU_STATE, &value);
 
     coreLayoutRow = 0;
     QVBoxLayout *mainLayout = new QVBoxLayout(this);

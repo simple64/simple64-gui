@@ -37,3 +37,11 @@ CustomCheckBox::CustomCheckBox(QWidget *parent)
         (*ConfigSaveFile)();
     });
 }
+
+CustomButton::CustomButton(QWidget *parent)
+    : QPushButton(parent)
+{
+    connect(this, &QPushButton::released, [=]{
+        this->setDisabled(1);
+    });
+}

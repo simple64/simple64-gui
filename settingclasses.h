@@ -49,4 +49,24 @@ private:
     m64p_handle m_CurrentHandle;
 };
 
+class CustomButton : public QPushButton
+{
+public:
+    explicit CustomButton(QWidget *parent = 0);
+    void setParamName(const char* ParamName) {
+        m_ParamName = ParamName;
+    }
+    void setParamType(m64p_type ParamType) {
+        m_ParamType = ParamType;
+    }
+    void setConfigHandle(m64p_handle CurrentHandle) {
+        m_CurrentHandle = CurrentHandle;
+    }
+
+private:
+    m64p_type m_ParamType;
+    QString m_ParamName;
+    m64p_handle m_CurrentHandle;
+};
+
 #endif // SETTINGCLASSES_H

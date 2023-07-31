@@ -10,8 +10,6 @@ public:
     PluginDialog(QWidget *parent = nullptr);
 private slots:
     void handleResetButton();
-private:
-    QString AudioName;
 };
 
 #endif // PLUGINDIALOG_H
