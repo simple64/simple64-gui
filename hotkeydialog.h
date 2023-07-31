@@ -55,12 +55,16 @@ public:
     void setMainButton(CustomButton* MainButton) {
         m_MainButton = MainButton;
     }
+    void setDialog(void* Dialog) {
+        m_dialog = Dialog;
+    }
 
 private:
     m64p_type m_ParamType;
     QString m_ParamName;
     m64p_handle m_CurrentHandle;
     CustomButton* m_MainButton;
+    void* m_dialog;
 };
 
 class HotkeyDialog : public QDialog
@@ -88,6 +92,10 @@ public:
     }
     void setActiveButton(CustomButton* button){
         m_activeButton = button;
+    }
+    CustomButton* getActiveButton()
+    {
+        return m_activeButton;
     }
 protected:
     void keyReleaseEvent(QKeyEvent *event) Q_DECL_OVERRIDE;

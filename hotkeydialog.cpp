@@ -43,6 +43,7 @@ static void paramListCallback(void *context, const char *ParamName, m64p_type Pa
     clear_Widget->setConfigHandle(dialog->getHandle());
     clear_Widget->setParamType(ParamType);
     clear_Widget->setParamName(ParamName);
+    clear_Widget->setDialog(dialog);
     clear_Widget->setMainButton(my_Widget);
     l_ParamInt = (*ConfigGetParamInt)(dialog->getHandle(), ParamName);
     clear_Widget->setText("Clear");
@@ -148,6 +149,8 @@ ClearButton::ClearButton(QWidget *parent)
     : QPushButton(parent)
 {
     connect(this, &QPushButton::released, [=]{
+        if (((HotkeyDialog*)m_dialog)->getActiveButton() == m_MainButton)
+            return;
         int value = 0;
         (*ConfigSetParameter)(m_CurrentHandle, m_ParamName.toUtf8().constData(), m_ParamType, &value);
         (*ConfigSaveFile)();
