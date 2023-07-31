@@ -19,15 +19,24 @@ public:
     void setConfigHandle(m64p_handle CurrentHandle) {
         m_CurrentHandle = CurrentHandle;
     }
-    void setButtonList(QList<CustomButton*>* ButtonList) {
-        m_coreEventsButtonList = ButtonList;
+    void setDialog(void* Dialog) {
+        m_dialog = Dialog;
     }
-
+    QString getOrigText() {
+        return origText;
+    }
+    const char * getParamName() {
+        return m_ParamName.toUtf8().constData();
+    }
+    m64p_type getParamType() {
+        return m_ParamType;
+    }
 private:
     m64p_type m_ParamType;
     QString m_ParamName;
     m64p_handle m_CurrentHandle;
-    QList<CustomButton*>* m_coreEventsButtonList;
+    void* m_dialog;
+    QString origText;
 };
 
 class ClearButton : public QPushButton
@@ -59,10 +68,30 @@ class HotkeyDialog : public QDialog
     Q_OBJECT
 public:
     HotkeyDialog(QWidget *parent = nullptr);
-    QList<CustomButton*>* getButtonList();
-    m64p_handle getHandle();
-    QGridLayout* getLayout();
-    int* getLayoutRow();
+    QList<CustomButton*>* getButtonList(){
+        return &m_coreEventsButtonList;
+    }
+    m64p_handle getHandle(){
+        return m_configHandle;
+    }
+    QGridLayout* getLayout(){
+        return m_layout;
+    }
+    int* getLayoutRow(){
+        return &m_layoutRow;
+    }
+    void setTimer(int timer){
+        m_timer = startTimer(timer);
+    }
+    void setButtonTimer(int timer){
+        m_buttonTimer = timer;
+    }
+    void setActiveButton(CustomButton* button){
+        m_activeButton = button;
+    }
+protected:
+    void keyReleaseEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
+    void timerEvent(QTimerEvent *event) Q_DECL_OVERRIDE;
 private slots:
     void handleResetButton();
 private:
@@ -70,6 +99,9 @@ private:
     m64p_handle m_configHandle;
     QGridLayout *m_layout;
     int m_layoutRow;
+    CustomButton* m_activeButton;
+    int m_timer;
+    int m_buttonTimer;
 };
 
 #endif // HOTKEYDIALOG_H

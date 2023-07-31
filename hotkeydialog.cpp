@@ -33,7 +33,7 @@ static void paramListCallback(void *context, const char *ParamName, m64p_type Pa
     my_Widget->setConfigHandle(dialog->getHandle());
     my_Widget->setParamType(ParamType);
     my_Widget->setParamName(ParamName);
-    my_Widget->setButtonList(dialog->getButtonList());
+    my_Widget->setDialog(dialog);
     l_ParamInt = (*ConfigGetParamInt)(dialog->getHandle(), ParamName);
     my_Widget->setText(QKeySequence(SDL22QT(sdl_keysym2scancode(l_ParamInt))).toString());
 
@@ -73,6 +73,8 @@ HotkeyDialog::HotkeyDialog(QWidget *parent)
 {
     m64p_error res;
 
+    m_activeButton = nullptr;
+
     m_layoutRow = 0;
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
 
@@ -98,32 +100,47 @@ HotkeyDialog::HotkeyDialog(QWidget *parent)
     setLayout(mainLayout);
 }
 
-QList<CustomButton*>* HotkeyDialog::getButtonList()
+void HotkeyDialog::keyReleaseEvent(QKeyEvent *event)
 {
-    return &m_coreEventsButtonList;
+    int keyValue = sdl_scancode2keysym(QT2SDL2(event->key()));
+    if (m_activeButton != nullptr) {
+        killTimer(m_timer);
+        (*ConfigSetParameter)(m_configHandle, m_activeButton->getParamName(), m_activeButton->getParamType(), &keyValue);
+        (*ConfigSaveFile)();
+        m_activeButton->setText(QKeySequence(event->key()).toString());
+        m_activeButton = nullptr;
+        for (int i = 0; i < m_coreEventsButtonList.size(); ++i)
+            m_coreEventsButtonList.at(i)->setDisabled(0);
+    }
 }
 
-m64p_handle HotkeyDialog::getHandle()
+void HotkeyDialog::timerEvent(QTimerEvent *)
 {
-    return m_configHandle;
-}
-
-QGridLayout* HotkeyDialog::getLayout()
-{
-    return m_layout;
-}
-
-int* HotkeyDialog::getLayoutRow()
-{
-    return &m_layoutRow;
+    if (m_buttonTimer == 0) {
+        killTimer(m_timer);
+        m_activeButton->setText(m_activeButton->getOrigText());
+        m_activeButton = nullptr;
+        for (int i = 0; i < m_coreEventsButtonList.size(); ++i) {
+            m_coreEventsButtonList.at(i)->setDisabled(0);
+        }
+        return;
+    }
+    --m_buttonTimer;
+    m_activeButton->setText(QString::number(ceil(m_buttonTimer/10.0)));
 }
 
 CustomButton::CustomButton(QWidget *parent)
     : QPushButton(parent)
 {
     connect(this, &QPushButton::released, [=]{
-        for (int i = 0; i < m_coreEventsButtonList->size(); ++i)
-            m_coreEventsButtonList->at(i)->setDisabled(1);
+        int buttonTimer = 50;
+        for (int i = 0; i < ((HotkeyDialog*)m_dialog)->getButtonList()->size(); ++i)
+            ((HotkeyDialog*)m_dialog)->getButtonList()->at(i)->setDisabled(1);
+        ((HotkeyDialog*)m_dialog)->setActiveButton(this);
+        ((HotkeyDialog*)m_dialog)->setButtonTimer(buttonTimer);
+        origText = text();
+        setText(QString::number(buttonTimer/10));
+        ((HotkeyDialog*)m_dialog)->setTimer(100);
     });
 }
 
