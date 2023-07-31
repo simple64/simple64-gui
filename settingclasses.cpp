@@ -45,3 +45,14 @@ CustomButton::CustomButton(QWidget *parent)
         this->setDisabled(1);
     });
 }
+
+ClearButton::ClearButton(QWidget *parent)
+    : QPushButton(parent)
+{
+    connect(this, &QPushButton::released, [=]{
+        int value = 0;
+        (*ConfigSetParameter)(m_CurrentHandle, m_ParamName.toUtf8().constData(), m_ParamType, &value);
+        (*ConfigSaveFile)();
+        m_MainButton->setText("");
+    });
+}

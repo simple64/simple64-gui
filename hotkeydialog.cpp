@@ -34,14 +34,24 @@ static void paramListCallback(void *context, const char *ParamName, m64p_type Pa
     }
     desc->setStyleSheet("border: 1px solid; padding: 10px");
     coreEventsLayout->addWidget(desc, coreEventsLayoutRow, 0);
-    void *my_Widget = new CustomButton(coreEventsLayout->parentWidget());
-    ((CustomButton*)my_Widget)->setConfigHandle(coreEventsConfigHandle);
-    ((CustomButton*)my_Widget)->setParamType(ParamType);
-    ((CustomButton*)my_Widget)->setParamName(ParamName);
+    CustomButton *my_Widget = new CustomButton(coreEventsLayout->parentWidget());
+    my_Widget->setConfigHandle(coreEventsConfigHandle);
+    my_Widget->setParamType(ParamType);
+    my_Widget->setParamName(ParamName);
     l_ParamInt = (*ConfigGetParamInt)(coreEventsConfigHandle, ParamName);
-    ((CustomButton*)my_Widget)->setText(QKeySequence(SDL22QT(sdl_keysym2scancode(l_ParamInt))).toString());
+    my_Widget->setText(QKeySequence(SDL22QT(sdl_keysym2scancode(l_ParamInt))).toString());
 
     coreEventsLayout->addWidget((QWidget*)my_Widget, coreEventsLayoutRow, 1);
+
+    ClearButton* clear_Widget = new ClearButton(coreEventsLayout->parentWidget());
+    clear_Widget->setConfigHandle(coreEventsConfigHandle);
+    clear_Widget->setParamType(ParamType);
+    clear_Widget->setParamName(ParamName);
+    clear_Widget->setMainButton(my_Widget);
+    l_ParamInt = (*ConfigGetParamInt)(coreEventsConfigHandle, ParamName);
+    clear_Widget->setText("Clear");
+
+    coreEventsLayout->addWidget((QWidget*)clear_Widget, coreEventsLayoutRow, 2);
     ++coreEventsLayoutRow;
 }
 
