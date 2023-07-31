@@ -117,3 +117,23 @@ int* HotkeyDialog::getLayoutRow()
 {
     return &m_layoutRow;
 }
+
+CustomButton::CustomButton(QWidget *parent)
+    : QPushButton(parent)
+{
+    connect(this, &QPushButton::released, [=]{
+        for (int i = 0; i < m_coreEventsButtonList->size(); ++i)
+            m_coreEventsButtonList->at(i)->setDisabled(1);
+    });
+}
+
+ClearButton::ClearButton(QWidget *parent)
+    : QPushButton(parent)
+{
+    connect(this, &QPushButton::released, [=]{
+        int value = 0;
+        (*ConfigSetParameter)(m_CurrentHandle, m_ParamName.toUtf8().constData(), m_ParamType, &value);
+        (*ConfigSaveFile)();
+        m_MainButton->setText("");
+    });
+}
