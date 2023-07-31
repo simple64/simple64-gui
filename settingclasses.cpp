@@ -42,7 +42,8 @@ CustomButton::CustomButton(QWidget *parent)
     : QPushButton(parent)
 {
     connect(this, &QPushButton::released, [=]{
-        this->setDisabled(1);
+        for (int i = 0; i < m_coreEventsButtonList->size(); ++i)
+            m_coreEventsButtonList->at(i)->setDisabled(1);
     });
 }
 

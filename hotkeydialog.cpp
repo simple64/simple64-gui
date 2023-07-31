@@ -33,6 +33,7 @@ static void paramListCallback(void *context, const char *ParamName, m64p_type Pa
     my_Widget->setConfigHandle(dialog->getHandle());
     my_Widget->setParamType(ParamType);
     my_Widget->setParamName(ParamName);
+    my_Widget->setButtonList(dialog->getButtonList());
     l_ParamInt = (*ConfigGetParamInt)(dialog->getHandle(), ParamName);
     my_Widget->setText(QKeySequence(SDL22QT(sdl_keysym2scancode(l_ParamInt))).toString());
 
