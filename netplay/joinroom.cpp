@@ -170,16 +170,18 @@ void JoinRoom::joinGame()
     {
         if (loadROM(filename) == M64ERR_SUCCESS)
         {
-            QJsonObject json = rooms.at(listWidget->currentRow());
+            int room_port = rooms.at(listWidget->currentRow()).value("port").toInt();
             m64p_rom_settings rom_settings;
             (*CoreDoCommand)(M64CMD_ROM_GET_SETTINGS, sizeof(rom_settings), &rom_settings);
 
             joinButton->setEnabled(false);
+            QJsonObject json;
             json.insert("type", "request_join_room");
             json.insert("player_name", playerName->text());
             json.insert("password", passwordEdit->text());
             json.insert("client_sha", QStringLiteral(GUI_VERSION));
             json.insert("MD5", QString(rom_settings.MD5));
+            json.insert("port", room_port);
             QJsonDocument json_doc(json);
             webSocket->sendBinaryMessage(json_doc.toJson());
         }
