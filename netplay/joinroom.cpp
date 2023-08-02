@@ -180,7 +180,6 @@ void JoinRoom::joinGame()
             json.insert("password", passwordEdit->text());
             json.insert("client_sha", QStringLiteral(GUI_VERSION));
             json.insert("MD5", QString(rom_settings.MD5));
-            json.insert("emulator", "simple64");
             QJsonDocument json_doc(json);
             webSocket->sendBinaryMessage(json_doc.toJson());
         }
