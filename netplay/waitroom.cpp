@@ -183,7 +183,7 @@ void WaitRoom::processBinaryMessage(QByteArray message)
             }
         }
     }
-    else if (json.value("type").toString() == "replyt_chat_message")
+    else if (json.value("type").toString() == "reply_chat_message")
     {
         chatWindow->appendPlainText(json.value("message").toString());
     }
