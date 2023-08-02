@@ -36,7 +36,6 @@ private:
     QLineEdit *passwordEdit;
     QPushButton *joinButton;
     QPushButton *refreshButton;
-    //QLineEdit *inputDelay;
     QLabel *pingLabel;
     QList<QJsonObject> rooms;
     int row = 0;

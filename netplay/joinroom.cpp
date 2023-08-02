@@ -32,14 +32,6 @@ JoinRoom::JoinRoom(QWidget *parent)
     playerName->setPlaceholderText("Player Name");
     layout->addWidget(playerName, 0, 0);
 
-/*
-    inputDelay = new QLineEdit(this);
-    inputDelay->setPlaceholderText("Input Delay");
-    inputDelay->setValidator(new QIntValidator(0, 100, this));
-    inputDelay->setMaximumWidth(80);
-    layout->addWidget(inputDelay, 0, 1);
-*/
-
     pingLabel = new QLabel("Ping: (Calculating)", this);
     layout->addWidget(pingLabel, 0, 2);
 
@@ -181,38 +173,16 @@ void JoinRoom::joinGame()
             QJsonObject json = rooms.at(listWidget->currentRow());
             m64p_rom_settings rom_settings;
             (*CoreDoCommand)(M64CMD_ROM_GET_SETTINGS, sizeof(rom_settings), &rom_settings);
-            //bool roomRequiresInputDelay = json.contains("use_input_delay") && json.value("use_input_delay").toBool();
-            if (QString(rom_settings.MD5) != json.value("MD5").toString())
-            {
-                (*CoreDoCommand)(M64CMD_ROM_CLOSE, 0, NULL);
-                msgBox.setText("ROM does not match room ROM");
-                msgBox.exec();
-            }
-/*
-            else if (roomRequiresInputDelay && inputDelay->text().isEmpty())
-            {
-                (*CoreDoCommand)(M64CMD_ROM_CLOSE, 0, NULL);
-                msgBox.setText("You must specify input delay to join this room");
-                msgBox.exec();
-            }
-*/
-            else
-            {
-                joinButton->setEnabled(false);
-                json.insert("type", "join_room");
-                json.insert("player_name", playerName->text());
-                json.insert("password", passwordEdit->text());
-                json.insert("client_sha", QStringLiteral(GUI_VERSION));
-                json.insert("emulator", "simple64");
-/*
-                if (roomRequiresInputDelay)
-                    json.insert("input_delay", inputDelay->text().toInt());
-                else
-                    json.remove("input_delay");
-*/
-                QJsonDocument json_doc(json);
-                webSocket->sendBinaryMessage(json_doc.toJson());
-            }
+
+            joinButton->setEnabled(false);
+            json.insert("type", "request_join_room");
+            json.insert("player_name", playerName->text());
+            json.insert("password", passwordEdit->text());
+            json.insert("client_sha", QStringLiteral(GUI_VERSION));
+            json.insert("MD5", QString(rom_settings.MD5));
+            json.insert("emulator", "simple64");
+            QJsonDocument json_doc(json);
+            webSocket->sendBinaryMessage(json_doc.toJson());
         }
         else
         {
@@ -289,7 +259,7 @@ void JoinRoom::onConnected()
             this, &JoinRoom::processBinaryMessage);
 
     QJsonObject json;
-    json.insert("type", "get_rooms");
+    json.insert("type", "request_get_rooms");
     json.insert("netplay_version", NETPLAY_VER);
     json.insert("emulator", "simple64");
     QJsonDocument json_doc(json);
@@ -304,12 +274,7 @@ void JoinRoom::processBinaryMessage(QByteArray message)
     msgBox.setTextFormat(Qt::RichText);
     msgBox.setTextInteractionFlags(Qt::TextBrowserInteraction);
 
-    if (json.value("type").toString() == "message")
-    {
-        msgBox.setText(json.value("message").toString());
-        msgBox.exec();
-    }
-    else if (json.value("type").toString() == "send_room")
+    if (json.value("type").toString() == "reply_get_rooms")
     {
         json.remove("type");
         rooms << json;
@@ -327,16 +292,10 @@ void JoinRoom::processBinaryMessage(QByteArray message)
         newItem = new QTableWidgetItem(json.value("protected").toString());
         newItem->setFlags(newItem->flags() & ~Qt::ItemIsEditable);
         listWidget->setItem(row, 3, newItem);
-/*
-        bool usesInputDelay = json.contains("use_input_delay") ? json.value("use_input_delay").toBool() : false;
-        newItem = new QTableWidgetItem(usesInputDelay ? "Yes" : "No");
-        newItem->setFlags(newItem->flags() & ~Qt::ItemIsEditable);
-        listWidget->setItem(row, 4, newItem);
-*/
 
         ++row;
     }
-    else if (json.value("type").toString() == "accept_join")
+    else if (json.value("type").toString() == "reply_join_room")
     {
         if (json.value("accept").toInt() == 0)
         {
@@ -348,34 +307,10 @@ void JoinRoom::processBinaryMessage(QByteArray message)
             accept();
             return;
         }
-        else if (json.value("accept").toInt() == 1)
-        {
-            (*CoreDoCommand)(M64CMD_ROM_CLOSE, 0, NULL);
-            msgBox.setText("Bad password");
-            msgBox.exec();
-        }
-        else if (json.value("accept").toInt() == 2)
-        {
-            (*CoreDoCommand)(M64CMD_ROM_CLOSE, 0, NULL);
-            msgBox.setText("Client versions do not match");
-            msgBox.exec();
-        }
-        else if (json.value("accept").toInt() == 3)
-        {
-            (*CoreDoCommand)(M64CMD_ROM_CLOSE, 0, NULL);
-            msgBox.setText("Room is full");
-            msgBox.exec();
-        }
-        else if (json.value("accept").toInt() == 4)
-        {
-            (*CoreDoCommand)(M64CMD_ROM_CLOSE, 0, NULL);
-            msgBox.setText("Player name is already taken");
-            msgBox.exec();
-        }
         else
         {
             (*CoreDoCommand)(M64CMD_ROM_CLOSE, 0, NULL);
-            msgBox.setText("Could not join room");
+            msgBox.setText(json.value("message").toString());
             msgBox.exec();
         }
         joinButton->setEnabled(true);
