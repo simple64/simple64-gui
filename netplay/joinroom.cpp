@@ -237,6 +237,8 @@ void JoinRoom::serverChanged(int index)
     connect(webSocket, &QWebSocket::disconnected, connectionTimer, &QTimer::stop);
     connect(webSocket, &QObject::destroyed, connectionTimer, &QTimer::stop);
 
+    connect(webSocket, &QWebSocket::binaryMessageReceived, this, &JoinRoom::processBinaryMessage);
+
     QTimer *pingTimer = new QTimer(this);
     connect(webSocket, &QWebSocket::pong, this, &JoinRoom::updatePing);
     connect(pingTimer, &QTimer::timeout, this, &JoinRoom::sendPing);
@@ -258,8 +260,6 @@ void JoinRoom::serverChanged(int index)
 void JoinRoom::onConnected()
 {
     connectionTimer->stop();
-    connect(webSocket, &QWebSocket::binaryMessageReceived,
-            this, &JoinRoom::processBinaryMessage);
 
     QJsonObject json;
     json.insert("type", "request_get_rooms");

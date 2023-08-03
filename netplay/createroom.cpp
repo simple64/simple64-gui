@@ -176,9 +176,6 @@ void CreateRoom::handleCreateButton()
 
 void CreateRoom::createRoom()
 {
-    connect(webSocket, &QWebSocket::binaryMessageReceived,
-            this, &CreateRoom::processBinaryMessage);
-
     connectionTimer->stop();
     QJsonObject json;
     json.insert("type", "request_create_room");
@@ -263,6 +260,8 @@ void CreateRoom::handleServerChanged(int index)
     connect(timer, &QTimer::timeout, this, &CreateRoom::sendPing);
     connect(webSocket, &QWebSocket::disconnected, timer, &QTimer::stop);
     connect(webSocket, &QObject::destroyed, timer, &QTimer::stop);
+
+    connect(webSocket, &QWebSocket::binaryMessageReceived, this, &CreateRoom::processBinaryMessage);
 
     timer->start(2500);
     QString serverAddress = serverChooser->itemData(index) == "Custom" ? customServerHost.prepend("ws://") : serverChooser->itemData(index).toString();
