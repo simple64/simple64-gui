@@ -24,13 +24,13 @@ JoinRoom::JoinRoom(QWidget *parent)
     QRegularExpression rx("[a-zA-Z0-9]+");
     QValidator *validator = new QRegularExpressionValidator(rx, this);
 
-    playerName = new QLineEdit(this);
-    playerName->setValidator(validator);
-    playerName->setMaxLength(30);
+    playerNameEdit = new QLineEdit(this);
+    playerNameEdit->setValidator(validator);
+    playerNameEdit->setMaxLength(30);
     if (w->getSettings()->contains("netplay_name"))
-        playerName->setText(w->getSettings()->value("netplay_name").toString());
-    playerName->setPlaceholderText("Player Name");
-    layout->addWidget(playerName, 0, 0);
+        playerNameEdit->setText(w->getSettings()->value("netplay_name").toString());
+    playerNameEdit->setPlaceholderText("Player Name");
+    layout->addWidget(playerNameEdit, 0, 0);
 
     pingLabel = new QLabel("Ping: (Calculating)", this);
     layout->addWidget(pingLabel, 0, 2);
@@ -151,7 +151,7 @@ void JoinRoom::joinGame()
         msgBox.exec();
         return;
     }
-    if (playerName->text().isEmpty())
+    if (playerNameEdit->text().isEmpty())
     {
         msgBox.setText("Player name can not be empty");
         msgBox.exec();
@@ -177,11 +177,13 @@ void JoinRoom::joinGame()
             joinButton->setEnabled(false);
             QJsonObject json;
             json.insert("type", "request_join_room");
-            json.insert("player_name", playerName->text());
+            json.insert("player_name", playerNameEdit->text());
             json.insert("password", passwordEdit->text());
             json.insert("client_sha", QStringLiteral(GUI_VERSION));
             json.insert("MD5", QString(rom_settings.MD5));
             json.insert("port", room_port);
+
+            playerName = playerNameEdit->text();
             QJsonDocument json_doc(json);
             webSocket->sendBinaryMessage(json_doc.toJson());
         }
@@ -303,7 +305,7 @@ void JoinRoom::processBinaryMessage(QByteArray message)
             json.remove("type");
             json.remove("accept");
             launched = 1;
-            WaitRoom *waitRoom = new WaitRoom(filename, json, webSocket, parentWidget());
+            WaitRoom *waitRoom = new WaitRoom(filename, json, webSocket, playerName, parentWidget());
             waitRoom->show();
             accept();
             return;

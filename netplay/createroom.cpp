@@ -191,6 +191,7 @@ void CreateRoom::createRoom()
     json.insert("netplay_version", NETPLAY_VER);
     json.insert("emulator", "simple64");
 
+    playerName = playerNameEdit->text();
     QJsonDocument json_doc(json);
     webSocket->sendBinaryMessage(json_doc.toJson());
 }
@@ -208,7 +209,7 @@ void CreateRoom::processBinaryMessage(QByteArray message)
         {
             json.remove("type");
             launched = 1;
-            WaitRoom *waitRoom = new WaitRoom(filename, json, webSocket, parentWidget());
+            WaitRoom *waitRoom = new WaitRoom(filename, json, webSocket, playerName, parentWidget());
             waitRoom->show();
             accept();
         }
