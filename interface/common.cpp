@@ -21,13 +21,6 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.          *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#ifdef __MINGW32__
-#define _CRT_RAND_S
-#endif
-
-#include <stdlib.h>
-#include <stdarg.h>
-#include <stdio.h>
 #include "common.h"
 #include <SDL_keycode.h>
 #include <QProcess>
@@ -252,24 +245,14 @@ m64p_error launchGame(QString netplay_ip, int netplay_port, int netplay_player)
     if (netplay_port)
     {
         uint32_t version;
-        if ((*CoreDoCommand)(M64CMD_NETPLAY_GET_VERSION, 0x010002, &version) == M64ERR_SUCCESS)
+        if ((*CoreDoCommand)(M64CMD_NETPLAY_GET_VERSION, 0x010001, &version) == M64ERR_SUCCESS)
         {
             DebugMessage(M64MSG_INFO, "Netplay: using core version %u", version);
 
             if ((*CoreDoCommand)(M64CMD_NETPLAY_INIT, netplay_port, netplay_ip.toUtf8().data()) == M64ERR_SUCCESS)
                 DebugMessage(M64MSG_INFO, "Netplay: init success");
 
-            uint32_t reg_id = 0;
-            while (reg_id == 0)
-            {
-#ifdef __MINGW32__
-                rand_s(&reg_id);
-#else
-                reg_id = rand();
-#endif
-                reg_id &= ~0x7;
-                reg_id |= netplay_player;
-            }
+            uint32_t reg_id = netplay_player;
 
             if ((*CoreDoCommand)(M64CMD_NETPLAY_CONTROL_PLAYER, netplay_player, &reg_id) == M64ERR_SUCCESS)
                 DebugMessage(M64MSG_INFO, "Netplay: registered for player %d", netplay_player);
