@@ -5,8 +5,10 @@ void sendNetplayMessage(QWebSocket* webSocket, QJsonObject json)
 {
     QCryptographicHash hash = QCryptographicHash(QCryptographicHash::Sha256);
     QByteArray currentTime = QByteArray::number(QDateTime::currentMSecsSinceEpoch());
+
     hash.addData(currentTime);
-    hash.addData(QByteArray::number(NETPLAY_AUTH_CODE));
+    hash.addData(QStringLiteral(NETPLAY_AUTH_CODE).toUtf8());
+
     json.insert("auth", QString(hash.result().toHex()));
     json.insert("authTime", QString(currentTime));
 
