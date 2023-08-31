@@ -7,6 +7,7 @@ void sendNetplayMessage(QWebSocket* webSocket, QJsonObject json)
     QByteArray currentTime = QByteArray::number(QDateTime::currentMSecsSinceEpoch());
 
     hash.addData(currentTime);
+    // this auth code is emulator specific, and is only checked when the server is running with the --enable-auth option
     hash.addData(QStringLiteral(NETPLAY_AUTH_CODE).toUtf8());
 
     json.insert("auth", QString(hash.result().toHex()));
