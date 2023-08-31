@@ -3,6 +3,7 @@
 #include "../mainwindow.h"
 #include "../interface/core_commands.h"
 #include "../version.h"
+#include "netplay_common.h"
 #include <QGridLayout>
 #include <QLabel>
 #include <QJsonObject>
@@ -257,7 +258,8 @@ void JoinRoom::onConnected()
     QJsonObject json;
     json.insert("type", "request_get_rooms");
     json.insert("netplay_version", NETPLAY_VER);
-    json.insert("emulator", "simple64");
+    addAuthData(webSocket, &json);
+
     QJsonDocument json_doc(json);
     webSocket->sendTextMessage(json_doc.toJson());
 }

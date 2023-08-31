@@ -3,6 +3,7 @@
 #include "waitroom.h"
 #include "../version.h"
 #include "../interface/core_commands.h"
+#include "netplay_common.h"
 #include <QGridLayout>
 #include <QLabel>
 #include <QCheckBox>
@@ -174,7 +175,7 @@ void CreateRoom::createRoom()
     json.insert("game_name", QString(rom_settings.goodname));
     json.insert("client_sha", QStringLiteral(GUI_VERSION));
     json.insert("netplay_version", NETPLAY_VER);
-    json.insert("emulator", "simple64");
+    addAuthData(webSocket, &json);
 
     QJsonDocument json_doc(json);
     webSocket->sendTextMessage(json_doc.toJson());
