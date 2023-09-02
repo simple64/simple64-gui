@@ -109,6 +109,8 @@ private slots:
 
     void on_actionToggle_Fullscreen_triggered();
 
+    void on_actionCheats_triggered();
+
     void on_actionSave_State_To_triggered();
 
     void on_actionLoad_State_From_triggered();

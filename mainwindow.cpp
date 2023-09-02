@@ -6,6 +6,7 @@
 #include "settingsdialog.h"
 #include "plugindialog.h"
 #include "hotkeydialog.h"
+#include "cheats.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "interface/common.h"
@@ -773,6 +774,12 @@ void MainWindow::on_actionToggle_Fullscreen_triggered()
         response = M64VIDEO_WINDOWED;
         (*CoreDoCommand)(M64CMD_CORE_STATE_SET, M64CORE_VIDEO_MODE, &response);
     }
+}
+
+void MainWindow::on_actionCheats_triggered()
+{
+    CheatsDialog *cheats = new CheatsDialog(this);
+    cheats->show();
 }
 
 void MainWindow::on_actionSave_State_To_triggered()
