@@ -9,6 +9,7 @@
 #include <QScrollArea>
 #include <QLabel>
 #include <QCheckBox>
+#include <QJsonArray>
 #include <cinttypes>
 
 CheatsDialog::CheatsDialog(QWidget *parent)
@@ -36,19 +37,42 @@ CheatsDialog::CheatsDialog(QWidget *parent)
     QScrollArea *cheatsScroll = new QScrollArea(this);
 
     QStringList keys = gameData.keys();
+    int row = 0;
     for (int i = 0; i < keys.size(); ++i)
     {
+        QJsonObject cheats = gameData.value(keys.at(i)).toObject();
         QLabel *name = new QLabel(keys.at(i), this);
-        QString helper = gameData.value(keys.at(i)).toObject().value("note").toString();
+        QString helper = cheats.value("note").toString();
         if (!helper.isEmpty()) {
             helper.prepend("<span style=\"color:black;\">");
             helper.append("</span>");
             name->setToolTip(helper);
         }
         name->setStyleSheet("padding: 10px");
-        QCheckBox *box = new QCheckBox(this);
-        m_layout->addWidget(name, i, 0);
-        m_layout->addWidget(box, i, 1);
+        m_layout->addWidget(name, row, 0);
+        bool hasOptions = cheats.value("hasOptions").toBool();
+        if (!hasOptions)
+        {
+            QCheckBox *box = new QCheckBox(this);
+            m_layout->addWidget(box, row++, 1);
+        }
+        else
+        {
+            row++;
+            QJsonArray options = cheats.value("options").toArray();
+            for (int j = 0; j < options.size(); ++j)
+            {
+                QString optionName = options.at(j).toObject().value("name").toString();
+                optionName.prepend(" -- ");
+                QLabel *optionLabel = new QLabel(optionName, this);
+                if (!helper.isEmpty())
+                    optionLabel->setToolTip(helper);
+                optionLabel->setStyleSheet("padding: 10px");
+                m_layout->addWidget(optionLabel, row, 0);
+                QCheckBox *box = new QCheckBox(this);
+                m_layout->addWidget(box, row++, 1);
+            }
+        }
     }
     cheatsSettings->setLayout(m_layout);
     cheatsScroll->setMinimumWidth(cheatsSettings->sizeHint().width() + 20);
