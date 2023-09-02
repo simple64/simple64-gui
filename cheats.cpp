@@ -33,17 +33,18 @@ CheatsDialog::CheatsDialog(QWidget *parent)
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
     QWidget *cheatsSettings = new QWidget(this);
     m_layout = new QGridLayout(cheatsSettings);
-    
-
     QScrollArea *cheatsScroll = new QScrollArea(this);
-    
-
-    
 
     QStringList keys = gameData.keys();
     for (int i = 0; i < keys.size(); ++i)
     {
         QLabel *name = new QLabel(keys.at(i), this);
+        QString helper = gameData.value(keys.at(i)).toObject().value("note").toString();
+        if (!helper.isEmpty()) {
+            helper.prepend("<span style=\"color:black;\">");
+            helper.append("</span>");
+            name->setToolTip(helper);
+        }
         name->setStyleSheet("padding: 10px");
         QCheckBox *box = new QCheckBox(this);
         m_layout->addWidget(name, i, 0);
@@ -53,6 +54,9 @@ CheatsDialog::CheatsDialog(QWidget *parent)
     cheatsScroll->setMinimumWidth(cheatsSettings->sizeHint().width() + 20);
     cheatsScroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     cheatsScroll->setWidget(cheatsSettings);
+    QLabel *myLabel = new QLabel("Hover your mouse over a cheat for a description (if one exists).\n", this);
+    myLabel->setStyleSheet("font-weight: bold");
+    mainLayout->addWidget(myLabel);
     mainLayout->addWidget(cheatsScroll);
     setLayout(mainLayout);
 }
