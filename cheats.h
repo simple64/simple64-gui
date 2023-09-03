@@ -10,6 +10,7 @@ class CheatsCheckBox : public QCheckBox
 {
 public:
     explicit CheatsCheckBox(QWidget *parent = 0);
+    void loadState();
     void setGroup(QButtonGroup* group) {
         m_group = group;
     }

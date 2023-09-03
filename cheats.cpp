@@ -1,4 +1,5 @@
 #include "cheats.h"
+#include "mainwindow.h"
 #include "interface/core_commands.h"
 #include <QFile>
 #include <QDir>
@@ -51,6 +52,7 @@ CheatsDialog::CheatsDialog(QWidget *parent)
             CheatsCheckBox *box = new CheatsCheckBox(this);
             box->setCheatName(keys.at(i));
             box->setGame(gameName);
+            box->loadState();
             m_layout->addWidget(box, row++, 1);
         }
         else
@@ -72,6 +74,7 @@ CheatsDialog::CheatsDialog(QWidget *parent)
                 box->setOptionName(optionName);
                 box->setGame(gameName);
                 box->setGroup(optionButtons);
+                box->loadState();
                 optionButtons->addButton(box);
                 m_layout->addWidget(box, row++, 1);
             }
@@ -81,7 +84,7 @@ CheatsDialog::CheatsDialog(QWidget *parent)
     cheatsScroll->setMinimumWidth(cheatsSettings->sizeHint().width() + 20);
     cheatsScroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     cheatsScroll->setWidget(cheatsSettings);
-    QLabel *myLabel = new QLabel("Hover your mouse over a cheat for a description (if one exists).\n", this);
+    QLabel *myLabel = new QLabel("Restart game for cheats to take effect.\n\nHover your mouse over a cheat for a description (if one exists).\n", this);
     myLabel->setStyleSheet("font-weight: bold");
     mainLayout->addWidget(myLabel);
     mainLayout->addWidget(cheatsScroll);
@@ -97,10 +100,31 @@ CheatsCheckBox::CheatsCheckBox(QWidget *parent)
             m_group->setExclusive(false);
         }
     });
+
     connect(this, &QAbstractButton::released, [=]{
         if (m_group != nullptr)
         {
             m_group->setExclusive(true);
         }
     });
+
+    connect(this, &QCheckBox::stateChanged, [=](int state){
+        QString prefix = "Cheats/" + m_game + "/" + m_cheatName + "/";
+        if (m_optionName != "")
+        {
+            w->getSettings()->setValue(prefix + "option", m_optionName);
+        }
+        w->getSettings()->setValue(prefix + "enabled", state == Qt::Checked ? true : false);
+    });
+}
+
+void CheatsCheckBox::loadState()
+{
+    QString prefix = "Cheats/" + m_game + "/" + m_cheatName + "/";
+
+    if (w->getSettings()->value(prefix + "option").toString() == m_optionName)
+    {
+        if (w->getSettings()->value(prefix + "enabled").toBool())
+            setCheckState(Qt::Checked);
+    }
 }
