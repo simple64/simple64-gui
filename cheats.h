@@ -13,8 +13,20 @@ public:
     void setGroup(QButtonGroup* group) {
         m_group = group;
     }
+    void setCheatName(QString name) {
+        m_cheatName = name;
+    }
+    void setOptionName(QString name) {
+        m_optionName = name;
+    }
+    void setGame(QString name) {
+        m_game = name;
+    }
 private:
     QButtonGroup* m_group = nullptr;
+    QString m_cheatName = "";
+    QString m_optionName = "";
+    QString m_game = "";
 };
 
 class CheatsDialog : public QDialog

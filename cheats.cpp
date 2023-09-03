@@ -26,10 +26,6 @@ CheatsDialog::CheatsDialog(QWidget *parent)
     QString gameName = QString("%1-%2-C:%3").arg(qFromBigEndian(rom_header.CRC1), 8, 16, QLatin1Char('0')).arg(qFromBigEndian(rom_header.CRC2), 8, 16, QLatin1Char('0')).arg(rom_header.Country_code, 2, 16).toUpper();
     QJsonObject gameData = data.value(gameName).toObject();
 
-    QJsonDocument doc(gameData);
-    QString strJson(doc.toJson(QJsonDocument::Indented));
-    printf("%s\n", qPrintable(strJson));
-
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
     QWidget *cheatsSettings = new QWidget(this);
     m_layout = new QGridLayout(cheatsSettings);
@@ -53,6 +49,8 @@ CheatsDialog::CheatsDialog(QWidget *parent)
         if (!hasOptions)
         {
             CheatsCheckBox *box = new CheatsCheckBox(this);
+            box->setCheatName(keys.at(i));
+            box->setGame(gameName);
             m_layout->addWidget(box, row++, 1);
         }
         else
@@ -64,13 +62,15 @@ CheatsDialog::CheatsDialog(QWidget *parent)
             for (int j = 0; j < options.size(); ++j)
             {
                 QString optionName = options.at(j).toObject().value("name").toString();
-                optionName.prepend(" -- ");
-                QLabel *optionLabel = new QLabel(optionName, this);
+                QLabel *optionLabel = new QLabel(" -- " + optionName, this);
                 if (!helper.isEmpty())
                     optionLabel->setToolTip(helper);
                 optionLabel->setStyleSheet("padding: 10px");
                 m_layout->addWidget(optionLabel, row, 0);
                 CheatsCheckBox *box = new CheatsCheckBox(this);
+                box->setCheatName(keys.at(i));
+                box->setOptionName(optionName);
+                box->setGame(gameName);
                 box->setGroup(optionButtons);
                 optionButtons->addButton(box);
                 m_layout->addWidget(box, row++, 1);
