@@ -140,14 +140,13 @@ void loadCheats()
                 {
                     if (cheat_codes.at(j).toString().contains("?"))
                     {
-                        QString replacement = w->getSettings()->value("option").toString(); // fix this
+                        QString replacement = gameData.value(childGroups.at(i)).toObject().value("options").toObject().value(w->getSettings()->value("option").toString()).toString();
                         QString code = cheat_codes.at(j).toString().replace(cheat_codes.at(j).toString().indexOf("?"), replacement.size(), replacement);
                         cheat_codes.replace(j, code);
                     }
                 }
             }
 
-            printf("code name %s\n", qPrintable(childGroups.at(i)));
             QList <m64p_cheat_code> codes;
             for (int j = 0; j < cheat_codes.size(); ++j)
             {
@@ -157,7 +156,6 @@ void loadCheats()
                 code.address = data[0].toUInt(&ok, 16);
                 code.value = data[1].toInt(&ok, 16);
                 codes.append(code);
-                printf("code %x %x\n", code.address, code.value);
             }
             (*CoreAddCheat)(childGroups.at(i).toUtf8().constData(), (m64p_cheat_code*)&codes.at(0), codes.size());
         }
