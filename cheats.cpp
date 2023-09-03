@@ -48,12 +48,13 @@ CheatsDialog::CheatsDialog(QWidget *parent)
         else
         {
             row++;
-            QJsonArray options = cheats.value("options").toArray();
+            QJsonObject options = cheats.value("options").toObject();
             QButtonGroup* optionButtons = new QButtonGroup(this);
             optionButtons->setExclusive(true);
-            for (int j = 0; j < options.size(); ++j)
+            QStringList optionsKeys = options.keys();
+            for (int j = 0; j < optionsKeys.size(); ++j)
             {
-                QString optionName = options.at(j).toObject().value("name").toString();
+                QString optionName = optionsKeys.at(j);
                 QLabel *optionLabel = new QLabel(" -- " + optionName, this);
                 if (!helper.isEmpty())
                     optionLabel->setToolTip(helper);
@@ -148,6 +149,7 @@ bool loadCheats()
                 }
             }
 
+            printf("cheat name %s\n", qPrintable(childGroups.at(i)));
             QList <m64p_cheat_code> codes;
             for (int j = 0; j < cheat_codes.size(); ++j)
             {
@@ -157,6 +159,7 @@ bool loadCheats()
                 code.address = data[0].toUInt(&ok, 16);
                 code.value = data[1].toInt(&ok, 16);
                 codes.append(code);
+                printf("cheat %x %x\n", code.address, code.value);
             }
             m64p_error success = (*CoreAddCheat)(childGroups.at(i).toUtf8().constData(), codes.data(), codes.size());
             if (success != M64ERR_SUCCESS)
