@@ -160,6 +160,8 @@ void loadCheats()
             m64p_error success = (*CoreAddCheat)(childGroups.at(i).toUtf8().constData(), codes.data(), codes.size());
             if (success != M64ERR_SUCCESS)
                 DebugMessage(M64MSG_WARNING, "could not load cheat %s", childGroups.at(i).toUtf8().constData());
+            else
+                DebugMessage(M64MSG_INFO, "loaded cheat %s %s", childGroups.at(i).toUtf8().constData(), w->getSettings()->value("option").toString().toUtf8().constData());
         }
         w->getSettings()->endGroup();
     }
