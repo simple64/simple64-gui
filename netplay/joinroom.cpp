@@ -38,7 +38,7 @@ JoinRoom::JoinRoom(QWidget *parent)
 
     serverChooser = new QComboBox(this);
     serverChooser->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-    connect(serverChooser, SIGNAL(currentIndexChanged(int)), this, SLOT(serverChanged(int)));
+    connect(serverChooser, &QComboBox::currentIndexChanged, this, &JoinRoom::serverChanged);
 
     layout->addWidget(serverChooser, 0, 3);
 
@@ -64,10 +64,10 @@ JoinRoom::JoinRoom(QWidget *parent)
 
     setLayout(layout);
 
-    connect(&manager, SIGNAL(finished(QNetworkReply*)),
-            SLOT(downloadFinished(QNetworkReply*)));
+    connect(&manager, &QNetworkAccessManager::finished, this,
+            &JoinRoom::downloadFinished);
 
-    connect(this, SIGNAL (finished(int)), this, SLOT (onFinished(int)));
+    connect(this, &JoinRoom::finished, this, &JoinRoom::onFinished);
 
     QNetworkRequest request(QUrl(QStringLiteral("https://m64p.s3.amazonaws.com/servers.json")));
     manager.get(request);

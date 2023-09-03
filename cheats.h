@@ -41,7 +41,7 @@ private:
 };
 
 QJsonObject getCheatsFromSettings(QString gameName, QJsonObject gameData);
-bool loadCheats();
+bool loadCheats(QJsonObject cheatsData);
 QString getCheatGameName();
 QJsonObject loadCheatData(QString gameName);
 #endif

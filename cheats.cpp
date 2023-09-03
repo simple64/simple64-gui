@@ -153,12 +153,9 @@ QJsonObject getCheatsFromSettings(QString gameName, QJsonObject gameData)
     return data;
 }
 
-bool loadCheats()
+bool loadCheats(QJsonObject cheatsData)
 {
     bool loaded = false;
-    QString gameName = getCheatGameName();
-    QJsonObject gameData = loadCheatData(gameName);
-    QJsonObject cheatsData = getCheatsFromSettings(gameName, gameData);
 
     for (int i = 0; i < cheatsData.size(); ++i)
     {

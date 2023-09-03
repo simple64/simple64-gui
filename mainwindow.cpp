@@ -302,7 +302,7 @@ MainWindow::MainWindow(QWidget *parent) :
     if (!settings->contains("volume"))
         settings->setValue("volume", 100);
     VolumeAction * volumeAction = new VolumeAction(tr("Volume"), this);
-    connect(volumeAction->slider(), SIGNAL(valueChanged(int)), this, SLOT(volumeValueChanged(int)));
+    connect(volumeAction->slider(), &QSlider::valueChanged, this, &MainWindow::volumeValueChanged);
     volumeAction->slider()->setValue(settings->value("volume").toInt());
     ui->menuEmulation->insertAction(ui->actionMute, volumeAction);
 
@@ -572,7 +572,7 @@ void MainWindow::updateOpenRecent()
         OpenRecent->addAction(recent[i]);
         QAction *temp_recent = recent[i];
         connect(temp_recent, &QAction::triggered,[=](){
-                    openROM(temp_recent->text(), "", 0, 0);
+                    openROM(temp_recent->text(), "", 0, 0, QJsonObject());
                 });
     }
     OpenRecent->addSeparator();
@@ -658,7 +658,7 @@ void MainWindow::resetCore()
     loadPlugins();
 }
 
-void MainWindow::openROM(QString filename, QString netplay_ip, int netplay_port, int netplay_player)
+void MainWindow::openROM(QString filename, QString netplay_ip, int netplay_port, int netplay_player, QJsonObject cheats)
 {
     stopGame();
 
@@ -666,7 +666,7 @@ void MainWindow::openROM(QString filename, QString netplay_ip, int netplay_port,
 
     resetCore();
 
-    workerThread = new WorkerThread(netplay_ip, netplay_port, netplay_player, this);
+    workerThread = new WorkerThread(netplay_ip, netplay_port, netplay_player, cheats, this);
     workerThread->setFileName(filename);
 
     QStringList list;
@@ -689,7 +689,7 @@ void MainWindow::on_actionOpen_ROM_triggered()
     if (!filename.isNull()) {
         QFileInfo info(filename);
         settings->setValue("ROMdir", info.absoluteDir().absolutePath());
-        openROM(filename, "", 0, 0);
+        openROM(filename, "", 0, 0, QJsonObject());
     }
 }
 
@@ -1162,7 +1162,13 @@ void MainWindow::updateFrameCount()
     frame_count = 0;
 }
 
-void MainWindow::setCheats()
+void MainWindow::setCheats(QJsonObject cheatsData, bool netplay)
 {
-    m_cheatsEnabled = loadCheats();
+    if (!netplay)
+    {
+        QString gameName = getCheatGameName();
+        QJsonObject gameData = loadCheatData(gameName);
+        cheatsData = getCheatsFromSettings(gameName, gameData);
+    }
+    m_cheatsEnabled = loadCheats(cheatsData);
 }

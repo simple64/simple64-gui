@@ -96,7 +96,7 @@ HotkeyDialog::HotkeyDialog(QWidget *parent)
     mainLayout->addWidget(coreEventsScroll);
     QPushButton *resetButton = new QPushButton("Reset All Settings", this);
     resetButton->setAutoDefault(false);
-    connect(resetButton, SIGNAL (released()),this, SLOT (handleResetButton()));
+    connect(resetButton, &QPushButton::released,this, &HotkeyDialog::handleResetButton);
     mainLayout->addWidget(resetButton);
     setLayout(mainLayout);
 }

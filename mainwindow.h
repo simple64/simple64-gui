@@ -17,6 +17,7 @@ extern "C" {
 #include <QLabel>
 #include <QVulkanInstance>
 #include <QNetworkReply>
+#include <QJsonObject>
 
 namespace Ui {
 class MainWindow;
@@ -42,7 +43,7 @@ public:
     m64p_dynlib_handle getInputPlugin();
     m64p_dynlib_handle getGfxPlugin();
 
-    void openROM(QString filename, QString netplay_ip, int netplay_port, int netplay_player);
+    void openROM(QString filename, QString netplay_ip, int netplay_port, int netplay_player, QJsonObject cheats);
     void setVerbose();
     int getVerbose();
     void setNoGUI();
@@ -69,7 +70,7 @@ public slots:
     void updateDiscordActivity(struct DiscordActivity activity);
     void clearDiscordActivity();
     void addFrameCount();
-    void setCheats();
+    void setCheats(QJsonObject cheatsData, bool netplay);
 
 private slots:
     void killThread();
