@@ -157,7 +157,7 @@ void loadCheats()
                 code.value = data[1].toInt(&ok, 16);
                 codes.append(code);
             }
-            (*CoreAddCheat)(childGroups.at(i).toUtf8().constData(), (m64p_cheat_code*)&codes.at(0), codes.size());
+            (*CoreAddCheat)(childGroups.at(i).toUtf8().constData(), codes.data(), codes.size());
         }
         w->getSettings()->endGroup();
     }
