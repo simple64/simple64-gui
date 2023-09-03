@@ -26,6 +26,7 @@ signals:
     void clearDiscordActivity();
     void addLog(QString text);
     void addFrameCount();
+    void setCheats();
 
 private:
     QString m_fileName;

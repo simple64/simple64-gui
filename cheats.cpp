@@ -5,7 +5,6 @@
 #include <QDir>
 #include <QCoreApplication>
 #include <QJsonDocument>
-#include <QJsonObject>
 #include <QtEndian>
 #include <QScrollArea>
 #include <QLabel>
@@ -15,17 +14,8 @@
 CheatsDialog::CheatsDialog(QWidget *parent)
     : QDialog(parent)
 {
-    QString cheats_path = QDir(QCoreApplication::applicationDirPath()).filePath("cheats.json");
-    QFile file(cheats_path);
-    file.open(QIODevice::ReadOnly | QIODevice::Text);
-
-    QJsonObject data = QJsonDocument::fromJson(file.readAll()).object();
-    file.close();
-
-    m64p_rom_header rom_header;
-    (*CoreDoCommand)(M64CMD_ROM_GET_HEADER, sizeof(rom_header), &rom_header);
-    QString gameName = QString("%1-%2-C:%3").arg(qFromBigEndian(rom_header.CRC1), 8, 16, QLatin1Char('0')).arg(qFromBigEndian(rom_header.CRC2), 8, 16, QLatin1Char('0')).arg(rom_header.Country_code, 2, 16).toUpper();
-    QJsonObject gameData = data.value(gameName).toObject();
+    QString gameName = getCheatGameName();
+    QJsonObject gameData = loadCheatData(gameName);
 
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
     QWidget *cheatsSettings = new QWidget(this);
@@ -127,4 +117,72 @@ void CheatsCheckBox::loadState()
         if (w->getSettings()->value(prefix + "enabled").toBool())
             setCheckState(Qt::Checked);
     }
+}
+
+void loadCheats()
+{
+    QString gameName = getCheatGameName();
+    QJsonObject gameData = loadCheatData(gameName);
+
+    w->getSettings()->beginGroup("Cheats");
+    w->getSettings()->beginGroup(gameName);
+
+    QStringList childGroups = w->getSettings()->childGroups();
+    for (int i = 0; i < childGroups.size(); ++i)
+    {
+        w->getSettings()->beginGroup(childGroups.at(i));
+        if (w->getSettings()->value("enabled").toBool())
+        {
+            QJsonArray cheat_codes = gameData.value(childGroups.at(i)).toObject().value("data").toArray();
+            if(w->getSettings()->contains("option"))
+            {
+                for (int j = 0; j < cheat_codes.size(); ++j)
+                {
+                    if (cheat_codes.at(j).toString().contains("?"))
+                    {
+                        QString replacement = w->getSettings()->value("option").toString(); // fix this
+                        QString code = cheat_codes.at(j).toString().replace(cheat_codes.at(j).toString().indexOf("?"), replacement.size(), replacement);
+                        cheat_codes.replace(j, code);
+                    }
+                }
+            }
+
+            printf("code name %s\n", qPrintable(childGroups.at(i)));
+            QList <m64p_cheat_code> codes;
+            for (int j = 0; j < cheat_codes.size(); ++j)
+            {
+                QStringList data = cheat_codes.at(j).toString().split(" ");
+                m64p_cheat_code code;
+                bool ok;
+                code.address = data[0].toUInt(&ok, 16);
+                code.value = data[1].toInt(&ok, 16);
+                codes.append(code);
+                printf("code %x %x\n", code.address, code.value);
+            }
+            (*CoreAddCheat)(childGroups.at(i).toUtf8().constData(), (m64p_cheat_code*)&codes.at(0), codes.size());
+        }
+        w->getSettings()->endGroup();
+    }
+
+    w->getSettings()->endGroup();
+    w->getSettings()->endGroup();
+}
+
+QString getCheatGameName()
+{
+    m64p_rom_header rom_header;
+    (*CoreDoCommand)(M64CMD_ROM_GET_HEADER, sizeof(rom_header), &rom_header);
+    return QString("%1-%2-C:%3").arg(qFromBigEndian(rom_header.CRC1), 8, 16, QLatin1Char('0')).arg(qFromBigEndian(rom_header.CRC2), 8, 16, QLatin1Char('0')).arg(rom_header.Country_code, 2, 16).toUpper();
+}
+
+QJsonObject loadCheatData(QString gameName)
+{
+    QString cheats_path = QDir(QCoreApplication::applicationDirPath()).filePath("cheats.json");
+    QFile file(cheats_path);
+    file.open(QIODevice::ReadOnly | QIODevice::Text);
+
+    QJsonObject data = QJsonDocument::fromJson(file.readAll()).object();
+    file.close();
+
+    return data.value(gameName).toObject();
 }

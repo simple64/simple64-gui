@@ -4,6 +4,7 @@
 #include <QDialog>
 #include <QGridLayout>
 #include <QCheckBox>
+#include <QJsonObject>
 #include <QButtonGroup>
 
 class CheatsCheckBox : public QCheckBox
@@ -39,4 +40,7 @@ private:
     QGridLayout *m_layout;
 };
 
+void loadCheats();
+QString getCheatGameName();
+QJsonObject loadCheatData(QString gameName);
 #endif

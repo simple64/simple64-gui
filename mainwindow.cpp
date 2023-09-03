@@ -952,6 +952,8 @@ void MainWindow::loadCoreLib()
     ConfigListParameters =        (ptr_ConfigListParameters) osal_dynlib_getproc(coreLib, "ConfigListParameters");
     ConfigGetSharedDataFilepath = (ptr_ConfigGetSharedDataFilepath) osal_dynlib_getproc(coreLib, "ConfigGetSharedDataFilepath");
 
+    CoreAddCheat = (ptr_CoreAddCheat) osal_dynlib_getproc(coreLib, "CoreAddCheat");
+
     QString qtConfigDir = settings->value("configDirPath").toString();
 
     if (!qtConfigDir.isEmpty())
@@ -1154,4 +1156,9 @@ void MainWindow::updateFrameCount()
     QString FPS = QString("%1 FPS").arg(frame_count);
     FPSLabel->setText(FPS);
     frame_count = 0;
+}
+
+void MainWindow::setCheats()
+{
+    loadCheats();
 }

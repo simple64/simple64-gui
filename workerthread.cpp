@@ -29,6 +29,7 @@ void WorkerThread::run()
     connect(this, SIGNAL(showMessage(QString)), w, SLOT(showMessage(QString)), Qt::QueuedConnection);
     connect(this, SIGNAL(updateDiscordActivity(struct DiscordActivity)), w, SLOT(updateDiscordActivity(struct DiscordActivity)), Qt::BlockingQueuedConnection);
     connect(this, SIGNAL(clearDiscordActivity()), w, SLOT(clearDiscordActivity()), Qt::BlockingQueuedConnection);
+    connect(this, SIGNAL(setCheats()), w, SLOT(setCheats()), Qt::BlockingQueuedConnection);
     connect(this, SIGNAL(addLog(QString)), w->getLogViewer(), SLOT(addLog(QString)), Qt::QueuedConnection);
     connect(this, SIGNAL(addFrameCount()), w, SLOT(addFrameCount()), Qt::QueuedConnection);
 #ifdef _WIN32
@@ -62,6 +63,8 @@ void WorkerThread::run()
         activity.timestamps = timestamps;
         strncpy(activity.details, rom_settings.goodname, 128);
         emit updateDiscordActivity(activity);
+
+        emit setCheats();
 
         res = launchGame(netplay_ip, netplay_port, netplay_player);
 

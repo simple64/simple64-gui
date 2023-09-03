@@ -69,6 +69,7 @@ public slots:
     void updateDiscordActivity(struct DiscordActivity activity);
     void clearDiscordActivity();
     void addFrameCount();
+    void setCheats();
 
 private slots:
     void killThread();
