@@ -157,7 +157,9 @@ void loadCheats()
                 code.value = data[1].toInt(&ok, 16);
                 codes.append(code);
             }
-            (*CoreAddCheat)(childGroups.at(i).toUtf8().constData(), codes.data(), codes.size());
+            m64p_error success = (*CoreAddCheat)(childGroups.at(i).toUtf8().constData(), codes.data(), codes.size());
+            if (success != M64ERR_SUCCESS)
+                DebugMessage(M64MSG_WARNING, "could not load cheat %s", childGroups.at(i).toUtf8().constData());
         }
         w->getSettings()->endGroup();
     }
