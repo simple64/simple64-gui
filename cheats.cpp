@@ -8,7 +8,6 @@
 #include <QtEndian>
 #include <QScrollArea>
 #include <QLabel>
-#include <QCheckBox>
 #include <QJsonArray>
 #include <cinttypes>
 
@@ -53,13 +52,15 @@ CheatsDialog::CheatsDialog(QWidget *parent)
         bool hasOptions = cheats.value("hasOptions").toBool();
         if (!hasOptions)
         {
-            QCheckBox *box = new QCheckBox(this);
+            CheatsCheckBox *box = new CheatsCheckBox(this);
             m_layout->addWidget(box, row++, 1);
         }
         else
         {
             row++;
             QJsonArray options = cheats.value("options").toArray();
+            QButtonGroup* optionButtons = new QButtonGroup(this);
+            optionButtons->setExclusive(true);
             for (int j = 0; j < options.size(); ++j)
             {
                 QString optionName = options.at(j).toObject().value("name").toString();
@@ -69,7 +70,9 @@ CheatsDialog::CheatsDialog(QWidget *parent)
                     optionLabel->setToolTip(helper);
                 optionLabel->setStyleSheet("padding: 10px");
                 m_layout->addWidget(optionLabel, row, 0);
-                QCheckBox *box = new QCheckBox(this);
+                CheatsCheckBox *box = new CheatsCheckBox(this);
+                box->setGroup(optionButtons);
+                optionButtons->addButton(box);
                 m_layout->addWidget(box, row++, 1);
             }
         }
@@ -83,4 +86,21 @@ CheatsDialog::CheatsDialog(QWidget *parent)
     mainLayout->addWidget(myLabel);
     mainLayout->addWidget(cheatsScroll);
     setLayout(mainLayout);
+}
+
+CheatsCheckBox::CheatsCheckBox(QWidget *parent)
+    : QCheckBox(parent)
+{
+    connect(this, &QAbstractButton::pressed, [=]{
+        if (m_group != nullptr && checkState() == Qt::Checked)
+        {
+            m_group->setExclusive(false);
+        }
+    });
+    connect(this, &QAbstractButton::released, [=]{
+        if (m_group != nullptr)
+        {
+            m_group->setExclusive(true);
+        }
+    });
 }

@@ -3,6 +3,19 @@
 
 #include <QDialog>
 #include <QGridLayout>
+#include <QCheckBox>
+#include <QButtonGroup>
+
+class CheatsCheckBox : public QCheckBox
+{
+public:
+    explicit CheatsCheckBox(QWidget *parent = 0);
+    void setGroup(QButtonGroup* group) {
+        m_group = group;
+    }
+private:
+    QButtonGroup* m_group = nullptr;
+};
 
 class CheatsDialog : public QDialog
 {
