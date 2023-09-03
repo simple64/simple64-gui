@@ -161,6 +161,7 @@ private:
     QTimer *frame_timer = nullptr;
     QLabel *FPSLabel = nullptr;
     QTimer *kill_timer = nullptr;
+    bool m_cheatsEnabled = false;
 
     m64p_dynlib_handle coreLib;
     m64p_dynlib_handle rspPlugin;

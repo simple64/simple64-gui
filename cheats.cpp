@@ -119,8 +119,9 @@ void CheatsCheckBox::loadState()
     }
 }
 
-void loadCheats()
+bool loadCheats()
 {
+    bool loaded = false;
     QString gameName = getCheatGameName();
     QJsonObject gameData = loadCheatData(gameName);
 
@@ -161,13 +162,18 @@ void loadCheats()
             if (success != M64ERR_SUCCESS)
                 DebugMessage(M64MSG_WARNING, "could not load cheat %s", childGroups.at(i).toUtf8().constData());
             else
+            {
+                loaded = true;
                 DebugMessage(M64MSG_INFO, "loaded cheat %s %s", childGroups.at(i).toUtf8().constData(), w->getSettings()->value("option").toString().toUtf8().constData());
+            }
         }
         w->getSettings()->endGroup();
     }
 
     w->getSettings()->endGroup();
     w->getSettings()->endGroup();
+
+    return loaded;
 }
 
 QString getCheatGameName()

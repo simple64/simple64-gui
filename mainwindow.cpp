@@ -1154,11 +1154,15 @@ void MainWindow::updateFrameCount()
     if (run_test)
         simulateInput();
     QString FPS = QString("%1 FPS").arg(frame_count);
+    if (m_cheatsEnabled)
+    {
+        FPS.prepend("Cheats Enabled    ");
+    }
     FPSLabel->setText(FPS);
     frame_count = 0;
 }
 
 void MainWindow::setCheats()
 {
-    loadCheats();
+    m_cheatsEnabled = loadCheats();
 }

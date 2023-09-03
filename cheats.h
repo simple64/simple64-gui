@@ -40,7 +40,7 @@ private:
     QGridLayout *m_layout;
 };
 
-void loadCheats();
+bool loadCheats();
 QString getCheatGameName();
 QJsonObject loadCheatData(QString gameName);
 #endif
