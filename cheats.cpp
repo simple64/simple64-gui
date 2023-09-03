@@ -120,15 +120,11 @@ void CheatsCheckBox::loadState()
     }
 }
 
-bool loadCheats()
+QJsonObject getCheatsFromSettings(QString gameName, QJsonObject gameData)
 {
-    bool loaded = false;
-    QString gameName = getCheatGameName();
-    QJsonObject gameData = loadCheatData(gameName);
-
+    QJsonObject data;
     w->getSettings()->beginGroup("Cheats");
     w->getSettings()->beginGroup(gameName);
-
     QStringList childGroups = w->getSettings()->childGroups();
     for (int i = 0; i < childGroups.size(); ++i)
     {
@@ -148,33 +144,44 @@ bool loadCheats()
                     }
                 }
             }
-
-            printf("cheat name %s\n", qPrintable(childGroups.at(i)));
-            QList <m64p_cheat_code> codes;
-            for (int j = 0; j < cheat_codes.size(); ++j)
-            {
-                QStringList data = cheat_codes.at(j).toString().split(" ");
-                m64p_cheat_code code;
-                bool ok;
-                code.address = data[0].toUInt(&ok, 16);
-                code.value = data[1].toInt(&ok, 16);
-                codes.append(code);
-                printf("cheat %x %x\n", code.address, code.value);
-            }
-            m64p_error success = (*CoreAddCheat)(childGroups.at(i).toUtf8().constData(), codes.data(), codes.size());
-            if (success != M64ERR_SUCCESS)
-                DebugMessage(M64MSG_WARNING, "could not load cheat %s", childGroups.at(i).toUtf8().constData());
-            else
-            {
-                loaded = true;
-                DebugMessage(M64MSG_INFO, "loaded cheat %s %s", childGroups.at(i).toUtf8().constData(), w->getSettings()->value("option").toString().toUtf8().constData());
-            }
+            data.insert(childGroups.at(i), cheat_codes);
         }
         w->getSettings()->endGroup();
     }
+    w->getSettings()->endGroup();
+    w->getSettings()->endGroup();
+    return data;
+}
 
-    w->getSettings()->endGroup();
-    w->getSettings()->endGroup();
+bool loadCheats()
+{
+    bool loaded = false;
+    QString gameName = getCheatGameName();
+    QJsonObject gameData = loadCheatData(gameName);
+    QJsonObject cheatsData = getCheatsFromSettings(gameName, gameData);
+
+    for (int i = 0; i < cheatsData.size(); ++i)
+    {
+        QJsonArray cheat_codes = cheatsData.value(cheatsData.keys().at(i)).toArray();
+        QList <m64p_cheat_code> codes;
+        for (int j = 0; j < cheat_codes.size(); ++j)
+        {
+            QStringList data = cheat_codes.at(j).toString().split(" ");
+            m64p_cheat_code code;
+            bool ok;
+            code.address = data[0].toUInt(&ok, 16);
+            code.value = data[1].toInt(&ok, 16);
+            codes.append(code);
+        }
+        m64p_error success = (*CoreAddCheat)(cheatsData.keys().at(i).toUtf8().constData(), codes.data(), codes.size());
+        if (success != M64ERR_SUCCESS)
+            DebugMessage(M64MSG_WARNING, "could not load cheat %s", cheatsData.keys().at(i).toUtf8().constData());
+        else
+        {
+            loaded = true;
+            DebugMessage(M64MSG_INFO, "loaded cheat %s", cheatsData.keys().at(i).toUtf8().constData());
+        }
+    }
 
     return loaded;
 }
