@@ -8,6 +8,7 @@
 #include <QtEndian>
 #include <QScrollArea>
 #include <QLabel>
+#include <QTextStream>
 #include <QJsonArray>
 #include <cinttypes>
 
@@ -38,9 +39,7 @@ CheatsDialog::CheatsDialog(QString gameName, QWidget *parent)
         bool hasOptions = cheats.value("hasOptions").toBool();
         if (!hasOptions)
         {
-            CheatsCheckBox *box = new CheatsCheckBox(this);
-            box->setCheatName(keys.at(i));
-            box->setGame(gameName);
+            CheatsCheckBox *box = new CheatsCheckBox(gameName, keys.at(i), this);
             box->loadState();
             m_layout->addWidget(box, row++, 1);
         }
@@ -59,10 +58,8 @@ CheatsDialog::CheatsDialog(QString gameName, QWidget *parent)
                     optionLabel->setToolTip(helper);
                 optionLabel->setStyleSheet("padding: 10px");
                 m_layout->addWidget(optionLabel, row, 0);
-                CheatsCheckBox *box = new CheatsCheckBox(this);
-                box->setCheatName(keys.at(i));
+                CheatsCheckBox *box = new CheatsCheckBox(gameName, keys.at(i), this);
                 box->setOptionName(optionName);
-                box->setGame(gameName);
                 box->setGroup(optionButtons);
                 box->loadState();
                 optionButtons->addButton(box);
@@ -78,12 +75,33 @@ CheatsDialog::CheatsDialog(QString gameName, QWidget *parent)
     myLabel->setStyleSheet("font-weight: bold");
     mainLayout->addWidget(myLabel);
     mainLayout->addWidget(cheatsScroll);
+
+    QLabel *customLabel = new QLabel("Custom Codes:", this);
+    CheatsTextEdit *customCodeEdit = new CheatsTextEdit(gameName, this);
+    mainLayout->addWidget(customLabel);
+    mainLayout->addWidget(customCodeEdit);
     setLayout(mainLayout);
 }
 
-CheatsCheckBox::CheatsCheckBox(QWidget *parent)
+CheatsTextEdit::CheatsTextEdit(QString _game, QWidget *parent)
+    : QPlainTextEdit(parent)
+{
+    m_game = _game;
+    QString prefix = "Cheats/" + m_game + "/custom/";
+
+    setPlainText(w->getSettings()->value(prefix + "cheat").toString());
+
+    connect(this, &QPlainTextEdit::textChanged, [=]{
+        w->getSettings()->setValue(prefix + "cheat", toPlainText());
+    });
+}
+
+CheatsCheckBox::CheatsCheckBox(QString _game, QString _cheat, QWidget *parent)
     : QCheckBox(parent)
 {
+    m_game = _game;
+    m_cheatName = _cheat;
+
     connect(this, &QAbstractButton::pressed, [=]{
         if (m_group != nullptr && checkState() == Qt::Checked)
         {
@@ -128,7 +146,25 @@ QJsonObject getCheatsFromSettings(QString gameName, QJsonObject gameData)
     for (int i = 0; i < childGroups.size(); ++i)
     {
         w->getSettings()->beginGroup(childGroups.at(i));
-        if (w->getSettings()->value("enabled").toBool())
+        if (childGroups.at(i) == "custom")
+        {
+            QString customCheatsString = w->getSettings()->value("cheat").toString();
+            QTextStream customCheatStream(&customCheatsString);
+            QJsonArray custom_codes;
+            while (!customCheatStream.atEnd())
+            {
+                QString line = customCheatStream.readLine();
+                if (!line.isEmpty())
+                {
+                    custom_codes.append(line);
+                }
+            }
+            if (!custom_codes.isEmpty())
+            {
+                data.insert("custom", custom_codes);
+            }
+        }
+        else if (w->getSettings()->value("enabled").toBool())
         {
             QJsonArray cheat_codes = gameData.value(childGroups.at(i)).toObject().value("data").toArray();
             if(w->getSettings()->contains("option"))
