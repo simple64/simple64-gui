@@ -180,10 +180,13 @@ void CreateRoom::createRoom()
     QString gameName = getCheatGameName();
     QJsonObject gameData = loadCheatData(gameName);
     QJsonObject cheats = getCheatsFromSettings(gameName, gameData);
-    QJsonDocument cheatsDoc(cheats);
-    QJsonObject features;
-    features.insert("cheats", QString(cheatsDoc.toJson(QJsonDocument::Compact)));
-    json.insert("features", features);
+    if (!cheats.isEmpty())
+    {
+        QJsonDocument cheatsDoc(cheats);
+        QJsonObject features;
+        features.insert("cheats", QString(cheatsDoc.toJson(QJsonDocument::Compact)));
+        json.insert("features", features);
+    }
 
     addAuthData(webSocket, &json);
 

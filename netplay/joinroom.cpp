@@ -118,7 +118,7 @@ void JoinRoom::resetList()
     headers.append("Game Name");
     headers.append("Game MD5");
     headers.append("Password Protected");
-    //headers.append("Fixed Input Delay");
+    headers.append("Cheats Enabled");
     listWidget->setHorizontalHeaderLabels(headers);
     listWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 }
@@ -292,6 +292,9 @@ void JoinRoom::processTextMessage(QString message)
             newItem = new QTableWidgetItem(json.value("protected").toString());
             newItem->setFlags(newItem->flags() & ~Qt::ItemIsEditable);
             listWidget->setItem(row, 3, newItem);
+            newItem = new QTableWidgetItem(!json.value("features").toObject().value("cheats").toString().isEmpty());
+            newItem->setFlags(newItem->flags() & ~Qt::ItemIsEditable);
+            listWidget->setItem(row, 4, newItem);
 
             ++row;
         }
