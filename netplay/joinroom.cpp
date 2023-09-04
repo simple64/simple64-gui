@@ -111,7 +111,7 @@ void JoinRoom::resetList()
     row = 0;
     rooms.clear();
     listWidget->clear();
-    listWidget->setColumnCount(4);
+    listWidget->setColumnCount(5);
     listWidget->setRowCount(row);
     QStringList headers;
     headers.append("Room Name");
