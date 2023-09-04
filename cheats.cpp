@@ -8,6 +8,7 @@
 #include <QtEndian>
 #include <QScrollArea>
 #include <QLabel>
+#include <QTextStream>
 #include <QJsonArray>
 #include <cinttypes>
 
@@ -145,7 +146,25 @@ QJsonObject getCheatsFromSettings(QString gameName, QJsonObject gameData)
     for (int i = 0; i < childGroups.size(); ++i)
     {
         w->getSettings()->beginGroup(childGroups.at(i));
-        if (w->getSettings()->value("enabled").toBool())
+        if (childGroups.at(i) == "custom")
+        {
+            QString customCheatsString = w->getSettings()->value("cheat").toString();
+            QTextStream customCheatStream(&customCheatsString);
+            QJsonArray custom_codes;
+            while (!customCheatStream.atEnd())
+            {
+                QString line = customCheatStream.readLine();
+                if (!line.isEmpty())
+                {
+                    custom_codes.append(line);
+                }
+            }
+            if (!custom_codes.isEmpty())
+            {
+                data.insert("custom", custom_codes);
+            }
+        }
+        else if (w->getSettings()->value("enabled").toBool())
         {
             QJsonArray cheat_codes = gameData.value(childGroups.at(i)).toObject().value("data").toArray();
             if(w->getSettings()->contains("option"))
