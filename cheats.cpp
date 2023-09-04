@@ -11,10 +11,9 @@
 #include <QJsonArray>
 #include <cinttypes>
 
-CheatsDialog::CheatsDialog(QWidget *parent)
+CheatsDialog::CheatsDialog(QString gameName, QWidget *parent)
     : QDialog(parent)
 {
-    QString gameName = getCheatGameName();
     QJsonObject gameData = loadCheatData(gameName);
 
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
@@ -186,7 +185,9 @@ bool loadCheats(QJsonObject cheatsData)
 QString getCheatGameName()
 {
     m64p_rom_header rom_header;
-    (*CoreDoCommand)(M64CMD_ROM_GET_HEADER, sizeof(rom_header), &rom_header);
+    m64p_error success = (*CoreDoCommand)(M64CMD_ROM_GET_HEADER, sizeof(rom_header), &rom_header);
+    if (success != M64ERR_SUCCESS)
+        return "";
     return QString("%1-%2-C:%3").arg(qFromBigEndian(rom_header.CRC1), 8, 16, QLatin1Char('0')).arg(qFromBigEndian(rom_header.CRC2), 8, 16, QLatin1Char('0')).arg(rom_header.Country_code, 2, 16).toUpper();
 }
 

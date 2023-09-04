@@ -35,7 +35,7 @@ class CheatsDialog : public QDialog
 {
     Q_OBJECT
 public:
-    CheatsDialog(QWidget *parent = nullptr);
+    CheatsDialog(QString gameName, QWidget *parent = nullptr);
 private:
     QGridLayout *m_layout;
 };
