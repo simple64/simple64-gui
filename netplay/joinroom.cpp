@@ -292,7 +292,11 @@ void JoinRoom::processTextMessage(QString message)
             newItem = new QTableWidgetItem(json.value("protected").toString());
             newItem->setFlags(newItem->flags() & ~Qt::ItemIsEditable);
             listWidget->setItem(row, 3, newItem);
-            newItem = new QTableWidgetItem(!json.value("features").toObject().value("cheats").toString().isEmpty());
+
+            QString cheatsValue = "No";
+            if (!json.value("features").toObject().value("cheats").toString().isEmpty())
+                cheatsValue = "Yes";
+            newItem = new QTableWidgetItem(cheatsValue);
             newItem->setFlags(newItem->flags() & ~Qt::ItemIsEditable);
             listWidget->setItem(row, 4, newItem);
 
