@@ -282,8 +282,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
         connect(temp_slot, &QAction::triggered, [=](bool checked)
                 {
             if (checked) {
-                int slot = temp_slot->text().remove("Slot ").toInt();
-                (*CoreDoCommand)(M64CMD_STATE_SET_SLOT, slot, NULL);
+                (*CoreDoCommand)(M64CMD_STATE_SET_SLOT, i, NULL);
             } });
     }
 
@@ -579,7 +578,7 @@ void MainWindow::updateOpenRecent()
         OpenRecent->addAction(recent[i]);
         QAction *temp_recent = recent[i];
         connect(temp_recent, &QAction::triggered, [=]()
-                { openROM(temp_recent->text(), "", 0, 0, QJsonObject()); });
+                { openROM(list.at(i), "", 0, 0, QJsonObject()); });
     }
     OpenRecent->addSeparator();
 
